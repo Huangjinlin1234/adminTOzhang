@@ -1,7 +1,38 @@
 <template>
   <div class="navbar yu-frame-top-bar">
     <div class="yu-frame-top-bar-left" />
+    <div class="nav-right">
+      <div class="yu-userInfo">
+        <div class="yu-framer-user">
+          <img src="themes/default/images/runningTime.png" alt="">
+          <span>营业日期：2022-09-24</span>
+        </div>
+        <div id="more" class="yu-framer-role">
+          <img src="themes/default/images/userPic.png" alt="">
+          <div class="yu-framer-role-user">
+            <b class="userrolename">系统管理员&nbsp;admin</b>
+            <div>系统管理员角色</div>
+          </div>
+          <div class="yu-framer-popover">
+            dd
+          </div>
+        </div>
+        <div class="arrow-hover"><i class="el-icon-arrow-down" style="cursor: pointer" /></div>
 
+        <div class="yu-framer-tool">
+          <i class="el-icon-share" />
+          <i class="el-icon-delete" />
+          <i id="yu-more" class="el-icon-star-off" />
+          <i id="yu-exit" class="el-icon-close" style="cursor: pointer" />
+        </div>
+      </div>
+      <!-- <div id="yu-sysTools" class="yu-sysTools"></div> -->
+      <!-- <div>
+                <div>
+                    <img src="themes/default/images/userPic.png" alt="">
+                </div>
+            </div> -->
+    </div>
   </div>
 </template>
 
@@ -23,6 +54,26 @@ export default {
     SizeSelect,
     Search
   },
+  data() {
+    return {
+      pwdDialogVisible: false,
+      isShow: false,
+      formdata: {},
+      dutys: '',
+      dataCode: {
+        '1': '业务审批退回',
+        '2': '业务终审通过',
+        '3': '业务终审否决',
+        '4': '档案延期归还',
+        '5': '工作日历待办'
+      },
+      openday: '2022-09-16',
+      // openday: yufp.session.openday.substr(0, 4) + '-' + yufp.session.openday.substr(4, 2) + '-' + yufp.session.openday.substr(6, 2),
+      updateUrl: '/api/wbmsgnotice/update',
+      timer: null,
+      msgTimer: null
+    };
+  },
   computed: {
     ...mapGetters([
       'sidebar',
@@ -31,13 +82,7 @@ export default {
     ])
   },
   methods: {
-    toggleSideBar() {
-      this.$store.dispatch('app/toggleSideBar');
-    },
-    async logout() {
-      await this.$store.dispatch('user/logout');
-      this.$router.push(`/login?redirect=${this.$route.fullPath}`);
-    }
+
   }
 };
 </script>
@@ -47,82 +92,8 @@ export default {
   height: 104px;
   overflow: hidden;
   position: relative;
-  background: #fff;
-  background-image:  url('~@/assets/common/zrcbank/images/head.png');
-  box-shadow: 0 1px 4px rgba(0,21,41,.08);
+  display: flex;
+  justify-content: space-between;
 
-  .hamburger-container {
-    line-height: 46px;
-    height: 100%;
-    float: left;
-    cursor: pointer;
-    transition: background .3s;
-    -webkit-tap-highlight-color:transparent;
-
-    &:hover {
-      background: rgba(0, 0, 0, .025)
-    }
-  }
-
-  .breadcrumb-container {
-    float: left;
-  }
-
-  .errLog-container {
-    display: inline-block;
-    vertical-align: top;
-  }
-
-  .right-menu {
-    float: right;
-    height: 100%;
-    line-height: 50px;
-
-    &:focus {
-      outline: none;
-    }
-
-    .right-menu-item {
-      display: inline-block;
-      padding: 0 8px;
-      height: 100%;
-      font-size: 18px;
-      color: #5a5e66;
-      vertical-align: text-bottom;
-
-      &.hover-effect {
-        cursor: pointer;
-        transition: background .3s;
-
-        &:hover {
-          background: rgba(0, 0, 0, .025)
-        }
-      }
-    }
-
-    .avatar-container {
-      margin-right: 30px;
-
-      .avatar-wrapper {
-        margin-top: 5px;
-        position: relative;
-
-        .user-avatar {
-          cursor: pointer;
-          width: 40px;
-          height: 40px;
-          border-radius: 10px;
-        }
-
-        .el-icon-caret-bottom {
-          cursor: pointer;
-          position: absolute;
-          right: -20px;
-          top: 25px;
-          font-size: 12px;
-        }
-      }
-    }
-  }
 }
 </style>

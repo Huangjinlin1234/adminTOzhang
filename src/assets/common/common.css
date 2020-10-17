@@ -29,6 +29,16 @@ textarea {  border: 1px solid #e0e0e0;  border-radius: 4px;}
 /*解决在首次加载时页面有滚动条的bug */
 @media screen and (max-width: 1280px) {  .yu-frame-html,  .yu-frame-body {    overflow-x: auto;  }
 }
+
+.yu-userInfo{display: flex;align-items: center;height: 64px; color: #fff}
+.yu-userInfo>.yu-framer-user,.yu-framer-tool{display: flex;justify-content: center;align-items: center;margin-right: 10px}
+.yu-userInfo>div span{margin:0 10px}
+.yu-userInfo>.yu-framer-role{position: relative;width: 174px;display: flex;align-items: center;}
+.yu-framer-role>.yu-framer-popover{display: none;z-index: 99;width: 216px;height: 170px;border: 1px solid red;position: absolute;left: 0;top: 60px;background-color: #FFF}
+.yu-userInfo>.yu-framer-role>.yu-framer-role-user{margin:0 12px;}
+.yu-userInfo>.yu-framer-role>.yu-framer-role-user>.userrolename{font-size: 14px}
+.yu-userInfo>.yu-framer-tool>i{margin:0 12px }
+
 .yu-frame-menu {  width: 240px;  height: 100%;  position: absolute;  z-index: 5;  left: 0;  margin-top: -32px;}
 .yu-frame-menu-vertical .el-submenu.is-opened > .el-submenu__title {  background-color: rgba(255, 255, 255, 0.05);  color: #fff;}
 .yu-main-box {  display: block;  margin-left: 240px;  padding: 0 0 0 0;  height: 100%;  overflow: hidden;  position: relative;  margin-top: -32px;}

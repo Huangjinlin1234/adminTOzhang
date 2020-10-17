@@ -1,5 +1,8 @@
 <template>
-  <div :class="{'has-logo':showLogo}">
+  <div class="sibar-container">
+    <div class="search-content">
+      <el-input v-model="input" placeholder="请输入内容" prefix-icon="el-icon-search" />
+    </div>
     <el-scrollbar wrap-class="scrollbar-wrapper">
       <el-menu
         :default-active="activeMenu"
@@ -19,12 +22,16 @@
 
 <script>
 import { mapGetters } from 'vuex';
-import Logo from './Logo';
 import SidebarItem from './SidebarItem';
 import variables from '@/styles/variables.scss';
 
 export default {
-  components: { SidebarItem, Logo },
+  components: { SidebarItem },
+  data() {
+    return {
+      input: ''
+    };
+  },
   computed: {
     ...mapGetters([
       'permission_routes',
@@ -51,3 +58,19 @@ export default {
   }
 };
 </script>
+<style lang="scss" scoped>
+.sibar-container{
+  position: absolute;
+  width: 240px;
+  margin-top: -32px;
+  .search-content{
+    padding: 10px;
+    background-color: #0c2750;
+
+  }
+  .el-menu-item {}
+}
+.el-menu-item.is-active{
+  background-color: yellow;
+}
+</style>
