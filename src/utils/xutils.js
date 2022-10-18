@@ -1,5 +1,5 @@
 import backend from '@/config/constant/app.data.service'
-import * as utils from '@/utils'
+import * as utils from '@/utils/util'
 import { getUrl, getBaseApi } from '@/utils/util'
 import * as xyutils from 'xy-utils'
 let utilVue = new window.Vue({})

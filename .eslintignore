@@ -4,3 +4,4 @@ public
 dist
 src/views/login/index.vue
 src/utils/xutils.js
+src/views/theme/index.vue

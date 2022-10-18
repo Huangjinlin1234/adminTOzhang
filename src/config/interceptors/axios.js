@@ -1,6 +1,6 @@
 /* eslint camelcase: 0 */
 import store from '@/store'
-import { logger, clone, sessionStore } from '@/utils'
+import { logger, clone, sessionStore } from '@/utils/util'
 import { router } from '@/router'
 import { getToken, putToken, logoutCleanFn } from '@/utils/oauth'
 import {
@@ -84,8 +84,8 @@ function analysisResponseHeader(header) {
     case 'C':
       // B C O 不做任何处理，直接返回回调，由业务功能自行处理
       break
-    default: // mock为true时，不直接返回，因为mock无法模拟HttpResponseHeader--xyHead
-    {
+    default: {
+      // mock为true时，不直接返回，因为mock无法模拟HttpResponseHeader--xyHead
       if (!mockMode) {
         showMessage(`【X】响应报文头无${resHeader}参数!${seqNoInfo}`)
         return false

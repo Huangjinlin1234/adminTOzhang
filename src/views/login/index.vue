@@ -56,10 +56,7 @@
 <script>
 import { validUsername } from '@/utils/validate'
 import SocialSign from './components/SocialSignin'
-import JSEncrypt from 'jsencrypt';
 import { genUUID } from '@/utils/xutils.js';
-import { auth, login, logout, getInfo, encryptPassword } from '@/api/user'
-
 export default {
   name: 'Login',
   components: { SocialSign },
