@@ -39,9 +39,9 @@ export function loginFn(data) {
  * 刷新Token API调用
  * @param {*} data
  */
-// export function refreshTokenFn(data) {
-//   return loginFn(data)
-// }
+export function refreshTokenFn(data) {
+  return loginFn(data)
+}
 
 /**
  * 退出登录/注销API调用

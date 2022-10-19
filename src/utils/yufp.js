@@ -29,7 +29,7 @@ export default window.yufp = {
   refreshToken: refreshToken,
   validator: { validator },
   sessionStorage: {
-    put: sessionStore.set,
+    set: sessionStore.set,
     get: sessionStore.get
   },
   logger: {

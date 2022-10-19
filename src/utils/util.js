@@ -411,7 +411,7 @@ export function exportExcelByTable(options) {
       k <= ln;
       k++
     ) {
-      for (let i = 0; i < Math.min(len, l.length);) {
+      for (let i = 0; i < Math.min(len, l.length); i) {
         letter.push(letter[k] + '' + letter[i++])
       }
     }
@@ -578,7 +578,11 @@ export function exportExcelByTable(options) {
       return buf
     }
   }
-  let wb = { SheetNames: ['Sheet1'], Sheets: {}, Props: {}}
+  let wb = {
+    SheetNames: ['Sheet1'],
+    Sheets: {},
+    Props: {}
+  }
   data = XLSX.utils.json_to_sheet(data)
   for (let i = 0; i < headSheel.length; i++) {
     data[headSheel[i]] = { t: 's', v: headLabel[i].label }
@@ -841,7 +845,6 @@ export function getBaseUrl() {
   const baseApi = process.env.VUE_APP_BASE_API // 应用服务前缀URL
   const proxyPrefix = '' // process.env.VUE_APP_PROXY_PREFIX // 代理API前缀
   const match = /^(https?:\/\/)([0-9a-z.]+)(:[0-9]+)?([/0-9a-z.]+)?/i // 匹配URL(协议+域名+端口)
-
   const matchResult = match.exec(baseApi)
   return devEnv && matchResult ? proxyPrefix + (matchResult[4] || '') : baseApi
 }
@@ -849,7 +852,6 @@ export function getBaseUrl() {
  * 获取公钥字符串
  */
 export function getRSAPublicKey() {
-  // return 'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCrDUHc85ADQVxXRP4M90nqttWoZctV6JJVVdPjIle5vd9G2/4kgIhNc78Jd+ENxg+n4Gj9UMwNhJmb2jnMaW3zyGB+qi/ZrMO5dEUhW8salirzRgGg/4Arz4ObPmCWlZsws3Ij/3IEsFD3vMdIZD2j8b33DAbj47PjcCcMbtHYuQIDAQAB';
   return 'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDAYwQ81rc1KW8tTYpxrLS3ArVxB40otmbWyXwgDQRkLsCuQKiq6KZgAM/8sJuI12S1JVOXnMu5d420vKFFS/+Ibz4TxqjhLmgownaguMTbAGBzIPvfN5lL52mDmm/CvKu2YPCFvZV8YulNTCexvuj7OiWRUXpAbaQqu5tPOjGytQIDAQAB'
 }
 /**

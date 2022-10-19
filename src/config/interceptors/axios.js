@@ -17,7 +17,6 @@ import { mock } from 'mockjs'
 const mockMode = process.env.VUE_APP_MOCK_MODE === 'true' // 模拟模式，true真实express服务，false XHR拦截方式
 
 const qs = require('qs')
-
 /**
  * 解析接口返回报文头
  * @param {Object} header 报文头信息
@@ -137,7 +136,8 @@ export const requestConfig = {
   //   // 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
   // },
   // dataType: 'json', // 默认返回数据类型
-  baseURL: getBaseUrl() // api 的 base_url
+  baseURL: process.env.VUE_APP_BASE_API // api 的 base_url
+  // baseURL: getBaseUrl() // api 的 base_url
 }
 let _requests = [] // 等待请求列表
 /**
@@ -150,6 +150,7 @@ export function requestSuccessFunc(config) {
   // 自定义请求拦截逻辑，可以处理权限，请求发送监控等
   // Do something before request is sent
   // 展示loading
+  debugger
   let option
   // config.withCredentials = false; // 请求头中不携带cookie
   const target =
@@ -358,7 +359,6 @@ export function responseFailFunc(error) {
     return Promise.reject(error)
   }
   const status = res.status
-  console.log(status, 'status')
   // 对返回状态进行处理
   switch (status) {
     // mock数据问题，暂时跳过，所以break
