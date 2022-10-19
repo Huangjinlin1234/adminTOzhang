@@ -1,7 +1,16 @@
 <template>
   <div class="sibar-container">
     <div class="search-content">
-      <el-input v-model="input" placeholder="请输入内容" prefix-icon="el-icon-search" />
+      <el-row type="flex" justify="space-between">
+        <el-col :span="19">
+          <el-input v-model="input" placeholder="搜索快捷菜单..." prefix-icon="el-icon-search" />
+        </el-col>
+        <el-col :span="5">
+          <div class="icont-menu">
+            <i class="el-icon-menu" />
+          </div>
+        </el-col>
+      </el-row>
     </div>
     <el-scrollbar wrap-class="scrollbar-wrapper">
       <el-menu
@@ -32,6 +41,7 @@ export default {
       input: ''
     };
   },
+
   computed: {
     ...mapGetters([
       'permission_routes',
@@ -55,6 +65,9 @@ export default {
     isCollapse() {
       return !this.sidebar.opened;
     }
+  },
+  created() {
+    console.log(this.permission_routes, 'permission_routes');
   }
 };
 </script>
@@ -64,9 +77,17 @@ export default {
   width: 240px;
   margin-top: -32px;
   .search-content{
-    padding: 10px;
+    height: 42px;
     background-color: #0c2750;
-
+    .el-scrollbar .el-scrollbar__wrap .el-scrollbar__view .el-menu {
+      background-color: red;
+    }
+    .icont-menu{
+      font-size: 20px;
+      height: 42px;
+      text-align: center;
+      line-height: 42px;
+    }
   }
   .el-menu-item {}
 }

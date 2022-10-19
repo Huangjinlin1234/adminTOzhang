@@ -4,11 +4,11 @@
     <div class="nav-right">
       <div class="yu-userInfo">
         <div class="yu-framer-user">
-          <img src="themes/default/images/runningTime.png" alt="">
+          <img src="../../assets/common/zrcbank/images/头部-营业时间.png" alt="">
           <span>营业日期：2022-09-24</span>
         </div>
         <div id="more" class="yu-framer-role">
-          <img src="themes/default/images/userPic.png" alt="">
+          <img src="../../assets/common/zrcbank/images/头部-头像.png" alt="">
           <div class="yu-framer-role-user">
             <b class="userrolename">系统管理员&nbsp;admin</b>
             <div>系统管理员角色</div>
