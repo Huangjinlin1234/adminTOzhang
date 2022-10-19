@@ -1,94 +1,68 @@
 <template>
-  <div class="navbar">
-    <hamburger
-      id="hamburger-container"
-      :is-active="sidebar.opened"
-      class="hamburger-container"
-      @toggleClick="toggleSideBar"
-    />
-
-    <breadcrumb
-      id="breadcrumb-container"
-      class="breadcrumb-container"
-    />
-
-    <div class="right-menu">
-      <template v-if="device!=='mobile'">
-        <search
-          id="header-search"
-          class="right-menu-item"
-        />
-
-        <error-log class="errLog-container right-menu-item hover-effect" />
-
-        <screenfull
-          id="screenfull"
-          class="right-menu-item hover-effect"
-        />
-
-        <el-tooltip
-          content="Global Size"
-          effect="dark"
-          placement="bottom"
-        >
-          <size-select
-            id="size-select"
-            class="right-menu-item hover-effect"
-          />
-        </el-tooltip>
-
-      </template>
-
-      <el-dropdown
-        class="avatar-container right-menu-item hover-effect"
-        trigger="click"
-      >
-        <div class="avatar-wrapper">
+  <div class="navbar yu-frame-top-bar">
+    <div class="yu-frame-top-bar-left" />
+    <div class="nav-right">
+      <div class="yu-userInfo">
+        <div class="yu-framer-user">
           <img
-            :src="avatar+'?imageView2/1/w/80/h/80'"
-            class="user-avatar"
+            src="../../assets/common/zrcbank/images/头部-营业时间.png"
+            alt=""
           >
-          <i class="el-icon-caret-bottom" />
+          <span>营业日期：2022-09-24</span>
         </div>
-        <el-dropdown-menu slot="dropdown">
-          <router-link to="/profile/index">
-            <el-dropdown-item>Profile</el-dropdown-item>
-          </router-link>
-          <router-link to="/">
-            <el-dropdown-item>Dashboard</el-dropdown-item>
-          </router-link>
-          <a
-            target="_blank"
-            href="https://github.com/PanJiaChen/vue-element-admin/"
+        <div
+          id="more"
+          class="yu-framer-role"
+        >
+          <img
+            src="../../assets/common/zrcbank/images/头部-头像.png"
+            alt=""
           >
-            <el-dropdown-item>Github</el-dropdown-item>
-          </a>
-          <a
-            target="_blank"
-            href="https://panjiachen.github.io/vue-element-admin-site/#/"
-          >
-            <el-dropdown-item>Docs</el-dropdown-item>
-          </a>
-          <el-dropdown-item
-            divided
-            @click.native="logout"
-          >
-            <span style="display:block;">Log Out</span>
-          </el-dropdown-item>
-        </el-dropdown-menu>
-      </el-dropdown>
+          <div class="yu-framer-role-user">
+            <b class="userrolename">系统管理员&nbsp;admin</b>
+            <div>系统管理员角色</div>
+          </div>
+          <div class="yu-framer-popover">
+            dd
+          </div>
+        </div>
+        <div class="arrow-hover"><i
+          class="el-icon-arrow-down"
+          style="cursor: pointer"
+        /></div>
+
+        <div class="yu-framer-tool">
+          <i class="el-icon-share" />
+          <i class="el-icon-delete" />
+          <i
+            id="yu-more"
+            class="el-icon-star-off"
+          />
+          <i
+            id="yu-exit"
+            class="el-icon-close"
+            style="cursor: pointer"
+          />
+        </div>
+      </div>
+      <!-- <div id="yu-sysTools" class="yu-sysTools"></div> -->
+      <!-- <div>
+                <div>
+                    <img src="themes/default/images/userPic.png" alt="">
+                </div>
+            </div> -->
     </div>
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import Breadcrumb from '@/components/Breadcrumb'
-import Hamburger from '@/components/Hamburger'
-import ErrorLog from '@/components/ErrorLog'
-import Screenfull from '@/components/Screenfull'
-import SizeSelect from '@/components/SizeSelect'
-import Search from '@/components/HeaderSearch'
+import { mapGetters } from 'vuex';
+import Breadcrumb from '@/components/Breadcrumb';
+import Hamburger from '@/components/Hamburger';
+import ErrorLog from '@/components/ErrorLog';
+import Screenfull from '@/components/Screenfull';
+import SizeSelect from '@/components/SizeSelect';
+import Search from '@/components/HeaderSearch';
 
 export default {
   components: {
@@ -99,6 +73,26 @@ export default {
     SizeSelect,
     Search
   },
+  data () {
+    return {
+      pwdDialogVisible: false,
+      isShow: false,
+      formdata: {},
+      dutys: '',
+      dataCode: {
+        '1': '业务审批退回',
+        '2': '业务终审通过',
+        '3': '业务终审否决',
+        '4': '档案延期归还',
+        '5': '工作日历待办'
+      },
+      openday: '2022-09-16',
+      // openday: yufp.session.openday.substr(0, 4) + '-' + yufp.session.openday.substr(4, 2) + '-' + yufp.session.openday.substr(6, 2),
+      updateUrl: '/api/wbmsgnotice/update',
+      timer: null,
+      msgTimer: null
+    };
+  },
   computed: {
     ...mapGetters([
       'sidebar',
@@ -107,15 +101,8 @@ export default {
     ])
   },
   methods: {
-    toggleSideBar() {
-      this.$store.dispatch('app/toggleSideBar')
-    },
-    async logout() {
-      await this.$store.dispatch('user/logout')
-      this.$router.push(`/login?redirect=${this.$route.fullPath}`)
-    }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>
@@ -123,81 +110,8 @@ export default {
   height: 50px;
   overflow: hidden;
   position: relative;
-  background: #fff;
-  box-shadow: 0 1px 4px rgba(0,21,41,.08);
+  display: flex;
+  justify-content: space-between;
 
-  .hamburger-container {
-    line-height: 46px;
-    height: 100%;
-    float: left;
-    cursor: pointer;
-    transition: background .3s;
-    -webkit-tap-highlight-color:transparent;
-
-    &:hover {
-      background: rgba(0, 0, 0, .025)
-    }
-  }
-
-  .breadcrumb-container {
-    float: left;
-  }
-
-  .errLog-container {
-    display: inline-block;
-    vertical-align: top;
-  }
-
-  .right-menu {
-    float: right;
-    height: 100%;
-    line-height: 50px;
-
-    &:focus {
-      outline: none;
-    }
-
-    .right-menu-item {
-      display: inline-block;
-      padding: 0 8px;
-      height: 100%;
-      font-size: 18px;
-      color: #5a5e66;
-      vertical-align: text-bottom;
-
-      &.hover-effect {
-        cursor: pointer;
-        transition: background .3s;
-
-        &:hover {
-          background: rgba(0, 0, 0, .025)
-        }
-      }
-    }
-
-    .avatar-container {
-      margin-right: 30px;
-
-      .avatar-wrapper {
-        margin-top: 5px;
-        position: relative;
-
-        .user-avatar {
-          cursor: pointer;
-          width: 40px;
-          height: 40px;
-          border-radius: 10px;
-        }
-
-        .el-icon-caret-bottom {
-          cursor: pointer;
-          position: absolute;
-          right: -20px;
-          top: 25px;
-          font-size: 12px;
-        }
-      }
-    }
-  }
 }
 </style>

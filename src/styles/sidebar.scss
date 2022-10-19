@@ -5,6 +5,7 @@
     transition: margin-left .28s;
     margin-left: $sideBarWidth;
     position: relative;
+    margin-top: -32px;
   }
 
   .sidebar-container {
@@ -27,6 +28,7 @@
 
     .scrollbar-wrapper {
       overflow-x: hidden !important;
+      width: 250px;
     }
 
     .el-scrollbar__bar.is-vertical {
