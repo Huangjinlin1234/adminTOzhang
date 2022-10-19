@@ -7,7 +7,7 @@
 import store from '@/store'
 import { router, getRouteData } from '@/router'
 // import Layout from '@/components/layout';
-// import { refreshTokenFn } from '@/api/common/oauth'
+import { refreshTokenFn } from '@/api/common/oauth'
 import { sessionStore, looseEqual, toMappingFn } from '@/utils'
 import {
   MENU_MAPPING,
@@ -31,18 +31,18 @@ export const refreshToken = async function () {
   if (_refreshToken === true) {
     // access_token 已失效，重新获取；
     const tokenObj = sessionStore.get(XIAO_YU_TOKEN) || {}
-    // const { access_token, expires_in, refresh_token } = await refreshTokenFn(
-    //   tokenObj.refresh_token
-    // )
-    // const refreshtokenObj = { access_token, expires_in, refresh_token }
-    // if (refreshtokenObj.access_token) {
-    //   // sessionStore.set(XIAO_YU_TOKEN, refreshtokenObj);
-    //   setToken(refreshtokenObj)
-    //   return access_token
-    // } else {
-    //   logoutCleanFn()
-    return ''
-    // }
+    const { access_token, expires_in, refresh_token } = await refreshTokenFn(
+      tokenObj.refresh_token
+    )
+    const refreshtokenObj = { access_token, expires_in, refresh_token }
+    if (refreshtokenObj.access_token) {
+      sessionStore.set(XIAO_YU_TOKEN, refreshtokenObj)
+      setToken(refreshtokenObj)
+      return access_token
+    } else {
+      logoutCleanFn()
+      return ''
+    }
   } else if (_refreshToken === false) {
     return ''
   }
