@@ -4,11 +4,20 @@
     <div class="nav-right">
       <div class="yu-userInfo">
         <div class="yu-framer-user">
-          <img src="../../assets/common/zrcbank/images/头部-营业时间.png" alt="">
+          <img
+            src="../../assets/common/zrcbank/images/头部-营业时间.png"
+            alt=""
+          >
           <span>营业日期：2022-09-24</span>
         </div>
-        <div id="more" class="yu-framer-role">
-          <img src="../../assets/common/zrcbank/images/头部-头像.png" alt="">
+        <div
+          id="more"
+          class="yu-framer-role"
+        >
+          <img
+            src="../../assets/common/zrcbank/images/头部-头像.png"
+            alt=""
+          >
           <div class="yu-framer-role-user">
             <b class="userrolename">系统管理员&nbsp;admin</b>
             <div>系统管理员角色</div>
@@ -17,13 +26,23 @@
             dd
           </div>
         </div>
-        <div class="arrow-hover"><i class="el-icon-arrow-down" style="cursor: pointer" /></div>
+        <div class="arrow-hover"><i
+          class="el-icon-arrow-down"
+          style="cursor: pointer"
+        /></div>
 
         <div class="yu-framer-tool">
           <i class="el-icon-share" />
           <i class="el-icon-delete" />
-          <i id="yu-more" class="el-icon-star-off" />
-          <i id="yu-exit" class="el-icon-close" style="cursor: pointer" />
+          <i
+            id="yu-more"
+            class="el-icon-star-off"
+          />
+          <i
+            id="yu-exit"
+            class="el-icon-close"
+            style="cursor: pointer"
+          />
         </div>
       </div>
       <!-- <div id="yu-sysTools" class="yu-sysTools"></div> -->
@@ -54,7 +73,7 @@ export default {
     SizeSelect,
     Search
   },
-  data() {
+  data () {
     return {
       pwdDialogVisible: false,
       isShow: false,
@@ -82,14 +101,13 @@ export default {
     ])
   },
   methods: {
-
   }
 };
 </script>
 
 <style lang="scss" scoped>
 .navbar {
-  height: 104px;
+  height: 50px;
   overflow: hidden;
   position: relative;
   display: flex;

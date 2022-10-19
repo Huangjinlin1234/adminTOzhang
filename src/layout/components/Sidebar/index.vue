@@ -1,9 +1,16 @@
 <template>
   <div class="sibar-container">
     <div class="search-content">
-      <el-row type="flex" justify="space-between">
+      <el-row
+        type="flex"
+        justify="space-between"
+      >
         <el-col :span="19">
-          <el-input v-model="input" placeholder="搜索快捷菜单..." prefix-icon="el-icon-search" />
+          <el-input
+            v-model="input"
+            placeholder="搜索快捷菜单..."
+            prefix-icon="el-icon-search"
+          />
         </el-col>
         <el-col :span="5">
           <div class="icont-menu">
@@ -23,7 +30,12 @@
         :collapse-transition="false"
         mode="vertical"
       >
-        <sidebar-item v-for="route in permission_routes" :key="route.path" :item="route" :base-path="route.path" />
+        <sidebar-item
+          v-for="route in permission_routes"
+          :key="route.path"
+          :item="route"
+          :base-path="route.path"
+        />
       </el-menu>
     </el-scrollbar>
   </div>
@@ -36,7 +48,7 @@ import variables from '@/styles/variables.scss';
 
 export default {
   components: { SidebarItem },
-  data() {
+  data () {
     return {
       input: ''
     };
@@ -47,7 +59,7 @@ export default {
       'permission_routes',
       'sidebar'
     ]),
-    activeMenu() {
+    activeMenu () {
       const route = this.$route;
       const { meta, path } = route;
       // if set path, the sidebar will highlight the path you set
@@ -56,17 +68,17 @@ export default {
       }
       return path;
     },
-    showLogo() {
+    showLogo () {
       return this.$store.state.settings.sidebarLogo;
     },
-    variables() {
+    variables () {
       return variables;
     },
-    isCollapse() {
+    isCollapse () {
       return !this.sidebar.opened;
     }
   },
-  created() {
+  created () {
     console.log(this.permission_routes, 'permission_routes');
   }
 };

@@ -1,4 +1,4 @@
-import { debounce } from '@/utils'
+import { debounce } from '@/utils/util'
 
 export default {
   data() {
@@ -45,11 +45,20 @@ export default {
       }
     },
     $_initSidebarResizeEvent() {
-      this.$_sidebarElm = document.getElementsByClassName('sidebar-container')[0]
-      this.$_sidebarElm && this.$_sidebarElm.addEventListener('transitionend', this.$_sidebarResizeHandler)
+      this.$_sidebarElm =
+        document.getElementsByClassName('sidebar-container')[0]
+      this.$_sidebarElm &&
+        this.$_sidebarElm.addEventListener(
+          'transitionend',
+          this.$_sidebarResizeHandler
+        )
     },
     $_destroySidebarResizeEvent() {
-      this.$_sidebarElm && this.$_sidebarElm.removeEventListener('transitionend', this.$_sidebarResizeHandler)
+      this.$_sidebarElm &&
+        this.$_sidebarElm.removeEventListener(
+          'transitionend',
+          this.$_sidebarResizeHandler
+        )
     }
   }
 }
