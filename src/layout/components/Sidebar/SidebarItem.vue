@@ -30,6 +30,7 @@ import { isExternal } from '@/utils/validate';
 import Item from './Item';
 import AppLink from './Link';
 import FixiOSBug from './FixiOSBug';
+import { log } from 'console';
 
 export default {
   name: 'SidebarItem',
@@ -82,6 +83,7 @@ export default {
       return false;
     },
     resolvePath(routePath) {
+      console.log(routePath, 'rou');
       if (isExternal(routePath)) {
         return routePath;
       }

@@ -85,21 +85,31 @@ export const constantRoutes = [
   },
   {
     path: '/system',
-    name: 'Documentation',
     component: Layout,
-    redirect: 'noRedirect',
+    redirect: '/system/user',
+    alwaysShow: true,
+    name: 'System',
     meta: { title: '系统管理', icon: 'documentation', affix: true },
     children: [
       {
-        path: '/system/user',
+        path: 'user',
         component: () => import('@/views/pages/console/system/SUserPageInfo/index'),
-        meta: { title: '用户管理', affix: true },
+        meta: { title: '用户管理' },
+        name: 'user',
         children: []
       },
       {
-        path: '/system/org',
+        path: 'org',
         component: () => import('@/views/pages/console/system/SOrgPageInfo/index'),
         meta: { title: '机构管理', affix: true },
+        name: 'org',
+        children: []
+      },
+      {
+        path: 'role',
+        component: () => import('@/views/pages/console/system/SRolePageInfo/index'),
+        meta: { title: '角色管理' },
+        name: 'role',
         children: []
       }
     ]
@@ -158,7 +168,7 @@ export const asyncRoutes = [
     alwaysShow: true, // will always show the root menu
     name: 'Permission',
     meta: {
-      title: 'Permission',
+      title: 'Permission2',
       icon: 'lock',
       roles: ['admin', 'editor'] // you can set roles in root nav
     },

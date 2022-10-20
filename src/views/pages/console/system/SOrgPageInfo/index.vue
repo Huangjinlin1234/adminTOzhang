@@ -48,7 +48,8 @@ export default {
         ]
       },
       selections: [],
-      orgInfo: {}
+      orgInfo: {},
+      input4: ''
     };
   },
   methods: {
