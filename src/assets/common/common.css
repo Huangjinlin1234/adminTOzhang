@@ -798,7 +798,7 @@ textarea {  border: 1px solid #e0e0e0;  border-radius: 4px;}
 .yu-frame-message-list > li > p > a{		float: right;  font-size: 12px;  padding: 0 10px;  -webkit-transition: 0.2s;  transition: 0.2s;  border-radius: 10px;  height: 20px;  border: 1px #e0e0e0 solid;  line-height: 20px;  margin-top: -27px;}
 
 .yu-frame-message-list > li > p > span > a:link,.yu-frame-message-list > li > p > span > .custom-a,.yu-frame-message-list > li > p > span > a:visited {  color: #666666;  border: 1px #e0e0e0 solid;}
-.yu-frame-message-buttons > .el-button--text {  color: #666666;}
+.el-button.el-button--text {  color: #666666;border: none;}
 .yu-frame-search-type > span {  color: #949494;}
 .yu-frame-search-type > span > i {  color: #9898ac;}
 .yu-frame-search > .yu-frame-search-button {  color: #949494;}
@@ -922,3 +922,4 @@ a.underline {  text-decoration: underline;  cursor: pointer;}
 .el-table .el-table__th, .el-table th{
   background-color: #F2F2F2
 }
+.top-content .el-col.el-col-20{text-align: right;}
