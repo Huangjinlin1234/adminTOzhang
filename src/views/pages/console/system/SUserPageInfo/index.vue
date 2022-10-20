@@ -73,7 +73,6 @@ export default {
   },
   methods: {
     selectionFn(selections) {
-      console.log(selections, 'selec');
       this.selections = selections;
     },
     setDuty() {
