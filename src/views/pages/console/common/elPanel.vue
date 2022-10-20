@@ -1,10 +1,10 @@
 <template>
   <div class="el-panel">
     <el-row class="top-content" type="flex" justify="space-between">
-      <el-col :span="6">
+      <el-col :span="4">
         <b class="title">{{ panelTitle }}</b>
       </el-col>
-      <el-col :span="18">
+      <el-col :span="20">
         <slot name="rightButton" />
         <el-button type="text" @click="openHight">高级查询<i :class="open?'el-icon-arrow-down':'el-icon-arrow-up'" /></el-button>
       </el-col>

@@ -7,6 +7,14 @@
         <el-button ref="btn_deleteFn" type="primary" @click="openDialog('DETAIL')">查看</el-button>
         <el-button ref="btn_viewFn" type="primary" @click="cancelUser('user')">注销</el-button>
         <el-button ref="btn_updateFn" type="primary" @click="setDuty">设置岗位</el-button>
+        <selectTree />
+        <el-input
+          v-model="input4"
+          placeholder="请输入内容"
+        >
+          <i slot="suffix" class="el-input__icon el-icon-search" />
+        </el-input>
+
       </template>
     </formTable>
     <userEdit
@@ -26,10 +34,11 @@
 <script>
 import formTable from '@/views/pages/console/common/formTable.vue';
 import transferCpn from '@/views/pages/console/common/transferCpn.vue';
+import selectTree from '@/views/pages/console/common/selectTree.vue';
 import minxinDiaFn from '@/views/pages/console/common/minxin.js';
 import userEdit from './userEdit.vue';
 export default {
-  components: { formTable, userEdit, transferCpn },
+  components: { formTable, userEdit, transferCpn, selectTree },
   mixins: [minxinDiaFn],
   data() {
     return {
@@ -74,5 +83,12 @@ export default {
 <style lang="scss" scoped>
 .user-container{
   background-color: #ffff;
+  .el-input.el-input--medium.el-input--suffix{
+    width: 200px;
+    margin: 0px 5px;
+  }
+  .el-select.el-select--medium{
+    margin: 0px 5px;
+  }
 }
 </style>
