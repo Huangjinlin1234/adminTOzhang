@@ -52,17 +52,18 @@ export default {
           { label: '状态', name: 'orgName', ctype: 'input' }
         ],
         tableFileds: [
-          { label: '用户代码', prop: 'userCode' },
-          { label: '用户姓名', prop: 'userName' },
-          { label: '机构名称', prop: 'orgName' },
-          { label: '联系电话', prop: 'telPhone' },
-          { label: '性别', prop: 'sex' },
-          { label: '状态', prop: 'status' },
-          { label: '是否柜员', prop: 'isSyncUser' }
+          { label: '用户代码', prop: 'userCode', ctype: 'span' },
+          { label: '用户姓名', prop: 'userName', ctype: 'span' },
+          { label: '机构名称', prop: 'orgName', ctype: 'span' },
+          { label: '联系电话', prop: 'telPhone', ctype: 'span' },
+          { label: '性别', prop: 'sex', ctype: 'span' },
+          { label: '状态', prop: 'status', ctype: 'tag' },
+          { label: '是否柜员', prop: 'isSyncUser', ctype: 'span' }
         ]
       },
       selections: [],
-      setDutyOpen: false
+      setDutyOpen: false,
+      input4: ''
     };
   },
   computed: {
