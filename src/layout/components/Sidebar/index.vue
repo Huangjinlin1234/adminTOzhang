@@ -115,6 +115,13 @@ export default {
               'name': 'dataroot',
               'children': []
             },
+            { 'path': 'dutyPage',
+              'meta': {
+                'title': '岗位管理'
+              },
+              'name': 'dutyPage',
+              'children': []
+            },
             {
               'path': '/system',
               'redirect': '/system/define',
@@ -150,6 +157,359 @@ export default {
                 }
               ]
             }
+          ]
+        },
+
+        {
+          'path': '/template',
+          'component': {
+            'name': 'Layout',
+            'components': {
+              'AppMain': {
+                'name': 'AppMain',
+                'computed': {},
+                'staticRenderFns': [],
+                '_compiled': true,
+                '_scopeId': 'data-v-078753dd',
+                'beforeCreate': [
+                  null
+                ],
+                'beforeDestroy': [
+                  null
+                ],
+                '__file': 'src/layout/components/AppMain.vue',
+                '_Ctor': {}
+              },
+              'Navbar': {
+                'components': {
+                  'Breadcrumb': {
+                    'watch': {},
+                    'methods': {},
+                    'staticRenderFns': [],
+                    '_compiled': true,
+                    '_scopeId': 'data-v-b50ef614',
+                    'beforeCreate': [
+                      null
+                    ],
+                    'beforeDestroy': [
+                      null
+                    ],
+                    '__file': 'src/components/Breadcrumb/index.vue'
+                  },
+                  'Hamburger': {
+                    'name': 'Hamburger',
+                    'props': {
+                      'isActive': {
+                        'default': false
+                      }
+                    },
+                    'methods': {},
+                    'staticRenderFns': [],
+                    '_compiled': true,
+                    '_scopeId': 'data-v-4e6f274c',
+                    'beforeCreate': [
+                      null
+                    ],
+                    'beforeDestroy': [
+                      null
+                    ],
+                    '__file': 'src/components/Hamburger/index.vue'
+                  },
+                  'ErrorLog': {
+                    'name': 'ErrorLog',
+                    'computed': {},
+                    'methods': {},
+                    'staticRenderFns': [],
+                    '_compiled': true,
+                    '_scopeId': 'data-v-cf51e862',
+                    'beforeCreate': [
+                      null
+                    ],
+                    'beforeDestroy': [
+                      null
+                    ],
+                    '__file': 'src/components/ErrorLog/index.vue'
+                  },
+                  'Screenfull': {
+                    'name': 'Screenfull',
+                    'beforeDestroy': [
+                      null,
+                      null
+                    ],
+                    'methods': {},
+                    'staticRenderFns': [],
+                    '_compiled': true,
+                    '_scopeId': 'data-v-29234bee',
+                    'beforeCreate': [
+                      null
+                    ],
+                    '__file': 'src/components/Screenfull/index.vue'
+                  },
+                  'SizeSelect': {
+                    'computed': {},
+                    'methods': {},
+                    'staticRenderFns': [],
+                    '_compiled': true,
+                    'beforeCreate': [
+                      null
+                    ],
+                    'beforeDestroy': [
+                      null
+                    ],
+                    '__file': 'src/components/SizeSelect/index.vue'
+                  },
+                  'Search': {
+                    'name': 'HeaderSearch',
+                    'computed': {},
+                    'watch': {},
+                    'methods': {},
+                    'staticRenderFns': [],
+                    '_compiled': true,
+                    '_scopeId': 'data-v-032bd1f0',
+                    'beforeCreate': [
+                      null
+                    ],
+                    'beforeDestroy': [
+                      null
+                    ],
+                    '__file': 'src/components/HeaderSearch/index.vue'
+                  }
+                },
+                'computed': {},
+                'methods': {},
+                'staticRenderFns': [
+                  null
+                ],
+                '_compiled': true,
+                '_scopeId': 'data-v-d16d6306',
+                'beforeCreate': [
+                  null
+                ],
+                'beforeDestroy': [
+                  null
+                ],
+                '__file': 'src/layout/components/Navbar.vue',
+                '_Ctor': {}
+              },
+              'RightPanel': {
+                'name': 'RightPanel',
+                'props': {
+                  'clickNotClose': {
+                    'default': false
+                  },
+                  'buttonTop': {
+                    'default': 250
+                  }
+                },
+                'computed': {},
+                'watch': {},
+                'beforeDestroy': [
+                  null,
+                  null
+                ],
+                'methods': {},
+                'staticRenderFns': [],
+                '_compiled': true,
+                '_scopeId': 'data-v-1e488bfb',
+                'beforeCreate': [
+                  null
+                ],
+                '__file': 'src/components/RightPanel/index.vue'
+              },
+              'Settings': {
+                'components': {
+                  'ThemePicker': {
+                    'computed': {},
+                    'watch': {
+                      'defaultTheme': {
+                        'immediate': true
+                      }
+                    },
+                    'methods': {},
+                    'staticRenderFns': [],
+                    '_compiled': true,
+                    'beforeCreate': [
+                      null
+                    ],
+                    'beforeDestroy': [
+                      null
+                    ],
+                    '__file': 'src/components/ThemePicker/index.vue'
+                  }
+                },
+                'computed': {
+                  'fixedHeader': {},
+                  'tagsView': {},
+                  'sidebarLogo': {}
+                },
+                'methods': {},
+                'staticRenderFns': [],
+                '_compiled': true,
+                '_scopeId': 'data-v-126b135a',
+                'beforeCreate': [
+                  null
+                ],
+                'beforeDestroy': [
+                  null
+                ],
+                '__file': 'src/layout/components/Settings/index.vue'
+              },
+              'Sidebar': {
+                'components': {
+                  'SidebarItem': {
+                    'name': 'SidebarItem',
+                    'components': {
+                      'Item': {
+                        'name': 'MenuItem',
+                        'functional': true,
+                        'props': {
+                          'icon': {
+                            'default': ''
+                          },
+                          'title': {
+                            'default': ''
+                          }
+                        },
+                        '_scopeId': 'data-v-31ea41b3',
+                        '__file': 'src/layout/components/Sidebar/Item.vue'
+                      },
+                      'AppLink': {
+                        'props': {
+                          'to': {
+                            'required': true
+                          }
+                        },
+                        'computed': {},
+                        'methods': {},
+                        'staticRenderFns': [],
+                        '_compiled': true,
+                        'beforeCreate': [
+                          null
+                        ],
+                        'beforeDestroy': [
+                          null
+                        ],
+                        '__file': 'src/layout/components/Sidebar/Link.vue'
+                      }
+                    },
+                    'mixins': [
+                      {
+                        'computed': {},
+                        'methods': {}
+                      }
+                    ],
+                    'props': {
+                      'item': {
+                        'required': true
+                      },
+                      'isNest': {
+                        'default': false
+                      },
+                      'basePath': {
+                        'default': ''
+                      }
+                    },
+                    'methods': {},
+                    'staticRenderFns': [],
+                    '_compiled': true,
+                    '_scopeId': 'data-v-2d2bbdc2',
+                    'beforeCreate': [
+                      null
+                    ],
+                    'beforeDestroy': [
+                      null
+                    ],
+                    '__file': 'src/layout/components/Sidebar/SidebarItem.vue'
+                  }
+                },
+                'computed': {},
+                'staticRenderFns': [],
+                '_compiled': true,
+                '_scopeId': 'data-v-33ec43fc',
+                'beforeCreate': [
+                  null
+                ],
+                'beforeDestroy': [
+                  null
+                ],
+                '__file': 'src/layout/components/Sidebar/index.vue',
+                '_Ctor': {}
+              },
+              'TagsView': {
+                'components': {
+                  'ScrollPane': {
+                    'name': 'ScrollPane',
+                    'computed': {},
+                    'beforeDestroy': [
+                      null,
+                      null
+                    ],
+                    'methods': {},
+                    'staticRenderFns': [],
+                    '_compiled': true,
+                    '_scopeId': 'data-v-be6b7bae',
+                    'beforeCreate': [
+                      null
+                    ],
+                    '__file': 'src/layout/components/TagsView/ScrollPane.vue'
+                  }
+                },
+                'computed': {},
+                'watch': {},
+                'methods': {},
+                'staticRenderFns': [],
+                '_compiled': true,
+                '_scopeId': 'data-v-fac8ca64',
+                'beforeCreate': [
+                  null
+                ],
+                'beforeDestroy': [
+                  null
+                ],
+                '__file': 'src/layout/components/TagsView/index.vue',
+                '_Ctor': {}
+              }
+            },
+            'mixins': [
+              {
+                'watch': {},
+                'methods': {}
+              }
+            ],
+            'computed': {},
+            'methods': {},
+            'staticRenderFns': [],
+            '_compiled': true,
+            '_scopeId': 'data-v-13877386',
+            'beforeCreate': [
+              null
+            ],
+            'beforeDestroy': [
+              null
+            ],
+            '__file': 'src/layout/index.vue',
+            '_Ctor': {}
+          },
+          'alwaysShow': true,
+          'name': 'template',
+          'meta': { 'title': '模板', 'icon': 'documentation', 'affix': true },
+          'children': [
+            {
+              'path': 'first',
+              'meta': { 'title': '模板一' },
+              'name': 'first'
+            },
+            {
+              'path': 'second',
+              'meta': { 'title': '模板二' },
+              'name': 'second'
+            },
+            {
+              'path': 'third',
+              'meta': { 'title': '模板三' },
+              'name': 'third'
+            }
+
           ]
         },
         {
