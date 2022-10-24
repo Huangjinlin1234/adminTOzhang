@@ -241,6 +241,12 @@ export const constantRoutes = [
         component: () => import('@/views/template/third/index'),
         name: 'third',
         meta: { title: '模板三' }
+      },
+      {
+        path: 'four',
+        component: () => import('@/views/template/four/index'),
+        name: 'four',
+        meta: { title: '模板四' }
       }
     ]
   }

@@ -6,6 +6,7 @@
       </el-col>
       <el-col :span="20">
         <el-collapse v-model="activeNames">
+          <!--- 插槽放置自定义组件 -->
           <slot />
         </el-collapse>
       </el-col>

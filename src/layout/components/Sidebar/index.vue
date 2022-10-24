@@ -508,6 +508,11 @@ export default {
               'path': 'third',
               'meta': { 'title': '模板三' },
               'name': 'third'
+            },
+            {
+              'path': 'four',
+              'meta': { 'title': '模板四' },
+              'name': 'four'
             }
 
           ]
