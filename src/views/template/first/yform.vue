@@ -1,9 +1,6 @@
 <template>
   <div class="yform-container">
     <el-form :inline="true" :model="formInline" class="demo-form-inline">
-      <el-row>
-        <el-col />
-      </el-row>
       <el-form-item v-for="(item,index) in yformFileds" :key="index" :label="item.label" :prop="item.prop">
         <template v-if="item.ctype==='input'">
           <el-input v-model="formInline[item.prop]" placeholder="审批人" />

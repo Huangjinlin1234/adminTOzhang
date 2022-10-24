@@ -25,15 +25,25 @@
       </el-col>
     </el-row>
     <div class="panel-titile">
-      <b>风险台账</b>
+      <b>{{ tableTitle }}</b>
     </div>
     <div class="button-content">
       <slot name="button" />
     </div>
     <div>
       <el-table :data="tableData" style="width: 100%">
+        <el-table-column label="序号" type="index" />
         <el-table-column v-for="(item,index) in tableFileds" :key="index" :prop="item.prop" :label="item.label" width="180" />
       </el-table>
+      <el-pagination
+        :current-page="pageInfo.pageNumber"
+        :page-sizes="[10, 20, 30, 40]"
+        :page-size="pageInfo.pageSize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+      />
     </div>
   </div>
 </template>
@@ -41,6 +51,10 @@
 <script>
 export default {
   props: {
+    tableTitle: {
+      type: String,
+      default: '风险台账列表'
+    },
     searchUrl: {
       type: String,
       default: ''
@@ -82,8 +96,17 @@ export default {
   data() {
     return {
       formData: {},
-      tableData: []
+      tableData: [{ borrrowNo: '11111' }, { borrrowNo: '11111' }, { borrrowNo: '11111' }, { borrrowNo: '11111' }, { borrrowNo: '11111' }, { borrrowNo: '11111' }, { borrrowNo: '22222' }, { borrrowNo: '3333333' }, { borrrowNo: '3333333' }, { borrrowNo: '3333333' }, { borrrowNo: '3333333' }, { borrrowNo: '3333333' }, { borrrowNo: '3333333' }, { borrrowNo: '3333333' }],
+      currentPage: 1,
+      total: 20,
+      pageInfo: {
+        pageSize: 10,
+        pageNumber: 1
+      }
     };
+  },
+  created() {
+    this.total = this.tableData.length;
   },
   methods: {
     searchFn() {
@@ -97,6 +120,14 @@ export default {
     },
     reset() {
       this.$refs.refForm.resetFields();
+    },
+    handleCurrentChange(number) {
+      console.log(number);
+      this.pageInfo.pageNumber = number;
+    },
+    handleSizeChange(size) {
+      console.log(size);
+      this.pageInfo.pageNumber = size;
     }
   }
 };
