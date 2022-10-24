@@ -92,23 +92,58 @@ export const constantRoutes = [
     children: [
       {
         path: 'user',
-        component: () => import('@/views/pages/console/system/SUserPageInfo/index'),
+        component: () =>
+          import('@/views/pages/console/system/SUserPageInfo/index'),
         meta: { title: '用户管理' },
         name: 'user',
         children: []
       },
       {
         path: 'org',
-        component: () => import('@/views/pages/console/system/SOrgPageInfo/index'),
+        component: () =>
+          import('@/views/pages/console/system/SOrgPageInfo/index'),
         meta: { title: '机构管理', affix: true },
         name: 'org',
         children: []
       },
       {
         path: 'role',
-        component: () => import('@/views/pages/console/system/SRolePageInfo/index'),
+        component: () =>
+          import('@/views/pages/console/system/SRolePageInfo/index'),
         meta: { title: '角色管理' },
         name: 'role',
+        children: []
+      },
+      {
+        path: 'dataroot',
+        component: () =>
+          import('@/views/pages/console/system/SRoleDataRulePageInfo/index'),
+        meta: { title: '数据权限' },
+        name: 'dataroot',
+        children: []
+      },
+      {
+        path: 'define',
+        component: () =>
+          import('@/views/pages/console/system/SResourcePageInfo/index'),
+        meta: { title: '资源定义' },
+        name: 'define',
+        children: []
+      },
+      {
+        path: 'rescroot',
+        component: () =>
+          import('@/views/pages/console/system/SRoleRescRulePageInfo/index'),
+        meta: { title: '资源权限' },
+        name: 'rescroot',
+        children: []
+      },
+      {
+        path: 'reporoot',
+        component: () =>
+          import('@/views/pages/console/prd/SPrdOrgPageInfo/index'),
+        meta: { title: '报表权限管理' },
+        name: 'reporoot',
         children: []
       },
       {
@@ -139,13 +174,18 @@ export const constantRoutes = [
   },
   {
     path: '/documentation',
+    path: '/documentation',
     component: Layout,
     children: [
       {
         path: 'index',
         component: () => import('@/views/documentation/index'),
         name: 'Documentation',
-        meta: { title: 'Documentation', icon: 'documentation', affix: true }
+        meta: {
+          title: 'Documentation',
+          icon: 'documentation',
+          affix: true
+        }
       }
     ]
   },
@@ -292,7 +332,11 @@ export const asyncRoutes = [
         path: 'edit/:id(\\d+)',
         component: () => import('@/views/example/edit'),
         name: 'EditArticle',
-        meta: { title: 'Edit Article', noCache: true, activeMenu: '/example/list' },
+        meta: {
+          title: 'Edit Article',
+          noCache: true,
+          activeMenu: '/example/list'
+        },
         hidden: true
       },
       {
@@ -469,11 +513,12 @@ export const asyncRoutes = [
   { path: '*', redirect: '/404', hidden: true }
 ];
 
-const createRouter = () => new Router({
-  // mode: 'history', // require service support
-  scrollBehavior: () => ({ y: 0 }),
-  routes: constantRoutes
-});
+const createRouter = () =>
+  new Router({
+    // mode: 'history', // require service support
+    scrollBehavior: () => ({ y: 0 }),
+    routes: constantRoutes
+  });
 
 const router = createRouter();
 

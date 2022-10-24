@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import { addResOperation } from '@/api/systemManage/resource';
+// import { addResOperation } from '@/api/systemManage/resource';
 export default {
   name: 'resOperation',
   props: {
@@ -76,15 +76,15 @@ export default {
       } else if (this.pageType == 'xz') {
         rMethod = 'POST';
       }
-      addResOperation(rMethod, this.$refs.refForm.formdata).then(res => {
-        this.loading = false;
-        this.$message.success('操作成功');
-        this.handleClose();
-        this.$emit('update-Table')
-      }).catch(() => {
-        this.loading = false;
-        this.$message.warning('操作失败');
-      })
+      // addResOperation(rMethod, this.$refs.refForm.formdata).then(res => {
+      //   this.loading = false;
+      //   this.$message.success('操作成功');
+      //   this.handleClose();
+      //   this.$emit('update-Table')
+      // }).catch(() => {
+      //   this.loading = false;
+      //   this.$message.warning('操作失败');
+      // })
     }
   }
 };

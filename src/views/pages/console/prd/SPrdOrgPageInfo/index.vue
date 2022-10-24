@@ -1,31 +1,51 @@
 <template>
-  <div class="resource-container">
-    <yu-xform ref="refForm" label-width="120px" :hidden-rule="true" :disabled="disabled" v-model="formdata" form-type="search" hidden-del-val>
-      <yu-xform-group>
-        <yu-xform-item v-for="(item,index) in queryFields" :key="index" :label="item.label" :colspan="item.colspan" :ctype="item.ctype" :name="item.name"></yu-xform-item>
-      </yu-xform-group>
-    </yu-xform>
-    <el-button type="primary" icon="plus" @click="dialogVisible = true">新增</el-button>
-    <el-button type="primary" icon="delete" @click="openType('sc')">删除</el-button>
-    <yu-xtable ref="rescActTable" :data-url="dataUrl" :base-params="baseParams" request-type="POST" :defauld-load="false" :pageable="false" json-data="rows">
-      <yu-xtable-column v-for="(item, index) in tableFields" :key="index" :label="item.label" :prop="item.prop"></yu-xtable-column>
-    </yu-xtable>
-    <yu-org-list :dialog-visible.sync="dialogVisible"></yu-org-list>
+  <div class="container">
+    <el-panel panel-title="报表权限管理">
+      <template slot="rightButton">
+        <slot name="button" />
+      </template>
+      <template slot="form">
+      </template>
+      <template slot="table" class="table-content">
+        <div class="role-container">
+          <el-form ref="refForm" form-type="search" v-model="searchFormdata" label-width="120px" related-table-name="reftable" :custom-search-fn="customSearch" inline>
+            <el-form-item v-for="(item,index) in formFileds" :key="index" :label="item.label" :ctype="item.ctype" :placeholder="item.label" :name="item.name">
+              <template v-if="!item.ctype || item.ctype=='input'">
+                <el-input v-model="item.prop" placeholder="请输入内容" />
+              </template>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary">查询</el-button>
+              <el-button>重置</el-button>
+            </el-form-item>
+          </el-form>
+          <el-button-group class="mb18">
+            <el-button type="primary" icon="plus" @click="openType('xz')">新增</el-button>
+            <el-button type="primary" icon="delete" @click="openType('sc')">删除</el-button>
+          </el-button-group>
+          <el-table ref="rescActTable" :data-url="dataUrl" :base-params="baseParams" request-type="POST" :defauld-load="false" :pageable="false" json-data="rows">
+            <el-table-column v-for="(item, index) in tableFields" :key="index" :label="item.label" :prop="item.prop"></el-table-column>
+          </el-table>
+          <!-- <el-org-list :dialog-visible.sync="dialogVisible2"></el-org-list> -->
+        </div>
+      </template>
+    </el-panel>
   </div>
 </template>
 
 <script>
-import { getResource, getRescActs, getRoles, getResCHNDesc, getPrdOrgList } from '@/api/systemManage/resource';
+import { getResource, setResource, getRoles, getResCHNDesc, getPrdOrgList } from '@/api/systemManage/resource';
+import elPanel from '@/views/pages/console/common/elPanel.vue';
 export default {
-  components: {
-  },
+  components: { elPanel },
   data () {
+    let _this = this;
     return {
       dataUrl: getPrdOrgList(),
       baseParams: {},
-      queryFields: [
-        { label: '产品信息', name: 'prdCode', },
-        { label: '机构信息', name: 'orgCode', }
+      formFileds: [
+        { label: '产品信息', name: 'prdCode', icon: 'search', clickIconFn: this.selProduct },
+        { label: '机构信息', name: 'orgCode', icon: 'search', clickIconFn: this.selOrg }
       ],
       tableFields: [
         // { label: 'PKID', prop: 'pkId', sortable: true, resizable: true, hidden: true },
@@ -39,11 +59,12 @@ export default {
         { label: '最后修改人', prop: 'lastUpdateUser', sortable: true, resizable: true },
         { label: '最后修改时间', prop: 'lastUpdateTime', sortable: true, resizable: true }
       ],
-      dialogVisible: false
+      dialogVisible1: false,
+      dialogVisible2: false,
     };
   },
   created () {
-    this.getTreeDataFn();
+    // this.getTreeDataFn();
   },
   methods: {
     transExpand () {
@@ -86,8 +107,7 @@ export default {
       });
       getResCHNDesc({}).then(res => {
         if (res.code === '0') {
-          console.log('res', res)
-          let childrenArr = this.transTree(res.rows, '');
+          this.transTree(res.rows, '');
           this.rescTreeData = res.rows;
         }
       });
@@ -104,13 +124,13 @@ export default {
       })
     },
     renderContent: function (h, obj) {
-      var _this = this, data = obj.data, store = obj.store, node = obj.node;
-      var btnArray = [{ name: '增加', callback: function () { _this.append(store, data, node) }, type: 'primary' },
+      let _this = this, data = obj.data, store = obj.store, node = obj.node;
+      let btnArray = [{ name: '增加', callback: function () { _this.append(store, data, node) }, type: 'primary' },
       { name: '删除', type: 'warning', callback: function () { _this.remove(store, data, node) } }];
       return h('span', {}, [
         h('span', {}, [h('span', {}, node.label)]),
         h('span', { attrs: { style: 'float: right; margin-right: 20px' } }, btnArray.map(function (item) {
-          return h('yu-button', { props: { size: 'mini', type: item.type }, on: { click: item.callback } }, item.name);
+          return h('el-button', { props: { size: 'mini', type: item.type }, on: { click: item.callback } }, item.name);
         }))
       ]);
     },
@@ -121,18 +141,19 @@ export default {
         this.resource = { rescParentCode: data.rescCode, rescParentDesc: data.rescDesc };
       }
     },
-    remove (store, data) {
-      //   var childNodes = node.childNodes;
-      //   if (childNodes.length > 0) {
-      //     vm.$message({ message: '当前资源拥有子节点不允许删除!', type: 'warning' });
-      //     return;
-      //   }
-      //   var rescCode = node.data ? node.data.rescCode : node.rescCode;
+    remove (store, data, node) {
+      console.log('data=== ', store, data, node);
+      // let childNodes = node.childNodes;
+      // if (childNodes.length > 0) {
+      //   vm.$message({ message: '当前资源拥有子节点不允许删除!', type: 'warning' });
+      //   return;
+      // }
+      // let rescCode = node.data ? node.data.rescCode : node.rescCode;
 
       //   vm.$confirm('是否删除?', '提示', {
       //     type: 'warning'
       //   }).then(function () {
-      //     var url = backend.consoleService + '/api/s/resource';
+      //     let url = backend.consoleService + '/api/s/resource';
       //     yufp.service.request({
       //       method: 'DELETE',
       //       url: url,
@@ -171,8 +192,14 @@ export default {
       }
       this.isShowResOper = true;
       this.pageType = pageType;
+    },
+    selProduct () {
+      this.dialogVisible1 = true
+    },
+    selOrg () {
+      this.dialogVisible2 = true
     }
-  }
+  },
 };
 </script>
 
@@ -181,6 +208,26 @@ export default {
   .tree-content {
     height: 692px;
     overflow: auto;
+  }
+}
+.container{
+  background-color: #ffff;
+  .el-input.el-input--medium.el-input--suffix{
+    width: 200px;
+    margin: 0px 5px;
+  }
+  .el-select.el-select--medium{
+    margin: 0px 5px;
+  }
+  .role-container {
+    margin-top: 16px;
+    .h56 {
+      height: 56px;
+    }
+    .tree-content {
+      height: 608px;
+      overflow: auto;
+    }
   }
 }
 </style>

@@ -12,7 +12,7 @@
   </yu-xdialog>
 </template>
 <script>
-import { setResource } from '@/api/systemManage/resource';
+// import { setResource } from '@/api/systemManage/resource';
 export default {
   name: 'addResource',
   props: {
@@ -62,15 +62,15 @@ export default {
       console.log(flag, '==', this.$refs.refForm.formdata)
       if (!flag) return;
       this.loading = true;
-      setResource('POST', this.$refs.refForm.formdata).then(res => {
-        this.loading = false;
-        this.$message.success('操作成功');
-        this.handleClose();
-        this.$emit('update-Tree')
-      }).catch(() => {
-        this.loading = false;
-        this.$message.warning('操作失败');
-      })
+      // setResource('POST', this.$refs.refForm.formdata).then(res => {
+      //   this.loading = false;
+      //   this.$message.success('操作成功');
+      //   this.handleClose();
+      //   this.$emit('update-Tree')
+      // }).catch(() => {
+      //   this.loading = false;
+      //   this.$message.warning('操作失败');
+      // })
     }
   }
 };

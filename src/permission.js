@@ -1,3 +1,9 @@
+/*
+ * @description:
+ * @author: ljl
+ * @date: 2022-10-20
+ * @version: V1.0.0
+ */
 import router from './router';
 import store from './store';
 import { Message } from 'element-ui';
@@ -15,11 +21,11 @@ router.beforeEach(async(to, from, next) => {
   NProgress.start();
 
   // set page title
-  document.title = getPageTitle(to.meta.title);
-
-  // determine whether the user has logged in
-  const hasToken = getToken();
+  // document.title = getPageTitle(to.meta.title);
   next();
+  // // determine whether the user has logged in
+  // const hasToken = getToken();
+  // debugger;
   // if (hasToken) {
   //   if (to.path === "/login") {
   //     // if is logged in, redirect to the home page
