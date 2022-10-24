@@ -1,37 +1,47 @@
 <template>
-  <div class="resource-container">
-    <el-row>
-      <el-col :span="7">
-        <yu-input v-model="input" placeholder="请输入内容" :limit-char="limitChar"></yu-input>
-        <!-- 角色树 -->
-        <div class="tree-content">
-          <yu-tree ref="roleTree" :data="roleTreeData" :props="roleProps" node-key="roleCode" @node-click="nodeClickFn">
-          </yu-tree>
+  <div class="container">
+    <el-panel panel-title="资源权限">
+      <template slot="rightButton">
+        <slot name="button" />
+      </template>
+      <template slot="form">
+      </template>
+      <template slot="table" class="table-content">
+        <div class="role-container">
+          <el-row :gutter="20">
+            <el-col :span="7">
+              <el-input v-model="input" placeholder="请输入内容" :limit-char="limitChar" class="mb18"></el-input>
+              <!-- 角色树 -->
+              <div class="tree-content">
+                <el-tree ref="roleTree" :data="roleTreeData" :props="roleProps" node-key="roleCode" @node-click="selectRoleFn"></el-tree>
+              </div>
+            </el-col>
+            <el-col :span="10">
+              <el-input v-model="input" placeholder="请输入内容" :limit-char="limitChar" class="mb18"></el-input>
+              <!-- 资源树 -->
+              <div class="tree-content">
+                <el-tree ref="rescTree" :data="rescTreeData" :props="rescProps" node-key="rescCode" @node-click="selectRescFn"></el-tree>
+              </div>
+            </el-col>
+            <el-col :span="7">
+              <el-checkbox v-model="rescRootData.roleRescRuleStrs" :options="options"></el-checkbox>
+              <!-- <el-checkbox ref="refCheckbox" v-model="rescRootData.roleRescRuleStrs" :data-url="dataUrl" :data-params="baseParams" json-data="rows" request-type="POST" :default-load="false" :props="[{'key': 'rescActDesc','value':'rescActDesc'}]"></el-checkbox> -->
+              <div style="margin-top: 36px;margin-left: 5px;text-align: center;">
+                <el-button type="primary" @click="saveRoleRescRule">保存</el-button>
+              </div>
+            </el-col>
+          </el-row>
         </div>
-      </el-col>
-      <el-col :span="10">
-        <yu-input v-model="input" placeholder="请输入内容" :limit-char="limitChar"></yu-input>
-        <!-- 资源树 -->
-        <div class="tree-content">
-          <yu-tree ref="rescTree" :data="rescTreeData" :props="rescProps" node-key="rescCode" @node-click="nodeClickFn">
-          </yu-tree>
-        </div>
-      </el-col>
-      <el-col :span="7">
-        <yu-xcheckbox v-model="roleRescRules" style="margin-top: 36px;margin-left: 5px;"></yu-xcheckbox>
-        <div style="margin-top: 36px;margin-left: 5px;text-align: center;">
-          <el-button type="primary" @click="saveRoleRescRule">保存</el-button>
-        </div>
-      </el-col>
-    </el-row>
+      </template>
+    </el-panel>
   </div>
 </template>
 
 <script>
-import { getResource, getRescActs, getRoles, getResCHNDesc } from '@/api/systemManage/resource';
+import { getResource, getRescActs, getRoles, getResCHNDesc, getRootType } from '@/api/systemManage/resource';
+import elPanel from '@/views/pages/console/common/elPanel.vue';
 export default {
-  components: {
-  },
+  components: { elPanel },
   data () {
     return {
       expandAll: false,
@@ -55,7 +65,7 @@ export default {
         { name: 'rescDesc', label: '资源中文描述', rules: [{ required: true, message: '资源中文描述是必填项', trigger: 'blur' }, { max: 80, message: '最大长度为80' }] },
         { name: 'funcId', label: '路由', rules: [{ max: 32, message: '最大长度为32' }] },
         { name: 'rescIcon', label: '资源图标', rules: [{ max: 60, message: '最大长度为60' }] },
-        { name: 'orderId', label: '序号', rules: [{ validator: yufp.validator.number, message: '序号必须为数字值' }] },
+        { name: 'orderId', label: '序号', rules: [{ message: '序号必须为数字值' }] },
         { name: 'rescUrl', label: '资源URL', colspan: "24", rules: [{ max: 254, message: '最大长度为254' }] },
         { name: 'memo', label: '备注', colspan: "24", type: 'textarea', rules: [{ max: 100, message: '最大长度为100' }] }
       ],
@@ -71,10 +81,15 @@ export default {
       resourceOper: {}, // 资源操作信息
       isShowResource: false,
       isShowResOper: false,
+      // dataUrl: getResource(),
+      rescRootData: {
+        roleRescRuleStrs: ''
+      },
+      options: []
     };
   },
   created () {
-    this.getTreeDataFn();
+    // this.getTreeDataFn();
   },
   methods: {
     transExpand () {
@@ -137,12 +152,17 @@ export default {
     getTableDataFn () {
       this.$refs.rescActTable.remoteData();
     },
-    nodeClickFn (row) {
-      // this.$refs.rescActTable.remoteData(row);
-      getResource(row.rescCode).then(res => {
-        if (res.code === '0') {
-          this.$refs.refForm.formdata = res.rows;
-        }
+    selectRoleFn (row) {
+      this.rescRootData.roleCode = row.roleCode;
+    },
+    selectRescFn (row) {
+      this.rescRootData.rescCode = row.rescCode;
+      getRootType({ rescCode: row.rescCode }).then(res => {
+        res.rows.forEach(el => {
+          el.key = el.rescActDesc;
+          el.value = el.rescActDesc;
+        });
+        this.options = res.rows;
       })
     },
     renderContent: function (h, obj) {
@@ -152,7 +172,7 @@ export default {
       return h('span', {}, [
         h('span', {}, [h('span', {}, node.label)]),
         h('span', { attrs: { style: 'float: right; margin-right: 20px' } }, btnArray.map(function (item) {
-          return h('yu-button', { props: { size: 'mini', type: item.type }, on: { click: item.callback } }, item.name);
+          return h('el-button', { props: { size: 'mini', type: item.type }, on: { click: item.callback } }, item.name);
         }))
       ]);
     },
@@ -175,7 +195,7 @@ export default {
       //     type: 'warning'
       //   }).then(function () {
       //     var url = backend.consoleService + '/api/s/resource';
-      //     yufp.service.request({
+      //     elfp.service.request({
       //       method: 'DELETE',
       //       url: url,
       //       data: { rescCode: rescCode },
@@ -214,6 +234,9 @@ export default {
       this.isShowResOper = true;
       this.resourceOper = this.$refs.rescActTable.selections[0];
       this.resourceOper.rescDesc = this.$refs.refForm.formdata.rescDesc
+    },
+    saveRoleRescRule () {
+
     }
   }
 };
@@ -221,9 +244,37 @@ export default {
 
 <style lang="scss" scoped>
 .resource-container {
+  .h56 {
+    height: 56px;
+  }
   .tree-content {
     height: 692px;
     overflow: auto;
+  }
+}
+.container{
+  background-color: #ffff;
+  .el-input.el-input--medium.el-input--suffix{
+    width: 200px;
+    margin: 0px 5px;
+  }
+  .el-select.el-select--medium{
+    margin: 0px 5px;
+  }
+  .role-container {
+    margin-top: 16px;
+    .h56 {
+      height: 56px;
+    }
+    .tree-content {
+      height: 608px;
+      overflow: auto;
+    }
+  }
+}
+.form-table{
+  .table-content{
+    padding: 24px;
   }
 }
 </style>
