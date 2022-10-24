@@ -27,7 +27,7 @@ import variables from '@/styles/variables.scss';
 
 export default {
   components: { SidebarItem },
-  data() {
+  data () {
     return {
       input: '',
       permission_routes: [
@@ -115,7 +115,8 @@ export default {
               'name': 'dataroot',
               'children': []
             },
-            { 'path': 'dutyPage',
+            {
+              'path': 'dutyPage',
               'meta': {
                 'title': '岗位管理'
               },
@@ -156,7 +157,35 @@ export default {
                   'children': []
                 }
               ]
-            }
+            },
+            {
+              'path': '/system',
+              'redirect': '/system/muban1',
+              'meta': {
+                'title': '资源管理'
+              },
+              'name': 'muban',
+              'children': [
+                {
+                  'path': "muban1",
+                  'meta': { 'title': "muban1" },
+                  'name': "muban1",
+                  'children': []
+                },
+                {
+                  'path': "muban2",
+                  'meta': { 'title': "muban2" },
+                  'name': "muban2",
+                  'children': []
+                },
+                {
+                  'path': "muban3",
+                  'meta': { 'title': "muban3" },
+                  'name': "muban3",
+                  'children': []
+                },
+              ]
+            },
           ]
         },
 
@@ -4040,7 +4069,7 @@ export default {
     ...mapGetters([
       'sidebar'
     ]),
-    activeMenu() {
+    activeMenu () {
       const route = this.$route;
       const { meta, path } = route;
       // if set path, the sidebar will highlight the path you set
@@ -4051,17 +4080,17 @@ export default {
       console.log('path', path);
       return path;
     },
-    showLogo() {
+    showLogo () {
       return this.$store.state.settings.sidebarLogo;
     },
-    variables() {
+    variables () {
       return variables;
     },
-    isCollapse() {
+    isCollapse () {
       return !this.sidebar.opened;
     }
   },
-  created() {
+  created () {
     console.log(this.permission_routes, 'permission_routes');
   }
 };
