@@ -926,3 +926,6 @@ a.underline {  text-decoration: underline;  cursor: pointer;}
 .top-content .el-col.el-col-20{text-align: right;}
 .el-dialog .el-dialog__header .el-dialog__title {font-weight: 700; font-size: 16px;}
 .el-collapse-item__header{background-color: grey; font-weight: 700; font-size: 16px;}
+.sibar-container .el-scrollbar{height: calc(100% - 42px);}
+.app-wrapper{height: 100%;}
+.app-wrapper .sibar-container{height:  calc(100% - 100px);}

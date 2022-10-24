@@ -4,10 +4,12 @@
     <div class="tree-content">
       <el-tree :data="pageOptions.treeData" :props="pageOptions.defaultProps" @node-click="handleNodeClick" />
     </div>
-    <el-collapse v-model="activeNames">
-      <!--- 插槽放置自定义组件 -->
-      <slot />
-    </el-collapse>
+    <div class="collapse-content">
+      <el-collapse v-model="activeNames">
+        <!--- 插槽放置自定义组件 -->
+        <slot />
+      </el-collapse>
+    </div>
 
   </div>
 </template>
@@ -49,14 +51,17 @@ export default {
 }
 .treeCollapse{
   display: flex;
+  .collapse-content{
+    flex: 1;
+  }
 }
 .tree-content{
+  height: 100%;
   min-width:210px;
   height: 100%;
   overflow: auto;
   .el-tree{
     overflow: auto;
-
   }
 }
 

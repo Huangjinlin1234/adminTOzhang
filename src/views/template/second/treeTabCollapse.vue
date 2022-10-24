@@ -1,13 +1,11 @@
 <template>
-  <div>
-    <el-row>
-      <el-col :span="4">
-        <el-tree :data="pageOptions.treeData" :props="pageOptions.defaultProps" @node-click="handleNodeClick" />
-      </el-col>
-      <el-col :span="20">
-        <slot />
-      </el-col>
-    </el-row>
+  <div class="treeTabCollapse">
+    <div class="tree-content">
+      <el-tree :data="pageOptions.treeData" :props="pageOptions.defaultProps" @node-click="handleNodeClick" />
+    </div>
+    <div class="tab-content">
+      <slot />
+    </div>
   </div>
 </template>
 
@@ -42,6 +40,22 @@ export default {
 <style lang="scss" scoped>
 >>>.el-collapse{
   margin-right: 10px;
+
+}
+.treeTabCollapse{
+  display: flex;
+  .tab-content{
+    flex: 1;
+  }
+  .tree-content{
+    height: 100%;
+    min-width:210px;
+    height: 100%;
+    overflow: auto;
+    .el-tree{
+      overflow: auto;
+    }
+  }
 
 }
 </style>
