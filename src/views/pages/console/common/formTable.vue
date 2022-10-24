@@ -81,7 +81,44 @@ export default {
           'lastUpdateUser': 'admin',
           'lastUpdateTime': '2022-10-10 10:56:48',
           'handleColtTaskCount': 0
-
+        },
+        {
+          'roleCode': '222',
+          'loginUserOrgCode': '00010',
+          'loginUserOrgLocation': '00010',
+          'userCode': '00065',
+          'userName': '李都',
+          'nickName': '李都',
+          'orgCode': '00010999',
+          'orgName': '广州银行佛山分行',
+          'status': '1',
+          'telPhone': '13112260613',
+          'staffingLevel': '100',
+          'createTime': '2021-04-25 00:00:00',
+          'createUser': 'admin',
+          'memo': 'eee',
+          'lastUpdateUser': 'admin',
+          'lastUpdateTime': '2022-10-10 10:56:48',
+          'handleColtTaskCount': 0
+        },
+        {
+          'roleCode': '222',
+          'loginUserOrgCode': '00010',
+          'loginUserOrgLocation': '00010',
+          'userCode': '00065',
+          'userName': '黄曾',
+          'nickName': '黄曾',
+          'orgCode': '00010999',
+          'orgName': '广州银行佛山分行',
+          'status': '1',
+          'telPhone': '13112260613',
+          'staffingLevel': '100',
+          'createTime': '2021-04-25 00:00:00',
+          'createUser': 'admin',
+          'memo': 'eee',
+          'lastUpdateUser': 'admin',
+          'lastUpdateTime': '2022-10-10 10:56:48',
+          'handleColtTaskCount': 0
         }
       ]
     };

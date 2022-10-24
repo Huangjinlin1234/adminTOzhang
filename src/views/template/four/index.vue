@@ -1,6 +1,7 @@
 <template>
   <div>
-    dsd
+    <infoEnter :title="title" :form-fileds="formFileds" />
+
   </div>
 </template>
 

@@ -1,27 +1,47 @@
 <template>
   <div class="el-panel">
-    <el-row class="top-content" type="flex" justify="space-between">
-      <el-col :span="4">
+    <div v-if="type=='first'">
+      <el-row class="top-content" type="flex" justify="space-between">
+        <el-col :span="4">
+          <b class="title">{{ panelTitle }}</b>
+        </el-col>
+        <el-col :span="20">
+          <slot name="rightButton" />
+          <el-button type="text" @click="openHight">高级查询<i :class="open?'el-icon-arrow-up':'el-icon-arrow-down'" /></el-button>
+        </el-col>
+      </el-row>
+
+      <el-row v-show="open" class="form-content">
+        <slot name="form" />
+      </el-row>
+      <slot name="table" />
+    </div>
+    <div v-if="type==='second'">
+      <el-row class="top-content" type="flex" justify="space-between">
         <b class="title">{{ panelTitle }}</b>
-      </el-col>
-      <el-col :span="20">
-        <slot name="rightButton" />
-        <el-button type="text" @click="openHight">高级查询<i :class="open?'el-icon-arrow-down':'el-icon-arrow-up'" /></el-button>
-      </el-col>
-    </el-row>
-    <el-row v-show="open" class="form-content">
-      <slot name="form" />
-    </el-row>
-    <slot name="table" />
+      </el-row>
+      <el-row class="form-content">
+        <slot name="form" />
+      </el-row>
+      <div class="second-rbtn">
+        <slot name="secondRight" />
+      </div>
+      <slot />
+    </div>
   </div>
 </template>
 
 <script>
+import { string } from 'clipboard';
 export default {
   props: {
     panelTitle: {
       type: String,
       default: '机构管理'
+    },
+    type: {
+      type: String,
+      default: 'first'
     }
   },
   data() {
@@ -55,6 +75,10 @@ export default {
   }
   .form-content{
     padding: 22px 24px 0;
+  }
+  .second-rbtn{
+    margin: 10px;
+    text-align: right;
   }
 }
 

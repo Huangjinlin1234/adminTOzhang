@@ -1,13 +1,14 @@
-import Cookies from "js-cookie";
-import JSEncrypt from "jsencrypt";
+import Cookies from 'js-cookie';
+import JSEncrypt from 'jsencrypt';
 
-const TokenKey = "Admin-Token";
+const TokenKey = 'Admin-Token';
 
 export function getToken() {
   return Cookies.get(TokenKey);
 }
 
 export function setToken(token) {
+  console.log(token, 'ddd');
   return Cookies.set(TokenKey, token);
 }
 
@@ -24,5 +25,5 @@ export function encryptPassword(pwd) {
  * 获取公钥字符串
  */
 export function getRSAPublicKey() {
-  return "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDAYwQ81rc1KW8tTYpxrLS3ArVxB40otmbWyXwgDQRkLsCuQKiq6KZgAM/8sJuI12S1JVOXnMu5d420vKFFS/+Ibz4TxqjhLmgownaguMTbAGBzIPvfN5lL52mDmm/CvKu2YPCFvZV8YulNTCexvuj7OiWRUXpAbaQqu5tPOjGytQIDAQAB";
+  return 'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDAYwQ81rc1KW8tTYpxrLS3ArVxB40otmbWyXwgDQRkLsCuQKiq6KZgAM/8sJuI12S1JVOXnMu5d420vKFFS/+Ibz4TxqjhLmgownaguMTbAGBzIPvfN5lL52mDmm/CvKu2YPCFvZV8YulNTCexvuj7OiWRUXpAbaQqu5tPOjGytQIDAQAB';
 }

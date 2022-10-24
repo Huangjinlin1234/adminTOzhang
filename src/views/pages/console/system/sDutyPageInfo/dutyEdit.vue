@@ -1,29 +1,27 @@
 <template>
   <div>
-    <yu-xdialog
+    <el-dialog
       :title="dialogTitle"
       size="large"
+      :visible.sync="dialogVisible"
       @close="closeFn"
       @open="initData"
-      :visible.sync="dialogVisible"
-     >
-      <yu-xform ref="refForm" label-width="120px"  v-model="formdata">
-        <yu-xform-group column="3">
-          <yu-xform-item label="岗位代码" name="dutyCode" ctype="input" :disabled="pageType=='DETAIL'"></yu-xform-item>
-          <yu-xform-item label="岗位名称" name="dutyName"  ctype="input"  :disabled="pageType=='DETAIL'"></yu-xform-item>
-          <yu-xform-item label="适用机构" name="orgCode"  ctype="input"  :disabled="pageType=='DETAIL'"></yu-xform-item>
-          <yu-xform-item label="排序字段" name="orderId"   ctype="input" :disabled="pageType=='DETAIL'"></yu-xform-item>
-          <yu-xform-item label="状态" name="status" ctype="input"  :disabled="pageType=='DETAIL'"></yu-xform-item>
-          <yu-xform-item label="创建人" name="createUser"  ctype="input"  :disabled="pageType=='DETAIL'"></yu-xform-item>
-          <yu-xform-item label="最后修改人" name="lastUpdateUser"  ctype="input"  :disabled="pageType=='DETAIL'"></yu-xform-item>
-          <yu-xform-item label="最后修改时间" name="lastUpdateTime"  ctype="input"  :disabled="pageType=='DETAIL'"></yu-xform-item>
-        </yu-xform-group>
-      </yu-xform>
+    >
+      <el-form ref="refForm" v-model="formdata" label-width="120px">
+        <el-form-item label="岗位代码" name="dutyCode" ctype="input" :disabled="pageType=='DETAIL'" />
+        <el-form-item label="岗位名称" name="dutyName" ctype="input" :disabled="pageType=='DETAIL'" />
+        <el-form-item label="适用机构" name="orgCode" ctype="input" :disabled="pageType=='DETAIL'" />
+        <el-form-item label="排序字段" name="orderId" ctype="input" :disabled="pageType=='DETAIL'" />
+        <el-form-item label="状态" name="status" ctype="input" :disabled="pageType=='DETAIL'" />
+        <el-form-item label="创建人" name="createUser" ctype="input" :disabled="pageType=='DETAIL'" />
+        <el-form-item label="最后修改人" name="lastUpdateUser" ctype="input" :disabled="pageType=='DETAIL'" />
+        <el-form-item label="最后修改时间" name="lastUpdateTime" ctype="input" :disabled="pageType=='DETAIL'" />
+      </el-form>
       <div slot="footer" class="dialog-footer">
-        <yu-button @click="closeFn">取 消</yu-button>
-        <yu-button type="primary" @click="comfirmFn">确 定</yu-button>
+        <el-button @click="closeFn">取 消</el-button>
+        <el-button type="primary" @click="comfirmFn">确 定</el-button>
       </div>
-    </yu-xdialog>
+    </el-dialog>
   </div>
 </template>
 
@@ -42,13 +40,13 @@ export default {
     },
     pageType: String
   },
-  data () {
+  data() {
     return {
       formdata: { }
     };
   },
   computed: {
-    dialogTitle () {
+    dialogTitle() {
       let title;
       if (this.pageType == 'ADD') {
         title = '新增';
@@ -61,7 +59,7 @@ export default {
     }
   },
   methods: {
-    initData () {
+    initData() {
       this.$nextTick(() => {
         if (this.pageType !== 'ADD') {
           this.formdata = this.dutyInfo;
@@ -71,10 +69,10 @@ export default {
         }
       });
     },
-    closeFn () {
+    closeFn() {
       this.$emit('update:dialogVisible', false);
     },
-    comfirmFn () {
+    comfirmFn() {
     }
   }
 };

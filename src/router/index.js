@@ -86,7 +86,6 @@ export const constantRoutes = [
   {
     path: '/system',
     component: Layout,
-    redirect: '/system/user',
     alwaysShow: true,
     name: 'System',
     meta: { title: '系统管理', icon: 'documentation', affix: true },
@@ -111,7 +110,31 @@ export const constantRoutes = [
         meta: { title: '角色管理' },
         name: 'role',
         children: []
+      },
+      {
+        path: 'dutyPage',
+        component: () => import('@/views/pages/console/system/sDutyPageInfo/index'),
+        meta: { title: '岗位管理' },
+        name: 'dutyPage',
+        children: []
       }
+    ]
+  },
+  {
+    path: '/userLog',
+    component: Layout,
+    alwaysShow: true,
+    name: 'userLog',
+    meta: { title: '系统管理', icon: 'documentation', affix: true },
+    children: [
+      {
+        path: 'userLogA',
+        component: () => import('@/views/pages/console/SUserOperLog/index'),
+        meta: { title: '用户日志' },
+        name: 'userLogA',
+        children: []
+      }
+
     ]
   },
   {
@@ -151,6 +174,33 @@ export const constantRoutes = [
         component: () => import('@/views/profile/index'),
         name: 'Profile',
         meta: { title: 'Profile', icon: 'user', noCache: true }
+      }
+    ]
+  },
+  {
+    path: '/template',
+    component: Layout,
+    hidden: true,
+    name: 'template',
+    meta: { title: '模板', icon: 'user' },
+    children: [
+      {
+        path: 'first',
+        component: () => import('@/views/template/first/index'),
+        name: 'first',
+        meta: { title: '模板一' }
+      },
+      {
+        path: 'second',
+        component: () => import('@/views/template/second/index'),
+        name: 'second',
+        meta: { title: '模板二' }
+      },
+      {
+        path: 'third',
+        component: () => import('@/views/template/third/index'),
+        name: 'third',
+        meta: { title: '模板三' }
       }
     ]
   }

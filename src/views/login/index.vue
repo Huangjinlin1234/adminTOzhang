@@ -18,17 +18,29 @@
           <span class="svg-container">
             <svg-icon icon-class="password" />
           </span>
-          <el-input :key="passwordType" ref="password" v-model="loginForm.password" :type="passwordType" placeholder="Password" name="password" tabindex="2" autocomplete="on" @keyup.native="checkCapslock" @blur="capsTooltip = false" @keyup.enter.native="handleLogin" />
+          <el-input
+            :key="passwordType"
+            ref="password"
+            v-model="loginForm.password"
+            :type="passwordType"
+            placeholder="Password"
+            name="password"
+            tabindex="2"
+            autocomplete="on"
+            @keyup.native="checkCapslock"
+            @blur="capsTooltip = false"
+            @keyup.enter.native="handleLogin"
+          />
           <span class="show-pwd" @click="showPwd">
             <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
           </span>
         </el-form-item>
       </el-tooltip>
       <el-form-item>
-        <el-input id="code" type="text" placeholder="验证码" ref="imageCode" v-model="imageCode" />
-        <i class="yu-icon-details"></i>
+        <el-input id="code" ref="imageCode" v-model="imageCode" type="text" placeholder="验证码" />
+        <i class="yu-icon-details" />
       </el-form-item>
-      <img class="yu-login-code" @click="freshImageCodeFn" :src="imageCodePicture" />
+      <img class="yu-login-code" :src="imageCodePicture" @click="freshImageCodeFn">
       <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
       <div style="position:relative">
         <div class="tips">
@@ -56,31 +68,31 @@
 </template>
 
 <script>
-import { validUsername } from '@/utils/validate'
-import SocialSign from './components/SocialSignin'
+import { validUsername } from '@/utils/validate';
+import SocialSign from './components/SocialSignin';
 import { genUUID } from '@/utils/index.js';
 export default {
   name: 'Login',
   components: { SocialSign },
-  data () {
+  data() {
     const validateUsername = (rule, value, callback) => {
       if (value) {
         if (!validUsername(value)) {
-          callback(new Error('Please enter the correct user name'))
+          callback(new Error('Please enter the correct user name'));
         } else {
-          callback()
+          callback();
         }
       } else {
-        callback(new Error('Please enter the correct user name'))
+        callback(new Error('Please enter the correct user name'));
       }
-    }
+    };
     const validatePassword = (rule, value, callback) => {
       if (value.length < 6) {
-        callback(new Error('The password can not be less than 6 digits'))
+        callback(new Error('The password can not be less than 6 digits'));
       } else {
-        callback()
+        callback();
       }
-    }
+    };
     return {
       loginForm: {
         username: 'admin',
@@ -100,87 +112,87 @@ export default {
       showDialog: false,
       redirect: undefined,
       otherQuery: {}
-    }
+    };
   },
   watch: {
     $route: {
-      handler: function (route) {
-        const query = route.query
+      handler: function(route) {
+        const query = route.query;
         if (query) {
-          this.redirect = query.redirect
-          this.otherQuery = this.getOtherQuery(query)
+          this.redirect = query.redirect;
+          this.otherQuery = this.getOtherQuery(query);
         }
       },
       immediate: true
     }
   },
-  created () {
+  created() {
     this.clientId = genUUID(16, 16);
   },
-  mounted () {
+  mounted() {
     if (this.loginForm.username === '') {
-      this.$refs.username.focus()
+      this.$refs.username.focus();
     } else if (this.loginForm.password === '') {
-      this.$refs.password.focus()
+      this.$refs.password.focus();
     }
     this.freshImageCodeFn();
   },
-  destroyed () {
+  destroyed() {
     // window.removeEventListener('storage', this.afterQRScan)
   },
   methods: {
-    checkCapslock (e) {
-      const { key } = e
-      this.capsTooltip = key && key.length === 1 && (key >= 'A' && key <= 'Z')
+    checkCapslock(e) {
+      const { key } = e;
+      this.capsTooltip = key && key.length === 1 && (key >= 'A' && key <= 'Z');
     },
-    freshImageCodeFn () {
+    freshImageCodeFn() {
       // var clientId = genUUID(16, 16);
       this.imageCodePicture = 'http://47.107.173.118:8808/e4a/api/codeImage?clientId=' + this.clientId + '&t=' + (new Date()).getTime();
       this.imageCode = '';
       return this.imageCodePicture;
     },
-    showPwd () {
+    showPwd() {
       if (this.passwordType === 'password') {
-        this.passwordType = ''
+        this.passwordType = '';
       } else {
-        this.passwordType = 'password'
+        this.passwordType = 'password';
       }
       this.$nextTick(() => {
-        this.$refs.password.focus()
-      })
+        this.$refs.password.focus();
+      });
     },
-    handleLogin () {
+    handleLogin() {
       this.loginForm = {
         usercode: 'admin',
         password: 'admin@111',
         imageCode: this.imageCode,
         clientId: this.clientId,
         grant_type: 'password'
-      }
+      };
       this.$refs.loginForm.validate(valid => {
         if (valid) {
-          this.loading = true
+          this.loading = true;
           this.$store.dispatch('user/login', this.loginForm)
             .then(() => {
-              this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
-              this.loading = false
+              this.$router.push({ path: this.redirect || '/', query: this.otherQuery });
+              this.loading = false;
             })
             .catch(() => {
-              this.loading = false
-            })
+              this.loading = false;
+            });
         } else {
-          console.log('error submit!!')
-          return false
+          console.log('error submit!!');
+          return false;
         }
-      })
+      });
     },
-    getOtherQuery (query) {
+    getOtherQuery(query) {
       return Object.keys(query).reduce((acc, cur) => {
         if (cur !== 'redirect') {
-          acc[cur] = query[cur]
+          acc[cur] = query[cur];
         }
-        return acc
-      }, {})
+        return acc;
+      }, {});
     }
     // afterQRScan() {
     //   if (e.key === 'x-admin-oauth-code') {
@@ -201,7 +213,7 @@ export default {
     //   }
     // }
   }
-}
+};
 </script>
 
 <style lang="scss">

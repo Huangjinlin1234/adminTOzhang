@@ -852,6 +852,7 @@ textarea {  border: 1px solid #e0e0e0;  border-radius: 4px;}
 .el-input__inner:-ms-input-placeholder,.el-textarea__inner:-ms-input-placeholder {  color: #c5c5c5;}
 .el-form-item.is-required .el-form-item__label:before {  color: #f52c36;}
 .el-form-item__label {  color: #333;}
+.el-form-item .el-form-item__label { font-weight: 500;}
 .yu-button-drop .el-dropdown-menu__item:hover,.el-select-dropdown__item:hover {  background-color: rgba(0, 0, 0, 0.05);}
 .el-select-dropdown__item.selected,.el-select-dropdown__item.selected.hover {  color: #fff;}
 a.underline {  text-decoration: underline;  cursor: pointer;}
@@ -923,3 +924,5 @@ a.underline {  text-decoration: underline;  cursor: pointer;}
   background-color: #F2F2F2
 }
 .top-content .el-col.el-col-20{text-align: right;}
+.el-dialog .el-dialog__header .el-dialog__title {font-weight: 700; font-size: 16px;}
+.el-collapse-item__header{background-color: grey; font-weight: 700; font-size: 16px;}
