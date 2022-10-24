@@ -10,6 +10,7 @@
 
 <script>
 import treeCollapse from './treeCollapse.vue';
+import treeData from './treeData.js';
 import yform from './yform.vue';
 export default {
   components: { treeCollapse, yform },
@@ -18,44 +19,9 @@ export default {
       pageOptions: {
         defaultProps: {
           children: 'children',
-          label: 'label'
+          label: 'orgName'
         },
-        treeData: [{
-          label: '一级 1',
-          children: [{
-            label: '二级 1-1',
-            children: [{
-              label: '三级 1-1-1'
-            }]
-          }]
-        }, {
-          label: '一级 2',
-          children: [{
-            label: '二级 2-1',
-            children: [{
-              label: '三级 2-1-1'
-            }]
-          }, {
-            label: '二级 2-2',
-            children: [{
-              label: '三级 2-2-1'
-            }]
-          }]
-        }, {
-          label: '一级 3',
-          children: [{
-            label: '二级 3-1',
-            children: [{
-              label: '三级 3-1-1'
-            }]
-          }, {
-            label: '二级 3-2',
-            children: [{
-              label: '三级 3-2-1'
-            }]
-          }]
-        }]
-
+        treeData: treeData
       },
       collapseList: [
         { title: '一致性',
@@ -69,7 +35,7 @@ export default {
             { label: '统一信用代码', prop: 'taskNo', ctype: 'input' },
             { label: '法定代表人', prop: 'taskNo', ctype: 'input' }
           ] },
-        { title: '两致性',
+        { title: '两面性',
           name: '2',
           yformFileds: [
             { label: '贷款信息', prop: 'creditInfo', ctype: 'input' },
@@ -78,9 +44,8 @@ export default {
             { label: '贷款信息', prop: 'creditInfo', ctype: 'input' },
             { label: '贷款信息', prop: 'creditInfo', ctype: 'input' },
             { label: '贷款信息', prop: 'creditInfo', ctype: 'input' }
-          ]
-        },
-        { title: 'dds', name: '3' }
+          ] },
+        { title: '三个人', name: '3' }
       ]
     };
   }

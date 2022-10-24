@@ -2,9 +2,9 @@
   <div>
     <formTable>
       <div slot="button">
+        <el-button @click="add">设置</el-button>
+        <el-button @click="add">设置</el-button>
         <el-button type="primary" @click="add">新增</el-button>
-        <el-button @click="add">设置</el-button>
-        <el-button @click="add">设置</el-button>
       </div>
     </formTable>
   </div>

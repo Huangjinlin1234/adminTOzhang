@@ -18,8 +18,8 @@
       </el-col>
       <el-col :span="4">
         <div class="search-btn">
-          <el-button type="primary" @click="searchFn">查询</el-button>
           <el-button @click="reset">重置</el-button>
+          <el-button type="primary" @click="searchFn">查询</el-button>
         </div>
 
       </el-col>
