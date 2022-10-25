@@ -4,41 +4,40 @@
     :visible.sync="dialogVisible"
     @close="close"
   >
-    <el-form :inline="true" :model="formData" label-suffix="：" class="demo-form-inline">
-      <el-form-item v-for="(item,index) in formFileds" :key="index" :label="item.label">
+    <el-form ref="refform" :inline="true" :model="formData" label-suffix="：" :rules="rules" class="demo-form-inline">
+      <el-form-item v-for="(item,index) in formFileds" :key="index" :label="item.label" :prop="item.prop">
         <!--输入框 -->
         <template v-if="item.ctype==='input'">
-          <el-input v-model="formData.user" placeholder="审批人" />
+          <el-input v-model="formData[item.prop]" placeholder="审批人" />
         </template>
         <!--选择框 -->
         <template v-if="item.ctype==='select'">
-          <el-select v-model="formData.region">
+          <el-select v-model="formData[item.prop]">
             <el-option v-for="(ite,idx) in item.options" :key="idx" :label="ite.label" :value="ite.value" />
           </el-select>
         </template>
         <!--日期框 -->
         <template v-if="item.ctype==='datepicker'">
           <el-date-picker
-            v-model="formData.time"
+            v-model="formData[item.prop]"
             type="date"
             placeholder="选择日期"
           />
         </template>
         <!--单选框 -->
         <template v-if="item.ctype==='radio'">
-          <el-radio-group v-model="formData.resource">
+          <el-radio-group v-model="formData[item.prop]">
             <el-radio v-for="(ite,idx) in item.options" :key="idx" :label="ite.label" />
           </el-radio-group>
         </template>
         <!--文本输入框框 -->
         <template v-if="item.ctype==='textarea'">
-          <el-input v-model="formData.desc" type="textarea" />
+          <el-input v-model="formData[item.prop]" type="textarea" />
         </template>
         <!--复选框 -->
         <template v-if="item.ctype==='checkbox'">
-          <el-checkbox-group v-model="formData.type">
+          <el-checkbox-group v-model="formData[item.prop]">
             <el-checkbox v-for="(ite,idx) in item.options" :key="idx" :label="ite.label" :name="ite.value" />
-
           </el-checkbox-group>
         </template>
       </el-form-item>
@@ -67,6 +66,12 @@ export default {
       default: () => {
         return [];
       }
+    },
+    rules: {
+      type: Object,
+      default: () => {
+        return {};
+      }
     }
   },
   data() {
@@ -77,6 +82,17 @@ export default {
     };
   },
   methods: {
+    // 表单校验方法
+    validate() {
+      let flag;
+      this.$refs.refform.validate(valid => {
+        flag = valid;
+      });
+      return flag;
+    },
+    resetFileds() {
+      this.$refs.refform.resetFileds();
+    },
     // 关闭弹窗
     close() {
       console.log(1111);
