@@ -1,12 +1,12 @@
 <template>
   <el-dialog :title="dialogTitle" :visible.sync="dialogView" :width="dialogWidth" :before-close="closeDialog">
-    <el-xform ref="refForm" :form-data="formData" :form-fields="formFields" label-width="120"></el-xform>
+    <el-xform ref="refForm" :form-data="formData" :form-fields="formFields" label-width="120" :colspan="1"></el-xform>
     <template slot="footer">
-      <el-button-group v-for="(item,index) in btnFields" :key="index">
+      <span v-for="(item,index) in btnFields" :key="index">
         <el-button v-if="item.etype === 'reset'" type="primary" @click="reset">{{ item.label }}</el-button>
         <el-button v-else-if="item.etype === 'cancel'" @click="closeDialog">{{ item.label }}</el-button>
         <el-button v-else :type="item.type" @click="item.clickFn">{{ item.label }}</el-button>
-      </el-button-group>
+      </span>
     </template>
   </el-dialog>
 </template>

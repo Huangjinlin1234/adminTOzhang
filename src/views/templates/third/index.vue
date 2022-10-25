@@ -1,21 +1,21 @@
 <template>
   <div>
     <el-button type="primary" @click="openDialog"></el-button>
-    <select-return :dialog-view.sync="dialogView" :dialog-title="dialogTitle" :dialog-width="dialogWidth" :form-fields="formFields" :table-fields="tableFields"></select-return>
+    <select-page :dialog-view.sync="dialogView" :dialog-title="dialogTitle" :dialog-width="dialogWidth" :form-fields="formFields" :table-fields="tableFields"></select-page>
   </div>
 </template>
 <script>
-import selectReturn from '@/components/layout/selectReturn'
+import selectPage from '@/components/layout/selectPage'
 export default {
   name: 'first',
   props: {
   },
-  components: { selectReturn },
+  components: { selectPage },
   data () {
     return {
       dialogView: false,
       dialogTitle: '选择客户',
-      dialogWidth: '400px',
+      dialogWidth: '1000px',
       formData: {},
       formFields: [
         { label: '客户编号', prop: 'custId' },

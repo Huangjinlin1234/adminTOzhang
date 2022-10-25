@@ -1,9 +1,9 @@
 <template>
   <el-dialog :title="dialogTitle" :visible.sync="dialogView" :width="dialogWidth" :before-close="closeDialog">
     <el-xform ref="refForm" :form-fields="formFields" label-width="120">
+      <el-button type="primary" @click="searchFn">查询</el-button>
+      <el-button type="primary" @click="reset">重置</el-button>
     </el-xform>
-    <el-button type="primary" @click="searchFn">查询</el-button>
-    <el-button type="primary" @click="reset">重置</el-button>
     <el-xtable ref="refTable" :table-data="tableData" :table-fields="tableFields">
       <slot></slot>
     </el-xtable>
@@ -14,7 +14,7 @@
 
 <script>
 export default {
-  name: 'guide',
+  name: 'selectPage',
   props: {
     dialogView: {
       type: Boolean,
