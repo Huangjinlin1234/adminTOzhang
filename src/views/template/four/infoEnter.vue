@@ -4,23 +4,42 @@
     :visible.sync="dialogVisible"
     @close="close"
   >
-    <el-form :inline="true" :model="formData" class="demo-form-inline">
-      <el-form-item v-for="(item,index) in formFileds" :key="index" label="审批人">
+    <el-form :inline="true" :model="formData" label-suffix="：" class="demo-form-inline">
+      <el-form-item v-for="(item,index) in formFileds" :key="index" :label="item.label">
+        <!--输入框 -->
         <template v-if="item.ctype==='input'">
           <el-input v-model="formData.user" placeholder="审批人" />
         </template>
+        <!--选择框 -->
         <template v-if="item.ctype==='select'">
-          <el-select v-model="formData.region" placeholder="活动区域">
-            <el-option label="区域一" value="shanghai" />
-            <el-option label="区域二" value="beijing" />
+          <el-select v-model="formData.region">
+            <el-option v-for="(ite,idx) in item.options" :key="idx" :label="ite.label" :value="ite.value" />
           </el-select>
         </template>
+        <!--日期框 -->
         <template v-if="item.ctype==='datepicker'">
           <el-date-picker
             v-model="formData.time"
             type="date"
             placeholder="选择日期"
           />
+        </template>
+        <!--单选框 -->
+        <template v-if="item.ctype==='radio'">
+          <el-radio-group v-model="formData.resource">
+            <el-radio v-for="(ite,idx) in item.options" :key="idx" :label="ite.label" />
+          </el-radio-group>
+        </template>
+        <!--文本输入框框 -->
+        <template v-if="item.ctype==='textarea'">
+          <el-input v-model="formData.desc" type="textarea" />
+        </template>
+        <!--复选框 -->
+        <template v-if="item.ctype==='checkbox'">
+          <el-checkbox-group v-model="formData.type">
+            <el-checkbox v-for="(ite,idx) in item.options" :key="idx" :label="ite.label" :name="ite.value" />
+
+          </el-checkbox-group>
         </template>
       </el-form-item>
     </el-form>
@@ -52,7 +71,9 @@ export default {
   },
   data() {
     return {
-      formData: {}
+      formData: {
+        type: []
+      }
     };
   },
   methods: {

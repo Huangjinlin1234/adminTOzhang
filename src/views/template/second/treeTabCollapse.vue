@@ -1,7 +1,7 @@
 <template>
   <div class="treeTabCollapse">
     <div class="tree-content">
-      <el-tree :data="pageOptions.treeData" :props="pageOptions.defaultProps" @node-click="handleNodeClick" />
+      <el-tree :data="pageOptions.treeData" :props="pageOptions.defaultProps" :node-key="nodeKeys" :default-expanded-keys="expandedKeys" @node-click="handleNodeClick" />
     </div>
     <div class="tab-content">
       <slot />
@@ -13,11 +13,21 @@
 
 export default {
   props: {
+    nodeKeys: {
+      type: String,
+      default: 'orgCode'
+    },
     pageOptions: {
       type: Object,
       default: () => {
         return {
         };
+      }
+    },
+    expandedKeys: {
+      type: Array,
+      default: () => {
+        return ['000000'];
       }
     }
   },

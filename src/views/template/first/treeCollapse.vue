@@ -2,7 +2,7 @@
   <div class="treeCollapse">
 
     <div class="tree-content">
-      <el-tree :data="pageOptions.treeData" :props="pageOptions.defaultProps" @node-click="handleNodeClick" />
+      <el-tree :data="pageOptions.treeData" :props="pageOptions.defaultProps" :node-key="nodeKeys" :default-expanded-keys="expandedKeys" @node-click="handleNodeClick" />
     </div>
     <div class="collapse-content">
       <el-collapse v-model="activeNames">
@@ -15,14 +15,23 @@
 </template>
 
 <script>
-
 export default {
   props: {
+    nodeKeys: {
+      type: String,
+      default: 'orgCode'
+    },
     pageOptions: {
       type: Object,
       default: () => {
         return {
         };
+      }
+    },
+    expandedKeys: {
+      type: Array,
+      default: () => {
+        return ['000000'];
       }
     }
   },

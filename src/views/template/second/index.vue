@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="container">
     <treeTabCollapse :page-options="pageOptions">
       <el-tabs v-model="activeName" @tab-click="handleClick">
         <el-tab-pane label="用户管理" name="first">用户管理</el-tab-pane>
@@ -26,7 +26,6 @@ export default {
           label: 'orgName'
         },
         treeData: treeData
-
       }
     };
   },
@@ -37,3 +36,10 @@ export default {
   }
 };
 </script>
+<style lang="scss" scoped>
+.container{
+  background-color: #ffff;
+  padding: 24px;
+  height: 100%;
+}
+</style>

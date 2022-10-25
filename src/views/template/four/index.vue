@@ -15,10 +15,11 @@ export default {
       showDialog: false,
       formFileds: [
         { label: '任务编号', prop: 'taskNo', ctype: 'input' },
-        { label: '任务编号', prop: 'taskNo', ctype: 'input' },
-        { label: '任务编号', prop: 'taskNo', ctype: 'input' },
-        { label: '任务编号', prop: 'taskNo', ctype: 'select', dataCode: 'user' },
-        { label: '任务编号', prop: 'taskNo', ctype: 'input' }
+        { label: '认定状态', prop: 'taskNo', ctype: 'select' },
+        { label: '日期', prop: 'taskNo', ctype: 'datepicker' },
+        { label: '分类', prop: 'taskNo', ctype: 'radio', dataCode: 'user' },
+        { label: '任务编号', prop: 'taskNo', ctype: 'textarea' },
+        { label: '任务编号', prop: 'taskNo', ctype: 'checkbox' }
       ]
     };
   },
