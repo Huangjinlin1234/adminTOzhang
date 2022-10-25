@@ -20,11 +20,11 @@ export default {
       formFields: [
         { label: '操作类型', prop: 'operType', ctype: 'radio', options: [{ label: '新增', value: '01' }, { label: '变更', value: '02' }] },
         { label: '合作项目类型', prop: 'coProType', ctype: 'select', options: [{ label: '合作项目类型1', value: '01' }, { label: '合作项目类型2', value: '02' }] },
-        { label: '合作项目名称', prop: 'coProType', ctype: 'select', options: [{ label: '合作项目类型1', value: '01' }, { label: '合作项目类型2', value: '02' }] },
+        { label: '合作项目名称', prop: 'coProType2', ctype: 'select', options: [{ label: '合作项目类型1', value: '01' }, { label: '合作项目类型2', value: '02' }] },
       ],
       btnFields: [
         { label: '下一步', type: 'primary', clickFn: this.nextStep },
-        { label: '重置', etype: 'reset' },
+        // { label: '重置', etype: 'reset' },
         { label: '取消', etype: 'cancel' }
       ]
     }
@@ -37,6 +37,7 @@ export default {
     },
     nextStep () {
       console.log('下一步')
+      this.dialogView = false;
     }
   },
 }

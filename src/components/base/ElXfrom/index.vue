@@ -1,18 +1,26 @@
 <template>
   <el-form ref="refForm" :model="formData" :rules="rules" :label-width="labelWidth+'px'" :inline="inline" :disabled="disabled">
-    <el-form-item v-for="(item,index) in formFields" :key="index" :label="item.label" :prop="item.prop">
-      <el-input v-if="!item.ctype || item.ctype === 'input'" :type="item.type" :row="item.row" v-model="formData[item.prop]" placeholder="请输入" maxlength="20" clearable></el-input>
-      <el-select v-else-if="item.ctype === 'select'" v-model="formData[item.prop]" placeholder="请选择" clearable>
-        <el-option v-for="(it,ind) in item.options" :key="ind" :label="it.label" :value="it.value"></el-option>
-      </el-select>
-      <el-checkbox-group v-else-if="item.ctype === 'checkbox'" v-model="formData[item.prop]">
-        <el-checkbox v-for="(it,ind) in item.options" :key="ind" :label="it.label"></el-checkbox>
-      </el-checkbox-group>
-      <el-radio-group v-else-if="item.ctype === 'radio'" v-model="formData[item.prop]">
-        <el-radio v-for="(it,ind) in item.options" :key="ind" :label="it.label"></el-radio>
-      </el-radio-group>
-      <slot />
-    </el-form-item>
+    <el-row>
+      <el-col v-for="(item,index) in formFields" :key="index" :span="(item.colspan && 24/item.colspan)|| 24/colspan">
+        <el-form-item :label="item.label" :prop="item.prop">
+          <el-input v-if="!item.ctype || item.ctype === 'input'" :type="item.type" :row="item.row" v-model="formData[item.prop]" placeholder="请输入" maxlength="20" clearable></el-input>
+          <el-select v-else-if="item.ctype === 'select'" v-model="formData[item.prop]" placeholder="请选择" clearable>
+            <el-option v-for="(it,ind) in item.options" :key="ind" :label="it.label" :value="it.value"></el-option>
+          </el-select>
+          <el-checkbox-group v-else-if="item.ctype === 'checkbox'" v-model="formData[item.prop]">
+            <el-checkbox v-for="(it,ind) in item.options" :key="ind" :label="it.label"></el-checkbox>
+          </el-checkbox-group>
+          <el-radio-group v-else-if="item.ctype === 'radio'" v-model="formData[item.prop]">
+            <el-radio v-for="(it,ind) in item.options" :key="ind" :label="it.label"></el-radio>
+          </el-radio-group>
+        </el-form-item>
+      </el-col>
+      <el-col :span="colspan && 24/colspan">
+        <el-form-item>
+          <slot />
+        </el-form-item>
+      </el-col>
+    </el-row>
   </el-form>
 </template>
 
@@ -41,9 +49,13 @@ export default {
     labelWidth: {
       type: String,
     },
-    inline: {
-      type: Boolean,
-      default: false
+    // inline: {
+    //   type: Boolean,
+    //   default: false
+    // },
+    colspan: {
+      type: Number,
+      default: 3
     },
     disabled: {
       type: Boolean,
