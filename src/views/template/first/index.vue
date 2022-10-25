@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="container">
     <treeCollapse :page-options="pageOptions">
       <el-collapse-item v-for="(item,index) in collapseList" :key="index" :title="item.title" :name="item.name">
         <component :is="item.component" :yform-fileds="item.yformFileds" />
@@ -52,6 +52,9 @@ export default {
 };
 </script>
 
-<style>
-
+<style lang="scss" scoped>
+.container{
+  background-color: #ffff;
+  height: 100%;
+}
 </style>
