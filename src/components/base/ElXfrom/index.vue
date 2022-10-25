@@ -1,9 +1,11 @@
 <template>
-  <el-form ref="refForm" :model="formData" :rules="rules" :label-width="labelWidth+'px'" :inline="inline" :disabled="disabled">
+  <el-form ref="refForm" :model="formData" :rules="rules" :label-width="labelWidth+'px'" :disabled="disabled">
     <el-row>
       <el-col v-for="(item,index) in formFields" :key="index" :span="(item.colspan && 24/item.colspan)|| 24/colspan">
         <el-form-item :label="item.label" :prop="item.prop">
-          <el-input v-if="!item.ctype || item.ctype === 'input'" :type="item.type" :row="item.row" v-model="formData[item.prop]" placeholder="请输入" maxlength="20" clearable></el-input>
+          <el-input v-if="!item.ctype || item.ctype === 'input'" v-model="formData[item.prop]" :type="item.type" :row="item.row" :readonly="item.readonly" :disabled="item.disabled" placeholder="请输入" maxlength="20" clearabl>
+            <i v-if="item.icon" slot="suffix" class="el-input__icon el-icon-search" @click="clickIconFn"></i>
+          </el-input>
           <el-select v-else-if="item.ctype === 'select'" v-model="formData[item.prop]" placeholder="请选择" clearable>
             <el-option v-for="(it,ind) in item.options" :key="ind" :label="it.label" :value="it.value"></el-option>
           </el-select>
@@ -68,6 +70,10 @@ export default {
   },
   created () { },
   mounted () { },
-  methods: {}
+  methods: {
+    clickIconFn () {
+      this.$emit('icon-click')
+    }
+  },
 }
 </script>
