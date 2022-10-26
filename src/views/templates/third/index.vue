@@ -18,7 +18,7 @@ export default {
       dialogWidth: '1000px',
       formData: {},
       formFields: [
-        { label: '客户编号', prop: 'custId' },
+        { label: '客户编号', prop: 'custId', icon: 'el-icon-search', iconClick: this.selCus },
         { label: '客户名称', prop: 'custName' },
       ],
       tableFields: [
@@ -38,6 +38,9 @@ export default {
       // this.$emit('update:dialogView', false);
     },
     confirm () {
+      console.log('确定')
+    },
+    selCus () {
       console.log('确定')
     }
   },

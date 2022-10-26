@@ -1,6 +1,6 @@
 <template>
   <el-dialog :title="dialogTitle" :visible.sync="dialogView" :width="dialogWidth" :before-close="closeDialog">
-    <el-xform ref="refForm" :form-fields="formFields" label-width="120">
+    <el-xform ref="refForm" :form-fields="formFields" label-width="120" @icon-click="clickIconFn">
       <el-button type="primary" @click="searchFn">查询</el-button>
       <el-button type="primary" @click="reset">重置</el-button>
     </el-xform>
@@ -75,6 +75,8 @@ export default {
     },
     selectReturnFn () {
       this.$emit('selectData', { msg: 返回的数据 })
+    },
+    clickIconFn () {
     }
   },
 }
