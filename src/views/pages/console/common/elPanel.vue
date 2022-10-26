@@ -24,7 +24,7 @@
         <slot name="form" />
       </el-row>
       <div class="second-rbtn">
-        <slot name="secondRight" />
+        <slot name="secondLeft" />
       </div>
       <slot />
     </div>
@@ -77,8 +77,7 @@ export default {
     padding: 22px 24px 0;
   }
   .second-rbtn{
-    margin: 10px;
-    text-align: right;
+    margin-left: 24px;
   }
 }
 

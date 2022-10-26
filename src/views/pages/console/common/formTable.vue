@@ -1,16 +1,15 @@
 <template>
   <div class="form-table">
-    <el-panel :panel-title="pageOptions.title">
-      <template slot="rightButton">
+    <el-panel type="second" :panel-title="pageOptions.title">
+      <template slot="secondLeft">
         <slot name="button" />
       </template>
       <template slot="form">
         <el-form ref="refSearchForm" label-suffix="：" :model="searchFormdata" label-width="120px" inline>
           <el-form-item v-for="(item,index) in pageOptions.formFileds" :key="index" :label="item.label" :ctype="item.ctype" :placeholder="item.label" :name="item.name">
             <template v-if="item.ctype=='input'">
-              <el-input v-model="item.prop" placeholder="请输入内容" />
+              <el-input v-model="searchFormdata[item.name]" placeholder="请输入内容" />
             </template>
-
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="onSubmit">查询</el-button>
@@ -18,12 +17,8 @@
           </el-form-item>
         </el-form>
       </template>
-      <div slot="table" class="table-content">
-        <el-table ref="refTable" row-number :data="tableData" @row-click="rowClick">
-          <el-table-column
-            type="selection"
-            width="55"
-          />
+      <div class="table-content">
+        <el-table ref="refTable" row-number :data="tableData" :highlight-current-row="true" @row-click="rowClick">
           <el-table-column v-for="(ite,index) in pageOptions.tableFileds" :key="index" :label="ite.label">
             <template slot-scope="scope">
               <el-tag v-if="ite.ctype=='tag'" type="success">{{ scope.row.status }}</el-tag>
@@ -31,6 +26,15 @@
             </template>
           </el-table-column>
         </el-table>
+        <el-pagination
+          :current-page="pageInfo.page"
+          :page-sizes="[10, 20, 30, 50]"
+          :page-size="pageInfo.size"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="total"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+        />
       </div>
 
     </el-panel>
@@ -38,10 +42,12 @@
 </template>
 <script>
 import elPanel from './elPanel.vue';
+import { getUserList } from '@/api/systemManage/userManage.js';
 export default {
   name: 'UserLog',
   components: { elPanel },
   props: {
+
     pageOptions: {
       type: Object,
       default: () => {
@@ -57,11 +63,16 @@ export default {
       pkField: 'serno',
       dialogTitle: '新增',
       dialogVisible: false,
-      formType: 'ADD',
-      dataUrl: '/api/s/users',
       baseParams: {},
       deleteUrl: '/api/coopplanapp/delete/',
       searchFormdata: {},
+      tableData1: [],
+      currentPage: 1,
+      total: 20,
+      pageInfo: {
+        size: 10,
+        page: 1
+      },
       tableData: [
         {
           'roleCode': '111',
@@ -124,17 +135,37 @@ export default {
     };
   },
   created() {
+    this.getTableData(this.searchFormdata);
   },
   methods: {
-    rowClick() {
-      const selections = this.$refs.refTable.selection;
-      this.$emit('emitSelection', selections);
+    getTableData(data) {
+      getUserList({ ...data, ...this.pageInfo }, this.pageOptions.dataUrl).then(res => {
+        if (res.code === '0') {
+          console.log(res);
+          this.tableData = res.rows;
+          this.total = res.total;
+        }
+      });
+    },
+    rowClick(row, column, event) {
+      this.$emit('emitSelection', row);
     },
     resetForm() {
-
+      this.$refs.refSearchForm.resetFileds();
+      this.getTableData();
     },
     onSubmit() {
-
+      console.log(this.searchFormdata, 'fffss');
+      this.getTableData(this.searchFormdata);
+    },
+    handleCurrentChange(number) {
+      this.pageInfo.page = number;
+      this.getTableData(this.searchFormdata);
+    },
+    handleSizeChange(size) {
+      console.log(size);
+      this.pageInfo.size = size;
+      this.getTableData(this.searchFormdata);
     }
 
   }
@@ -143,7 +174,7 @@ export default {
 <style lang="scss" scoped>
 .form-table{
   .table-content{
-    padding: 24px;
+    padding:5px 24px;
   }
 }
 </style>

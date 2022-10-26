@@ -7,16 +7,17 @@
       @open="initData"
     >
       <div class="transfer-container">
-        <el-transfer v-model="value1" :props="props" :titles="titles" :data="transferData" />
+        <el-transfer v-model="valueArray" :props="defaultProps" :titles="titles" :data="transferData" />
       </div>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="closeFn">确 定</el-button>
+        <el-button type="primary" @click="comfirmFn">确 定</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
+import { getTrfData, saveTransfer } from '@/api/systemManage/userManage.js';
 export default {
   props: {
     dialogTitle: {
@@ -33,34 +34,54 @@ export default {
         return ['可分配岗位', '已选岗位'];
       }
     },
-    transferData: {
-      type: Array,
+    dataUrl: {
+      type: String,
+      default: ''
+    },
+    defaultProps: {
+      type: Object,
       default: () => {
-        return [
-          { roleCode: 1, roleName: '备选项1' },
-          { roleCode: 2, roleName: '备选项2' },
-          { roleCode: 3, roleName: '备选项3' },
-          { roleCode: 4, roleName: '备选项4' },
-          { roleCode: 5, roleName: '备选项5' }
-        ];
+        return {
+          key: 'roleCode',
+          value: 'roleName'
+        };
       }
+    },
+    savrUrl: {
+      type: String,
+      default: ''
     }
   },
   data() {
     return {
-      value1: [],
-      props: {
-        key: 'roleCode',
-        roleName: 'roleName'
-      }
+      valueArray: [],
+      transferData: []
     };
+  },
+  created() {
   },
   methods: {
     initData() {
-      console.log(111);
+      this.getTranasferData();
+    },
+    getTranasferData() {
+      getTrfData({}).then(res => {
+        if (res.code == '0') {
+          this.transferData = res.rows;
+        }
+      });
     },
     closeFn() {
       this.$emit('update:dialogVisible', false);
+    },
+    comfirmFn() {
+      console.log(this.valueArray, 'vvv');
+      const userCode = this.$parent.selection.userCode;
+      saveTransfer({ userCode, roleCodes: this.valueArray }, this.savrUrl).then(res => {
+        if (res.code == '0') {
+          this.closeFn();
+        }
+      });
     }
   }
 };

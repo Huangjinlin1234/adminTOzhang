@@ -5,13 +5,6 @@
         <el-button ref="btn_insertFn" type="primary" @click="openDialog('ADD')">新增</el-button>
         <el-button ref="btn_insertFn" @click="openDialog('EDIT')">修改</el-button>
         <el-button ref="btn_deleteFn" type="primary" @click="openDialog('DETAIL')">查看</el-button>
-        <selectTree />
-        <el-input
-          v-model="input4"
-          placeholder="请输入内容"
-        >
-          <i slot="suffix" class="el-input__icon el-icon-search" />
-        </el-input>
       </template>
     </formTable>
     <orgEdit
@@ -26,10 +19,9 @@
 <script>
 import formTable from '@/views/pages/console/common/formTable.vue';
 import minxinDiaFn from '@/views/pages/console/common/minxin.js';
-import selectTree from '@/views/pages/console/common/selectTree.vue';
 import orgEdit from './orgEdit.vue';
 export default {
-  components: { formTable, orgEdit, selectTree },
+  components: { formTable, orgEdit },
   mixins: [minxinDiaFn],
   data() {
     return {
