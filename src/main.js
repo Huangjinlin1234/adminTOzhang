@@ -8,10 +8,15 @@ import Element from 'element-ui';
 import './styles/element-variables.scss';
 import '@/config/other/css.js'; // 导入全局使用自定义组件
 import '@/styles/index.scss'; // global css
-
+import '@/utils'; // xy-utils 初始化
 import App from './App';
 import store from './store';
+import axios from 'axios';
 import router from './router';
+import qs from 'qs';
+Vue.prototype.qs = qs;
+// 指定格式，form格式
+axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 
 import './icons'; // icon
 import './permission'; // permission control
