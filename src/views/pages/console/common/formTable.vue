@@ -71,7 +71,6 @@ export default {
       deleteUrl: '/api/coopplanapp/delete/',
       searchFormdata: {},
       tableData1: [],
-      currentPage: 1,
       total: 20,
       pageInfo: {
         size: 10,
@@ -166,7 +165,6 @@ export default {
       this.getTableData(this.searchFormdata);
     },
     handleSizeChange(size) {
-      console.log(size);
       this.pageInfo.size = size;
       this.getTableData(this.searchFormdata);
     }

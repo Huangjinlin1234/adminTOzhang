@@ -10,7 +10,6 @@
         <el-button type="primary" @click="setRole">设置角色</el-button>
         <el-button type="primary" @click="resetPwdFn">重置密码</el-button>
         <el-button type="primary" @click="openDialog('','refTransBusiness','userInfo','userCode')">移交业务</el-button>
-
       </template>
     </formTable>
     <userEdit
@@ -22,17 +21,18 @@
       @refresh="refreshTable"
     />
     <transferCpn
+      ref="refTrfDuty"
       dialog-title="设置岗位"
-      :dialog-visible.sync="setDutyOpen"
       :data-url="dutyDataUrl"
+      @confirm="confirmFnDuty"
     />
     <transferCpn
+      ref="refTrfRole"
       dialog-title="设置角色"
       :data-url="roleDataUrl"
       :titles="titlesRole"
-      :dialog-visible.sync="setRoleOpen"
       :default-props="roleProps"
-      :savr-url="roleSaveUrl"
+      @confirm="confirmFnRole"
     />
     <transBusiness
       ref="refTransBusiness"
@@ -46,7 +46,7 @@ import transferCpn from '@/views/pages/console/common/transferCpn.vue';
 import minxinDiaFn from '@/views/pages/console/common/minxin.js';
 import userEdit from './userEdit.vue';
 import transBusiness from './transBusiness.vue';
-import { resetPwd } from '@/api/systemManage/userManage.js';
+import { resetPwd, saveTransfer } from '@/api/systemManage/userManage.js';
 export default {
   components: { formTable, userEdit, transferCpn, transBusiness },
   mixins: [minxinDiaFn],
@@ -72,17 +72,16 @@ export default {
         ]
       },
       selection: {},
-      setDutyOpen: false,
       input4: '',
       pageType: '',
-      setRoleOpen: false,
       roleDataUrl: '/console/api/s/queryRoleAll',
-      dutyDataUrl: 'dutyDataUrl',
+      dutyDataUrl: '/console/api/s/all/dutys',
       roleProps: {
         key: 'roleCode',
         label: 'roleName'
       },
       roleSaveUrl: '/console/api/s/userRole',
+      dutySaveUrl: '/console/api/s/dutySaveUrl',
       titlesRole: ['可分配角色', '已选岗位']
     };
   },
@@ -100,14 +99,14 @@ export default {
         this.$message({ message: '请先选择一条记录', type: 'warning' });
         return;
       }
-      this.setDutyOpen = !this.setDutyOpen;
+      this.$refs.refTrfDuty.dialogVisible = true;
     },
     setRole() {
       if (!this.userInfo.userCode) {
         this.$message({ message: '请先选择一条记录', type: 'warning' });
         return;
       }
-      this.setRoleOpen = !this.setRoleOpen;
+      this.$refs.refTrfRole.dialogVisible = true;
     },
     refreshTable() {
       this.$refs.formTable.getTableData();
@@ -160,6 +159,24 @@ export default {
     // 移交业务
     transBusiness() {
 
+    },
+    confirmFnRole(valueArray) {
+      const userCode = this.selection.userCode;
+      saveTransfer({ userCode, roleCodes: valueArray }, this.roleSaveUrl).then(res => {
+        if (res.code == '0') {
+          this.$refs.refTrfRole.dialogVisible = false;
+          this.$message.success(res.message);
+        }
+      });
+    },
+    confirmFnDuty(valueArray) {
+      const legalOrgCode = this.selection.legalOrgCode;
+      saveTransfer({ legalOrgCode, orgCodes: valueArray }, this.saveTransfer).then(res => {
+        if (res.code == '0') {
+          this.$refs.refTrfDuty.dialogVisible = false;
+          this.$message.success(res.message);
+        }
+      });
     }
   }
 };
