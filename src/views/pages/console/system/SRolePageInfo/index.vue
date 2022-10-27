@@ -15,14 +15,14 @@
       :page-type="pageType"
       :role-info="roleInfo"
     />
-    <viewRuser ref="refVuser" :role-info="roleInfo" />
+    <viewRuser ref="refVuser" :base-params="baseParams" :table-fileds="tableFlds" :table-data-url="vUserUrl" :role-info="roleInfo" />
   </div>
 </template>
 <script>
 import formTable from '@/views/pages/console/common/formTable.vue';
 import minxinDiaFn from '@/views/pages/console/common/minxin.js';
 import roleEdit from './roleEdit.vue';
-import viewRuser from './viewRuser.vue';
+import viewRuser from '@/views/pages/console/common/viewRuser.vue';
 import { cancelRoleApi } from '@/api/systemManage/roleManage.js';
 
 export default {
@@ -43,12 +43,24 @@ export default {
           { label: '角色类型', prop: 'roleType' }
         ]
       },
-      roleInfo: {}
+      tableFlds: [
+        { label: '角色代码', prop: 'roleCode' },
+        { label: '用户代码', prop: 'roleName' },
+        { label: '用户姓名', prop: 'userName' },
+        { label: '机构名称', prop: 'orgName' },
+        { label: '联系电话', prop: 'telPhone' },
+        { label: '性别', prop: 'sex' },
+        { label: '状态', prop: 'status' }
+      ],
+      roleInfo: {},
+      vUserUrl: '/console/api/s/roles/user',
+      baseParams: { roleCode: '' }
     };
   },
   methods: {
     selectionFn(selection) {
       this.roleInfo = selection;
+      this.baseParams.roleCode = selection.roleCode;
     },
     cancelOut() {
       const roleName = this.roleInfo.roleName;

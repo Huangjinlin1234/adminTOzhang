@@ -14,7 +14,6 @@
     </formTable>
     <userEdit
       ref="refUserEdit"
-      :dialog-visible.sync="showDialog"
       :dialog-title="dialogTitle"
       :page-type="pageType"
       :user-info="userInfo"

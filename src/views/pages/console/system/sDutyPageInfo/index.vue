@@ -2,34 +2,29 @@
   <div class="container">
     <formTable :page-options="pageOptions" @emitSelection="selectionFn">
       <template slot="button">
-        <el-button ref="btn_insertFn" type="primary" @click="openDialog('ADD')">新增</el-button>
-        <el-button ref="btn_insertFn" type="primary" @click="openDialog('EDIT')">修改</el-button>
-        <el-button ref="btn_deleteFn" type="primary" @click="openDialog('DETAIL')">查看</el-button>
-        <selectTree />
-        <el-input
-          v-model="input4"
-          placeholder="请输入内容"
-        >
-          <i slot="suffix" class="el-input__icon el-icon-search" />
-        </el-input>
+        <el-button type="primary" @click="openDialog('ADD','refDutyEdit','dutyInfo','dutyCode')">新增</el-button>
+        <el-button type="primary" @click="openDialog('EDIT','refDutyEdit','dutyInfo','dutyCode')">修改</el-button>
+        <el-button type="primary" @click="openDialog('DETAIL','refDutyEdit','dutyInfo','dutyCode')">查看</el-button>
+        <el-button type="primary" @click="openDialog('','refVuser','dutyInfo','dutyCode')">查看岗位下用户</el-button>
+        <el-button type="primary" @click="cancelOut">注销</el-button>
       </template>
     </formTable>
     <dutyEdit
       ref="refDutyEdit"
-      :dialog-visible.sync="showDialog"
       :dialog-title="dialogTitle"
       :page-type="pageType"
       :duty-info="dutyInfo"
     />
+    <viewRuser ref="refVuser" :table-fileds="tableFileds" :role-info="roleInfo" :table-data-url="vUserUrl" />
   </div>
 </template>
 <script>
 import formTable from '@/views/pages/console/common/formTable.vue';
-import selectTree from '@/views/pages/console/common/selectTree.vue';
 import minxinDiaFn from '@/views/pages/console/common/minxin.js';
+import viewRuser from '@/views/pages/console/common/viewRuser.vue';
 import dutyEdit from './dutyEdit.vue';
 export default {
-  components: { formTable, dutyEdit, selectTree },
+  components: { formTable, dutyEdit, viewRuser },
   mixins: [minxinDiaFn],
   data() {
     return {
@@ -38,7 +33,8 @@ export default {
         dataUrl: '/api/s/dutys',
         formFileds: [
           { label: '岗位代码', name: 'dutyCode', ctype: 'input' },
-          { label: '岗位名称', name: 'dutyName', ctype: 'input' }
+          { label: '岗位名称', name: 'dutyName', ctype: 'input' },
+          { label: '状态', name: 'dutyName', ctype: 'select' }
         ],
         tableFileds: [
           { label: '岗位代码', prop: 'orgCode' },
@@ -46,15 +42,25 @@ export default {
           { label: '状态', prop: 'status' }
         ]
       },
+      tableFileds: [
+        { label: '角色代码', prop: 'roleCode' },
+        { label: '用户代码', prop: 'roleName' },
+        { label: '用户姓名', prop: 'userName' },
+        { label: '机构名称', prop: 'orgName' },
+        { label: '联系电话', prop: 'telPhone' },
+        { label: '性别', prop: 'sex' },
+        { label: '状态', prop: 'status' }
+
+      ],
       selections: [],
       dutyInfo: {},
-      input4: ''
+      input4: '',
+      vUserUrl: ''
     };
   },
   methods: {
-    selectionFn(selections) {
-      this.selections = selections;
-      this.dutyInfo = selections[0];
+    selectionFn(selection) {
+      this.dutyInfo = selection;
     }
   }
 };
