@@ -1,15 +1,10 @@
 <template>
-  <div class="container">
-    <el-panel panel-title="报表权限管理">
-      <template slot="rightButton">
-        <slot name="button" />
-      </template>
-      <template slot="form">
-      </template>
-      <template slot="table" class="table-content">
-        <div class="role-container">
+  <el-xpanel panel-title="报表权限管理">
+    <template slot="content">
+      <list-page :form-fields="formFields" :table-fields="tableFields" :btn-fields="btnFields"></list-page>
+      <!-- <div class="role-container">
           <el-form ref="refForm" form-type="search" v-model="searchFormdata" label-width="120px" related-table-name="reftable" :custom-search-fn="customSearch" inline>
-            <el-form-item v-for="(item,index) in formFileds" :key="index" :label="item.label" :ctype="item.ctype" :placeholder="item.label" :name="item.name">
+            <el-form-item v-for="(item,index) in formFields" :key="index" :label="item.label" :ctype="item.ctype" :placeholder="item.label" :name="item.name">
               <template v-if="!item.ctype || item.ctype=='input'">
                 <el-input v-model="item.prop" placeholder="请输入内容" />
               </template>
@@ -26,26 +21,26 @@
           <el-table ref="rescActTable" :data-url="dataUrl" :base-params="baseParams" request-type="POST" :defauld-load="false" :pageable="false" json-data="rows">
             <el-table-column v-for="(item, index) in tableFields" :key="index" :label="item.label" :prop="item.prop"></el-table-column>
           </el-table>
-          <!-- <el-org-list :dialog-visible.sync="dialogVisible2"></el-org-list> -->
-        </div>
-      </template>
-    </el-panel>
-  </div>
+          <el-org-list :dialog-visible.sync="dialogVisible2"></el-org-list>
+        </div> -->
+    </template>
+  </el-xpanel>
 </template>
 
 <script>
 import { getResource, setResource, getRoles, getResCHNDesc, getPrdOrgList } from '@/api/systemManage/resource';
-import elPanel from '@/views/pages/console/common/elPanel.vue';
+// import elPanel from '@/views/pages/console/common/elPanel.vue';
+import listPage from '@/components/layout/listPage'
 export default {
-  components: { elPanel },
+  components: { listPage },
   data () {
     let _this = this;
     return {
       dataUrl: getPrdOrgList(),
       baseParams: {},
-      formFileds: [
-        { label: '产品信息', name: 'prdCode', icon: 'search', clickIconFn: this.selProduct },
-        { label: '机构信息', name: 'orgCode', icon: 'search', clickIconFn: this.selOrg }
+      formFields: [
+        { label: '产品信息', name: 'prdCode', icon: 'search', click: this.selProduct },
+        { label: '机构信息', name: 'orgCode', icon: 'search', click: this.selOrg }
       ],
       tableFields: [
         // { label: 'PKID', prop: 'pkId', sortable: true, resizable: true, hidden: true },
@@ -59,6 +54,7 @@ export default {
         { label: '最后修改人', prop: 'lastUpdateUser', sortable: true, resizable: true },
         { label: '最后修改时间', prop: 'lastUpdateTime', sortable: true, resizable: true }
       ],
+      btnFields: [],
       dialogVisible1: false,
       dialogVisible2: false,
     };
