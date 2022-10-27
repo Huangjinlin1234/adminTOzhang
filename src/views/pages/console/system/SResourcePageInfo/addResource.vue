@@ -35,7 +35,7 @@ export default {
         { name: 'rescDesc', label: '资源中文描述', rules: [{ required: true, message: '资源中文描述是必填项', trigger: 'blur' }, { max: 80, message: '最大长度为80' }] },
         { name: 'funcId', label: '路由', rules: [{ max: 32, message: '最大长度为32' }] },
         { name: 'rescIcon', label: '资源图标', rules: [{ max: 60, message: '最大长度为60' }] },
-        { name: 'orderId', label: '序号', rules: [{ validator: yufp.validator.number, message: '序号必须为数字值' }] },
+        { name: 'orderId', label: '序号', rules: [{ message: '序号必须为数字值' }] },
         { name: 'rescUrl', label: '资源URL', colspan: "24", rules: [{ max: 254, message: '最大长度为254' }] },
         { name: 'memo', label: '备注', colspan: "24", type: 'textarea', rules: [{ max: 100, message: '最大长度为100' }] }
       ],
@@ -44,7 +44,7 @@ export default {
   watch: {
     dialogVisible () {
       this.$nextTick(() => {
-        this.$refs.refForm.formdata = this.formData;
+        // this.$refs.refForm.formdata = this.formData;
       })
     }
   },
@@ -59,7 +59,7 @@ export default {
       this.$refs.refForm.validate((vali) => {
         flag = vali;
       });
-      console.log(flag, '==', this.$refs.refForm.formdata)
+      // console.log(flag, '==', this.$refs.refForm.formdata)
       if (!flag) return;
       this.loading = true;
       // setResource('POST', this.$refs.refForm.formdata).then(res => {
