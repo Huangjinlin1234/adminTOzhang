@@ -35,3 +35,10 @@ export function saveTransfer(params, url) {
     data: params
   });
 }
+export function resetPwd(params) {
+  return request({
+    url: '/console/api/s/user/pwd',
+    method: 'post',
+    data: params
+  });
+}

@@ -8,6 +8,8 @@
         <el-button type="primary" @click="cancelUser('user')">注销</el-button>
         <el-button type="primary" @click="setDuty">设置岗位</el-button>
         <el-button type="primary" @click="setRole">设置角色</el-button>
+        <el-button type="primary" @click="resetPwdFn">重置密码</el-button>
+        <el-button type="primary" @click="openDialog('','refTransBusiness')">移交业务</el-button>
 
       </template>
     </formTable>
@@ -27,11 +29,15 @@
     <transferCpn
       dialog-title="设置角色"
       :data-url="roleDataUrl"
+      :titles="titlesRole"
       :dialog-visible.sync="setRoleOpen"
       :default-props="roleProps"
       :savr-url="roleSaveUrl"
     />
-
+    <transBusiness
+      ref="refTransBusiness"
+      :user-info="userInfo"
+    />
   </div>
 </template>
 <script>
@@ -39,8 +45,10 @@ import formTable from '@/views/pages/console/common/formTable.vue';
 import transferCpn from '@/views/pages/console/common/transferCpn.vue';
 import minxinDiaFn from '@/views/pages/console/common/minxin.js';
 import userEdit from './userEdit.vue';
+import transBusiness from './transBusiness.vue';
+import { resetPwd } from '@/api/systemManage/userManage.js';
 export default {
-  components: { formTable, userEdit, transferCpn },
+  components: { formTable, userEdit, transferCpn, transBusiness },
   mixins: [minxinDiaFn],
   data() {
     return {
@@ -74,7 +82,8 @@ export default {
         key: 'roleCode',
         label: 'roleName'
       },
-      roleSaveUrl: '/console/api/s/userRole'
+      roleSaveUrl: '/console/api/s/userRole',
+      titlesRole: ['可分配角色', '已选岗位']
     };
   },
   computed: {
@@ -87,9 +96,17 @@ export default {
       this.selection = selection;
     },
     setDuty() {
+      if (!this.userInfo.userCode) {
+        this.$message({ message: '请先选择一条记录', type: 'warning' });
+        return;
+      }
       this.setDutyOpen = !this.setDutyOpen;
     },
     setRole() {
+      if (!this.userInfo.userCode) {
+        this.$message({ message: '请先选择一条记录', type: 'warning' });
+        return;
+      }
       this.setRoleOpen = !this.setRoleOpen;
     },
     refreshTable() {
@@ -98,8 +115,9 @@ export default {
     emitNodeFn(obj) {
       this.$refs.formTable.getTableData({ orgCode: obj.Id });
     },
+    // 注销用户
     cancelUser(sysModule) {
-      if (Object.keys(this.selection).length < 1) {
+      if (!this.userInfo.userCode) {
         this.$message({ message: '请先选择一条记录', type: 'warning' });
         return;
       }
@@ -120,6 +138,28 @@ export default {
           }
         });
       });
+    },
+    // 重置密码
+    resetPwdFn() {
+      console.log(this.userInfo.userCode, 'uuu');
+      if (!this.userInfo.userCode) {
+        this.$message({ message: '请先选择一条记录', type: 'warning' });
+        return;
+      }
+      this.$confirm('密码重置只对本地用户有效！是否重置密码?', '提示', {
+        cancelButtonText: '取消',
+        confirmButtonText: '确定',
+        type: 'warning' }).then(() => {
+        resetPwd({ userCode: this.userInfo.userCode }).then(res => {
+          if (res.code === '0') {
+            console.log('成功');
+          }
+        });
+      });
+    },
+    // 移交业务
+    transBusiness() {
+
     }
   }
 };
