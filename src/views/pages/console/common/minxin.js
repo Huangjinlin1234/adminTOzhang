@@ -7,9 +7,9 @@ const dialog = {
     };
   },
   methods: {
-    openDialog(type, ref) {
+    openDialog(type, ref, info, filed) {
       this.pageType = type;
-      if (type !== 'ADD' && !this.userInfo.userCode) {
+      if (type !== 'ADD' && !this[info][filed]) {
         this.$message({ message: '请先选择一条记录', type: 'warning' });
         return;
       }

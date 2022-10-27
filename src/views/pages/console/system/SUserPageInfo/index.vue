@@ -2,14 +2,14 @@
   <div class="user-container">
     <formTable ref="formTable" :page-options="pageOptions" @emitSelection="selectionFn">
       <template slot="button">
-        <el-button type="primary" @click="openDialog('ADD','refUserEdit')">新增</el-button>
-        <el-button type="primary" @click="openDialog('EDIT','refUserEdit')">修改</el-button>
-        <el-button type="primary" @click="openDialog('DETAIL','refUserEdit')">查看</el-button>
+        <el-button type="primary" @click="openDialog('ADD','refUserEdit','userInfo','userCode')">新增</el-button>
+        <el-button type="primary" @click="openDialog('EDIT','refUserEdit','userInfo','userCode')">修改</el-button>
+        <el-button type="primary" @click="openDialog('DETAIL','refUserEdit','userInfo','userCode')">查看</el-button>
         <el-button type="primary" @click="cancelUser('user')">注销</el-button>
         <el-button type="primary" @click="setDuty">设置岗位</el-button>
         <el-button type="primary" @click="setRole">设置角色</el-button>
         <el-button type="primary" @click="resetPwdFn">重置密码</el-button>
-        <el-button type="primary" @click="openDialog('','refTransBusiness')">移交业务</el-button>
+        <el-button type="primary" @click="openDialog('','refTransBusiness','userInfo','userCode')">移交业务</el-button>
 
       </template>
     </formTable>

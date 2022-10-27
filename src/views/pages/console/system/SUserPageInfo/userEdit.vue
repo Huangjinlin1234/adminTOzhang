@@ -160,9 +160,7 @@ export default {
       this.dialogVisible = false;
     },
     comfirmFn() {
-      console.log(this.formdata, 'ffff');
       userEdit(this.formdata).then(res => {
-        console.log(res, 'drrrr');
         if (res.code === '0') {
           this.closeFn();
           // 刷新表格

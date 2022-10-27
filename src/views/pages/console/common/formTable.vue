@@ -6,7 +6,7 @@
       </template>
       <template slot="form">
         <el-form ref="refSearchForm" label-suffix="：" :model="searchFormdata" label-width="120px" inline>
-          <el-form-item v-for="(item,index) in pageOptions.formFileds" :key="index" :label="item.label" :ctype="item.ctype" :placeholder="item.label" :name="item.name">
+          <el-form-item v-for="(item,index) in pageOptions.formFileds" :key="index" :label="item.label" :placeholder="item.label" :prop="item.name">
             <template v-if="item.ctype=='input'">
               <el-input v-model="searchFormdata[item.name]" placeholder="请输入内容" />
             </template>
@@ -47,7 +47,12 @@ export default {
   name: 'UserLog',
   components: { elPanel },
   props: {
-
+    baseParams: {
+      type: Object,
+      default: () => {
+        return {};
+      }
+    },
     pageOptions: {
       type: Object,
       default: () => {
@@ -63,7 +68,6 @@ export default {
       pkField: 'serno',
       dialogTitle: '新增',
       dialogVisible: false,
-      baseParams: {},
       deleteUrl: '/api/coopplanapp/delete/',
       searchFormdata: {},
       tableData1: [],
@@ -139,9 +143,8 @@ export default {
   },
   methods: {
     getTableData(data) {
-      getUserList({ ...data, ...this.pageInfo }, this.pageOptions.dataUrl).then(res => {
+      getUserList({ ...data, ...this.pageInfo, ...this.baseParams }, this.pageOptions.dataUrl).then(res => {
         if (res.code === '0') {
-          console.log(res);
           this.tableData = res.rows;
           this.total = res.total;
         }
@@ -151,7 +154,7 @@ export default {
       this.$emit('emitSelection', row);
     },
     resetForm() {
-      this.$refs.refSearchForm.resetFileds();
+      this.$refs.refSearchForm.resetFields();
       this.getTableData();
     },
     onSubmit() {
