@@ -5,9 +5,11 @@
   "author": "Pan <panfree23@gmail.com>",
   "scripts": {
     "dev": "vue-cli-service serve",
+    "start": "node index.js",
+    "server": "nodemon index.js --ignore client",
     "lint": "eslint --ext .js,.vue src",
     "build:prod": "vue-cli-service build",
-    "build:stage": "vue-cli-service build --mode staging",
+    "build": "vue-cli-service build --mode staging",
     "preview": "node build/index.js --preview",
     "new": "plop",
     "svgo": "svgo -f src/icons/svg --config=src/icons/svgo.yml",
@@ -31,6 +33,7 @@
     "jsonlint": "1.6.3",
     "jszip": "3.2.1",
     "normalize.css": "7.0.0",
+    "jsencrypt": "^3.0.0-rc.1",
     "nprogress": "0.2.0",
     "path-to-regexp": "2.4.0",
     "screenfull": "4.2.0",
@@ -42,6 +45,7 @@
     "vue-router": "3.0.2",
     "vue-splitpane": "1.0.4",
     "vuedraggable": "2.20.0",
+    "xy-utils": "0.2.6",
     "vuex": "3.1.0",
     "xlsx": "0.14.1"
   },

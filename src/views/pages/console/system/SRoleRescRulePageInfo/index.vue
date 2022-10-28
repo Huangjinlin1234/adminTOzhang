@@ -1,39 +1,35 @@
 <template>
   <div class="container">
-    <el-panel panel-title="资源权限">
-      <template slot="rightButton">
-        <slot name="button" />
-      </template>
-      <template slot="form">
-      </template>
-      <template slot="table" class="table-content">
-        <div class="role-container">
-          <el-row :gutter="20">
-            <el-col :span="7">
-              <el-input v-model="input" placeholder="请输入内容" :limit-char="limitChar" class="mb18"></el-input>
-              <!-- 角色树 -->
-              <div class="tree-content">
-                <el-tree ref="roleTree" :data="roleTreeData" :props="roleProps" node-key="roleCode" @node-click="selectRoleFn"></el-tree>
-              </div>
-            </el-col>
-            <el-col :span="10">
-              <el-input v-model="input" placeholder="请输入内容" :limit-char="limitChar" class="mb18"></el-input>
-              <!-- 资源树 -->
-              <div class="tree-content">
+    <el-xpanel panel-title="资源权限">
+      <template slot="content">
+        <!-- <el-xtree :tree-data="treeData"></el-xtree> -->
+        <el-row :gutter="20">
+          <el-col :span="7">
+            <!-- <el-input v-model="input" placeholder="请输入内容" :limit-char="limitChar" class="mb18"></el-input> -->
+            <!-- 角色树 -->
+            <!-- <div class="tree-content">
+                <el-tree ref="roleTree" :data="roleTreeData" :props="roleProps" node-key="roleCode" @node-click="selectRoleFn"></el-tree> -->
+            <el-xtree @node-click="clickNode"></el-xtree>
+            <!-- </div> -->
+          </el-col>
+          <el-col :span="10">
+            <el-xtree></el-xtree>
+            <!-- <el-input v-model="input" placeholder="请输入内容" :limit-char="limitChar" class="mb18"></el-input> -->
+            <!-- 资源树 -->
+            <!-- <div class="tree-content">
                 <el-tree ref="rescTree" :data="rescTreeData" :props="rescProps" node-key="rescCode" @node-click="selectRescFn"></el-tree>
-              </div>
-            </el-col>
-            <el-col :span="7">
-              <el-checkbox v-model="rescRootData.roleRescRuleStrs" :options="options"></el-checkbox>
-              <!-- <el-checkbox ref="refCheckbox" v-model="rescRootData.roleRescRuleStrs" :data-url="dataUrl" :data-params="baseParams" json-data="rows" request-type="POST" :default-load="false" :props="[{'key': 'rescActDesc','value':'rescActDesc'}]"></el-checkbox> -->
-              <div style="margin-top: 36px;margin-left: 5px;text-align: center;">
-                <el-button type="primary" @click="saveRoleRescRule">保存</el-button>
-              </div>
-            </el-col>
-          </el-row>
-        </div>
+              </div> -->
+          </el-col>
+          <el-col :span="7">
+            <el-checkbox v-model="rescRootData.roleRescRuleStrs" :options="options"></el-checkbox>
+            <!-- <el-checkbox ref="refCheckbox" v-model="rescRootData.roleRescRuleStrs" :data-url="dataUrl" :data-params="baseParams" json-data="rows" request-type="POST" :default-load="false" :props="[{'key': 'rescActDesc','value':'rescActDesc'}]"></el-checkbox> -->
+            <div style="margin-top: 36px;margin-left: 5px;text-align: center;">
+              <el-button type="primary" @click="saveRoleRescRule">保存</el-button>
+            </div>
+          </el-col>
+        </el-row>
       </template>
-    </el-panel>
+    </el-xpanel>
   </div>
 </template>
 
@@ -237,6 +233,10 @@ export default {
     },
     saveRoleRescRule () {
 
+    },
+    clickNode (data) {
+      console.log("data::: ", data);
+
     }
   }
 };
@@ -270,11 +270,6 @@ export default {
       height: 608px;
       overflow: auto;
     }
-  }
-}
-.form-table{
-  .table-content{
-    padding: 24px;
   }
 }
 </style>

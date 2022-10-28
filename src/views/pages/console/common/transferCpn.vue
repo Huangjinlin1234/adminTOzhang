@@ -3,64 +3,82 @@
     <el-dialog
       :title="dialogTitle"
       :visible.sync="dialogVisible"
+      :modal="modal"
       @close="closeFn"
       @open="initData"
     >
       <div class="transfer-container">
-        <el-transfer v-model="value1" :props="props" :titles="titles" :data="transferData" />
+        <el-transfer v-model="valueArray" :props="defaultProps" :titles="titles" :data="transferData" />
       </div>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="closeFn">确 定</el-button>
+        <el-button type="primary" @click="comfirmFn">确 定</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
+import { getTrfData } from '@/api/systemManage/userManage.js';
 export default {
   props: {
     dialogTitle: {
       type: String,
       default: '新增'
     },
-    dialogVisible: {
+    modal: {
       type: Boolean,
-      default: false
+      default: true
     },
+
     titles: {
       type: Array,
       default: () => {
         return ['可分配岗位', '已选岗位'];
       }
     },
-    transferData: {
-      type: Array,
+    dataUrl: {
+      type: String,
+      default: ''
+    },
+    defaultProps: {
+      type: Object,
       default: () => {
-        return [
-          { roleCode: 1, roleName: '备选项1' },
-          { roleCode: 2, roleName: '备选项2' },
-          { roleCode: 3, roleName: '备选项3' },
-          { roleCode: 4, roleName: '备选项4' },
-          { roleCode: 5, roleName: '备选项5' }
-        ];
+        return {
+          key: 'roleCode',
+          label: 'roleName'
+        };
       }
     }
   },
   data() {
     return {
-      value1: [],
-      props: {
-        key: 'roleCode',
-        roleName: 'roleName'
-      }
+      valueArray: [],
+      transferData: [
+        { orgCode: '00001', orgName: '机构1' },
+        { orgCode: '00002', orgName: '机构2' },
+        { orgCode: '00003', orgName: '机构3' }
+      ],
+      dialogVisible: false
     };
+  },
+  created() {
   },
   methods: {
     initData() {
-      console.log(111);
+      this.getTranasferData();
+    },
+    getTranasferData() {
+      getTrfData({}, this.dataUrl).then(res => {
+        if (res.code == '0') {
+          this.transferData = res.rows;
+        }
+      });
     },
     closeFn() {
       this.$emit('update:dialogVisible', false);
+    },
+    comfirmFn() {
+      this.$emit('confirm', this.valueArray);
     }
   }
 };

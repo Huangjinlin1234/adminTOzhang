@@ -7,75 +7,66 @@
       @close="closeFn"
       @open="initData"
     >
-      <div v-if="pageType=='EDIT'" class="">
-        <el-form ref="form" :model="formdata" inline label-width="80px" size="small">
+      <div class="">
+        <el-form ref="form" :model="queryData" inline label-width="120px" label-suffix="：" size="small">
           <el-form-item label="用户代码">
-            <el-input v-model="formdata.userCode" :disabled="true" />
+            <el-input v-model="queryData.isTeller" />
           </el-form-item>
           <el-form-item>
-            <el-button v-if="pageType==='ADD'" type="primary">查询</el-button>
+            <el-button v-if="pageType==='ADD'" type="primary" @click="queryFn">查询</el-button>
             <el-button v-if="pageType==='EDIT'" type="primary">刷新</el-button>
           </el-form-item>
         </el-form>
       </div>
-      <el-form ref="refForm" label-width="120px" inline>
-        <el-form-item label="是否柜员" ctype="yu-xradio" data-code="YESNO" name="title" :hidden="pageType!=='ADD'">
-          <el-input />
-        </el-form-item>
-        <el-form-item label="用户代码" name="userCode" :disabled="pageType=='DETAIL'">
-          <el-input />
-        </el-form-item>
-        <el-form-item label="用户姓名" name="userName" :disabled="pageType=='DETAIL'">
-          <el-input />
-        </el-form-item>
-        <el-form-item label="身份证号" name="idCardNo" :disabled="pageType=='DETAIL'">
-          <el-input />
-        </el-form-item>
-        <el-form-item label="机构代码" name="orgCode" :disabled="pageType=='DETAIL'">
-          <el-input />
-        </el-form-item>
-        <el-form-item label="所属分行" name="ownBranch" ctype="input" :disabled="pageType=='DETAIL'">
-          <el-input />
-        </el-form-item>
-        <el-form-item label="联系电话" name="telPhone" ctype="input" :disabled="pageType=='DETAIL'">
-          <el-input />
-        </el-form-item>
-        <el-form-item label="邮箱" name="email" ctype="input" :disabled="pageType=='DETAIL'">
-          <el-input />
-        </el-form-item>
-        <el-form-item label="职级" name="staffingLevel" ctype="input" :disabled="pageType=='DETAIL'">
-          <el-input />
-        </el-form-item>
-        <el-form-item label="状态" name="status" ctype="select" data-code="USER_STATUS" :disabled="pageType=='DETAIL'">
-          <el-input />
-        </el-form-item>
-        <el-form-item label="密码失效日期" name="pwdValdaDate" ctype="yu-date-picker" :disabled="pageType=='DETAIL'">
-          <el-input />
-        </el-form-item>
-        <el-form-item label="是否使用指纹" name="isUseFingerprint" ctype="select" data-code="YESNO" :disabled="pageType=='DETAIL'">
-          <el-input />
-        </el-form-item>
-        <el-form-item label="柜员级别" name="tellerLevel" ctype="select" :disabled="pageType=='DETAIL'">
-          <el-input />
-        </el-form-item>
-        <el-form-item label="柜员类别" name="tellerCategory" ctype="input" :disabled="pageType=='DETAIL'">
-          <el-input />
-        </el-form-item>
-        <el-form-item label="学历水平" name="eduLevel" ctype="input" :disabled="pageType=='DETAIL'">
-          <el-input />
-        </el-form-item>
-        <el-form-item label="最后修改人" name="lastUpdateUser" ctype="input" :disabled="pageType=='DETAIL'">
-          <el-input />
-        </el-form-item>
-        <el-form-item label="最后修改日期" name="lastUpdateTime" ctype="input" :disabled="pageType=='DETAIL'">
-          <el-input />
-        </el-form-item>
-        <el-form-item label="创建日期" name="createTime" ctype="input" :disabled="pageType=='DETAIL'">
-          <el-input />
-        </el-form-item>
-        <el-form-item label="创建人" name="createUser" ctype="input" :disabled="pageType=='DETAIL'">
-          <el-input />
-        </el-form-item>
+      <el-form ref="refForm" :model="formdata" label-width="120px" :rules="rules" label-suffix="：" inline>
+        <el-row>
+          <el-col v-for="(item,index) in formFileds" :key="index" :span="item.span||12">
+            <el-form-item :label="item.label" :prop="item.prop">
+              <!--单选框 -->
+              <template v-if="item.ctype==='radio'">
+                <el-radio-group v-model="formdata[item.prop]" :disabled="pageType=='DETAIL'">
+                  <el-radio label="N">否</el-radio>
+                  <el-radio label="Y">是</el-radio>
+                </el-radio-group>
+              </template>
+              <!--输入框 -->
+              <template v-if="item.ctype==='input'">
+                <el-input v-model="formdata[item.prop]" :disabled="pageType=='DETAIL'" :suffix-icon="item.suffixIcon" />
+              </template>
+              <template v-if="item.ctype==='select'">
+                <el-select v-model="formdata[item.prop]">
+                  <el-option v-for="(ite,idx) in item.options" :key="idx" :label="ite.label" :value="ite.value" />
+                </el-select>
+              </template>
+              <!--日期框 -->
+              <template v-if="item.ctype==='datepicker'">
+                <el-date-picker
+                  v-model="formdata[item.prop]"
+                  :disabled="pageType=='DETAIL'"
+                  type="date"
+                  placeholder="选择日期"
+                />
+              </template>
+              <!--单选框 -->
+              <template v-if="item.ctype==='radio'">
+                <el-radio-group v-model="formdata[item.prop]" :disabled="pageType=='DETAIL'">
+                  <el-radio v-for="(ite,idx) in item.options" :key="idx" :label="ite.label" />
+                </el-radio-group>
+              </template>
+              <!--文本输入框框 -->
+              <template v-if="item.ctype==='textarea'">
+                <el-input v-model="formdata[item.prop]" :disabled="pageType=='DETAIL'" type="textarea" :autosize="{ minRows: 5 }" />
+              </template>
+              <!--复选框 -->
+              <template v-if="item.ctype==='checkbox'">
+                <el-checkbox-group v-model="formdata[item.prop]" :disabled="pageType=='DETAIL'">
+                  <el-checkbox v-for="(ite,idx) in item.options" :key="idx" :label="ite.label" :name="ite.value" />
+                </el-checkbox-group>
+              </template>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="closeFn">取 消</el-button>
@@ -86,24 +77,57 @@
 </template>
 
 <script>
+import { userEdit, queryUser } from '@/api/systemManage/userManage.js';
+import { deepClone } from '@/utils';
 export default {
   props: {
-    dialogVisible: {
-      type: Boolean,
-      default: false
-    },
+
     userInfo: {
       type: Object,
       default: () => {
         return {};
       }
     },
-    pageType: String
+    pageType: {
+      type: String,
+      default: ''
+    }
   },
   data() {
     return {
+      dialogVisible: false,
       editUrl: '/api/s/user',
-      formdata: { }
+      queryData: { },
+      formdata: { isguiyuan: 'N' },
+      formFileds: [
+        { label: '是否柜员', prop: 'isguiyuan', ctype: 'radio', span: 24 },
+        { label: '用户代码', prop: 'userCode', ctype: 'input' },
+        { label: '用户姓名', prop: 'userName', ctype: 'input' },
+        { label: '昵称', prop: 'nickName', ctype: 'input' },
+        { label: '身份证号', prop: 'idCardNo', ctype: 'input' },
+        { label: '生日', prop: 'birthday', ctype: 'datepicker' },
+        { label: '年龄', prop: 'age', ctype: 'input' },
+        { label: '性别', prop: 'sex', ctype: 'input' },
+        { label: '机构代码', prop: 'orgCode', ctype: 'input', suffixIcon: 'el-icon-search' },
+        { label: '状态', prop: 'status', ctype: 'input' },
+        { label: '联系电话', prop: 'telPhone', ctype: 'input' },
+        { label: '邮箱', prop: 'email', ctype: 'input' },
+        { label: '所属分行', prop: 'ownBranch', ctype: 'input' },
+        { label: '职级', prop: 'staffingLevel', ctype: 'input' },
+        { label: '学历水平', prop: 'eduLevel', ctype: 'input' },
+        { label: '备注', prop: 'eduLevel', ctype: 'textarea', span: 24 }
+        // { label: '密码失效日期', prop: 'pwdValdaDate', ctype: 'datepicker' },
+        // { label: '是否使用指纹', prop: 'isUseFingerprint', ctype: 'radio' },
+        // { label: '柜员级别', prop: 'tellerLevel', ctype: 'input' },
+        // { label: '柜员类别', prop: 'tellerCategory', ctype: 'input' },
+        // { label: '最后修改人', prop: 'lastUpdateUser', ctype: 'input' },
+        // { label: '最后修改日期', prop: 'lastUpdateTime', ctype: 'datepicker' },
+        // { label: '创建日期', prop: 'createTime', ctype: 'datepicker' },
+        // { label: '创建人', prop: 'createUser', ctype: 'input' }
+      ],
+      rules: {
+        userCode: [{ required: true }]
+      }
     };
   },
   computed: {
@@ -121,29 +145,28 @@ export default {
   },
   methods: {
     initData() {
-      this.$nextTick(() => {
-        if (this.pageType !== 'ADD') {
-          this.formdata = this.userInfo;
-          this.$refs.refForm.formdata = this.userInfo;
-        } else if (this.pageType == 'ADD') { // 新增清空表单数据
-          this.$refs.refForm.formdata = {};
+      if (this.pageType !== 'ADD') {
+        this.formdata = deepClone(this.userInfo);
+      }
+    },
+    queryFn() {
+      queryUser(this.queryData).then(res => {
+        if (res.code === '0') {
         }
       });
     },
     closeFn() {
-      this.$emit('update:dialogVisible', false);
+      this.$refs.refForm.resetFields();
+      this.dialogVisible = false;
     },
     comfirmFn() {
-      console.log(this.$refs.refForm.formdata, 'ffff');
-      // this.$request({
-      //   method: 'POST',
-      //   url: this.editUrl,
-      //   data: this.formdata
-      // }).then(res => {
-      //   if (res.code == '0') {
-
-      //   }
-      // });
+      userEdit(this.formdata).then(res => {
+        if (res.code === '0') {
+          this.closeFn();
+          // 刷新表格
+          this.$emit('refresh');
+        }
+      });
     }
   }
 };

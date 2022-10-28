@@ -68,9 +68,15 @@
 </template>
 
 <script>
-import { validUsername } from '@/utils/validate';
-import SocialSign from './components/SocialSignin';
-import { genUUID } from '@/utils/index.js';
+import { validUsername } from '@/utils/validate'
+import SocialSign from './components/SocialSignin'
+import { genUUID } from '@/utils/index.js'
+import JSEncrypt from 'jsencrypt'
+import { getRSAPublicKey, getSystemName } from '@/utils/auth'
+import {
+  loginFn,
+  getPubkey
+} from '@/api/user'
 export default {
   name: 'Login',
   components: { SocialSign },
@@ -78,21 +84,21 @@ export default {
     const validateUsername = (rule, value, callback) => {
       if (value) {
         if (!validUsername(value)) {
-          callback(new Error('Please enter the correct user name'));
+          callback(new Error('Please enter the correct user name'))
         } else {
-          callback();
+          callback()
         }
       } else {
-        callback(new Error('Please enter the correct user name'));
+        callback(new Error('Please enter the correct user name'))
       }
-    };
+    }
     const validatePassword = (rule, value, callback) => {
       if (value.length < 6) {
-        callback(new Error('The password can not be less than 6 digits'));
+        callback(new Error('The password can not be less than 6 digits'))
       } else {
-        callback();
+        callback()
       }
-    };
+    }
     return {
       loginForm: {
         username: 'admin',
@@ -112,87 +118,147 @@ export default {
       showDialog: false,
       redirect: undefined,
       otherQuery: {}
-    };
+    }
   },
   watch: {
     $route: {
       handler: function(route) {
-        const query = route.query;
+        const query = route.query
         if (query) {
-          this.redirect = query.redirect;
-          this.otherQuery = this.getOtherQuery(query);
+          this.redirect = query.redirect
+          this.otherQuery = this.getOtherQuery(query)
         }
       },
       immediate: true
     }
   },
   created() {
-    this.clientId = genUUID(16, 16);
+    this.clientId = genUUID(16, 16)
   },
   mounted() {
     if (this.loginForm.username === '') {
-      this.$refs.username.focus();
+      this.$refs.username.focus()
     } else if (this.loginForm.password === '') {
-      this.$refs.password.focus();
+      this.$refs.password.focus()
     }
-    this.freshImageCodeFn();
+    this.freshImageCodeFn()
   },
   destroyed() {
     // window.removeEventListener('storage', this.afterQRScan)
   },
   methods: {
     checkCapslock(e) {
-      const { key } = e;
-      this.capsTooltip = key && key.length === 1 && (key >= 'A' && key <= 'Z');
+      const { key } = e
+      this.capsTooltip = key && key.length === 1 && (key >= 'A' && key <= 'Z')
+    },
+    // 登录密码加密
+    encodePassword: function(pwd) {
+      var encryptPwd = this.encryptPassword(pwd)
+      // #TODO 不进行encodeURIComponent编码
+      // var encodePwd = encodeURIComponent(encryptPwd);
+      // return encodePwd;
+      return encryptPwd
+    },
+    // 匹配密码加密
+    encryptPassword: function(pwd) {
+      var encryptor = new JSEncrypt()
+      encryptor.setPublicKey(getRSAPublicKey())
+      return encryptor.encrypt(pwd)
     },
     freshImageCodeFn() {
       // var clientId = genUUID(16, 16);
-      this.imageCodePicture = 'http://47.107.173.118:8808/e4a/api/codeImage?clientId=' + this.clientId + '&t=' + (new Date()).getTime();
-      this.imageCode = '';
-      return this.imageCodePicture;
+      this.imageCodePicture = '/e4a/api/codeImage?clientId=' + this.clientId + '&t=' + (new Date()).getTime()
+      this.imageCode = ''
+      return this.imageCodePicture
     },
     showPwd() {
       if (this.passwordType === 'password') {
-        this.passwordType = '';
+        this.passwordType = ''
       } else {
-        this.passwordType = 'password';
+        this.passwordType = 'password'
       }
       this.$nextTick(() => {
-        this.$refs.password.focus();
-      });
+        this.$refs.password.focus()
+      })
     },
     handleLogin() {
+      const _this = this
       this.loginForm = {
-        usercode: 'admin',
-        password: 'admin@111',
+        usercode: this.loginForm.username,
+        password: this.encryptPassword(this.loginForm.password),
         imageCode: this.imageCode,
         clientId: this.clientId,
         grant_type: 'password'
-      };
+      }
       this.$refs.loginForm.validate(valid => {
         if (valid) {
-          this.loading = true;
-          this.$store.dispatch('user/login', this.loginForm)
-            .then(() => {
-              this.$router.push({ path: this.redirect || '/', query: this.otherQuery });
-              this.loading = false;
-            })
-            .catch(() => {
-              this.loading = false;
-            });
+          getPubkey().then(response => {
+            _this.handleLoginFn(_this.loginForm)
+          })
+          // this.$store.dispatch('user/login', this.loginForm)
+          //   .then(() => {
+          //     console.log(3333)
+          //     this.$router.push({ path: this.redirect || '/'});
+          //     this.loading = false;
+          //   })
+          //   .catch(() => {
+          //     this.loading = false;
+          //   });
         } else {
-          console.log('error submit!!');
-          return false;
+          console.log('error submit!!')
+          return false
         }
-      });
+      })
+    },
+    handleLoginFn(data) {
+      loginFn(data).then(response => {
+        this.btnLoginLoading.show = false
+        if (response && response.rows && response.code === '0') { // 1、登录成功
+          this.message = null
+          this.$store.commit('oauth/SET_TOKEN', {
+            access_token: response.rows,
+            expires_in: 99999
+          })
+          this.$store.dispatch('oauth/getAccessInfo').then((resData) => {
+            this.redirectToFrame()
+          })
+        } else {
+          this.freshImageCodeFn()
+        }
+        if (response && response.code === '10000002') { // 2、首次登录
+          var _this = this
+          _this.$confirm(_this.$t('login.scdlmmxg'), _this.$t('component.msg_title'), {
+            confirmButtonText: _this.$t('component.btn_confirm'),
+            cancelButtonText: _this.$t('component.btn_cancel'),
+            type: 'warning'
+          }).then(function() {
+            _this.freshImageCodeFn()
+            // 保存 token信息用于修改密码后登出
+            _this.$store.commit('oauth/SET_TOKEN', {
+              access_token: response.access_token,
+              expires_in: response.expires_in
+            })
+            const { access_token, expires_in } = response
+            _this.localToken = { access_token, expires_in } // 暂存，此时还不能访问需要认证的资源
+            _this.firstLoginRes = response
+            _this.dialogVisible = true
+            // _this.message = response.message ? response.message : _this.$t('login.scdlmmxg');
+          })
+        }
+      }).catch((e) => {
+        const response = e.response.data
+        this.btnLoginLoading.show = false
+        this.message = response.message || this.$t('login.dlsbqlxxtgly')
+        this.freshImageCodeFn()
+      })
     },
     getOtherQuery(query) {
       return Object.keys(query).reduce((acc, cur) => {
         if (cur !== 'redirect') {
-          acc[cur] = query[cur];
+          acc[cur] = query[cur]
         }
-        return acc;
-      }, {});
+        return acc
+      }, {})
     }
     // afterQRScan() {
     //   if (e.key === 'x-admin-oauth-code') {
@@ -213,7 +279,7 @@ export default {
     //   }
     // }
   }
-};
+}
 </script>
 
 <style lang="scss">

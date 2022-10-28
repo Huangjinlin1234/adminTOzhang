@@ -1,5 +1,7 @@
 'use strict'
 const path = require('path')
+const pkg = require('./package.json');
+const webpack = require('webpack');
 const defaultSettings = require('./src/settings.js')
 
 function resolve(dir) {
@@ -13,7 +15,47 @@ const name = defaultSettings.title || 'vue Element Admin' // page title
 // For example, Mac: sudo npm run
 // You can change the port by the following method:
 // port = 9527 npm run dev OR npm run dev --port = 9527
-const port = process.env.port || process.env.npm_config_port || 9527 // dev port
+const port = process.env.VUE_APP_DEV_PORT || process.env.npm_config_port || 9909 // dev port
+
+/**
+ * 开发模式，获取代理配置
+ * 注: 若配置项VUE_APP_BASE_API包含协议、域名[IP]、端口[可选]，开发模式则默认配置代理
+ */
+const getProxyConfig = () => {
+  const devEnv = process.env.NODE_ENV === 'development'; // 开发环境
+  const baseApi = process.env.VUE_APP_BASE_API; // 应用服务前缀URL
+  let proxyPrefix = process.env.VUE_APP_PROXY_PREFIX; // 代理API前缀
+  const match = /^(https?:\/\/[0-9a-z.]+)(:[0-9]+)?([/0-9a-z.]+)?/i; // 匹配URL(协议+域名+端口)
+  const matchResult = match.exec(baseApi);
+
+  let devServerProxy = {}; // 配置的代理对象，默认false，为空
+  console.log("devEvn="+devEnv)
+  if (devEnv && matchResult) {
+    // VUE_APP_BASE_API代理配置演示，/dev-proxy-api/xxx-api/* => https://172.16.20.92:8102/xxx-api/*
+    // 详见: https://cli.vuejs.org/config/#devserver-proxy
+    // 可数组配置多个
+    if (Object.prototype.toString.call(proxyPrefix) === '[object String]') {
+      proxyPrefix = proxyPrefix.split(',');
+    }
+    if (Array.isArray(proxyPrefix)) {
+      proxyPrefix.forEach(item => {
+        devServerProxy[item] = {
+          target: `${matchResult[1] + matchResult[2]}`, // 协议+域名
+          changeOrigin: true,
+          logLevel: 'debug'
+          // pathRewrite: {
+          //   ['^' + item]: item
+          // }
+        };
+      });
+    }
+  }
+  devServerProxy = JSON.stringify(devServerProxy) == '{}' ? false : devServerProxy;
+  console.log('配置代理', devServerProxy);
+  return devServerProxy;
+};
+
+
 
 // All configuration item explanations can be find in https://cli.vuejs.org/config/
 module.exports = {
@@ -27,15 +69,18 @@ module.exports = {
   publicPath: '/',
   outputDir: 'dist',
   assetsDir: 'static',
-  lintOnSave: process.env.NODE_ENV === 'development',
+  lintOnSave: process.env.NODE_ENV === 'development',// 开发环境
   productionSourceMap: false,
   devServer: {
-    port: port,
-    open: true,
+    publicPath: '/',
+    port: port, // 默认端口为8080，此端口冲突，也会出现代理异常的情况
+    open: true, // 启动打开浏览器
+    hot: true, // 热更新
     overlay: {
       warnings: false,
       errors: true
     },
+    proxy: getProxyConfig(),
     before: require('./mock/mock-server.js')
   },
   configureWebpack: {

@@ -2,21 +2,14 @@
   <div class="org-container">
     <formTable :page-options="pageOptions" @emitSelection="selectionFn">
       <template slot="button">
-        <el-button ref="btn_insertFn" type="primary" @click="openDialog('ADD')">新增</el-button>
-        <el-button ref="btn_insertFn" @click="openDialog('EDIT')">修改</el-button>
-        <el-button ref="btn_deleteFn" type="primary" @click="openDialog('DETAIL')">查看</el-button>
-        <selectTree />
-        <el-input
-          v-model="input4"
-          placeholder="请输入内容"
-        >
-          <i slot="suffix" class="el-input__icon el-icon-search" />
-        </el-input>
+        <el-button type="primary" @click="openDialog('ADD','refOrgEdit','orgInfo','orgCode')">新增</el-button>
+        <el-button @click="openDialog('EDIT','refOrgEdit','orgInfo','orgCode')">修改</el-button>
+        <el-button @click="openDialog('DETAIL','refOrgEdit','orgInfo','orgCode')">查看</el-button>
+        <el-button @click="cancelOrgFn">注销</el-button>
       </template>
     </formTable>
     <orgEdit
       ref="refOrgEdit"
-      :dialog-visible.sync="showDialog"
       :dialog-title="dialogTitle"
       :page-type="pageType"
       :org-info="orgInfo"
@@ -26,16 +19,17 @@
 <script>
 import formTable from '@/views/pages/console/common/formTable.vue';
 import minxinDiaFn from '@/views/pages/console/common/minxin.js';
-import selectTree from '@/views/pages/console/common/selectTree.vue';
 import orgEdit from './orgEdit.vue';
+import { orgEditApi } from '@/api/systemManage/orgManage.js';
+
 export default {
-  components: { formTable, orgEdit, selectTree },
+  components: { formTable, orgEdit },
   mixins: [minxinDiaFn],
   data() {
     return {
       pageOptions: {
         title: '机构管理',
-        dataUrl: '/api/s/orgs',
+        dataUrl: '/console/api/s/orgs',
         formFileds: [
           { label: '机构代码', name: 'orgCode', ctype: 'input' },
           { label: '机构名称', name: 'orgName', ctype: 'input' }
@@ -47,15 +41,32 @@ export default {
           { label: '上级机构代码', prop: 'orgParentCode' }
         ]
       },
-      selections: [],
+      selections: {},
       orgInfo: {},
       input4: ''
     };
   },
   methods: {
-    selectionFn(selections) {
-      this.selections = selections;
-      this.orgInfo = selections[0];
+    selectionFn(selection) {
+      this.orgInfo = selection;
+    },
+    cancelOrgFn() {
+      const orgName = this.orgInfo.orgName;
+      if (!orgName) {
+        this.$message({ message: '请先选择一条记录', type: 'warning' });
+        return;
+      }
+      this.$confirm(`是否注销机构【${orgName}】?`, '提示', {
+        cancelButtonText: '取消',
+        confirmButtonText: '确定',
+        type: 'warning'
+      }).then(() => {
+        orgEditApi({ orgCode: this.orgInfo.orgCode, status: '0' }).then(res => {
+          if (res.code == '0') {
+            this.$message.success(res.message);
+          }
+        });
+      });
     }
   }
 };

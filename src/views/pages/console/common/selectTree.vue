@@ -1,7 +1,7 @@
 <template>
   <el-select
+    ref="refSelect"
     v-model="form.Id"
-
     filterable
     placeholder="请选择..."
   >
@@ -23,7 +23,7 @@
 export default {
   data() {
     return {
-      form: { Id: '11' },
+      form: { Id: '' },
       value: '',
       data: [{
         label: '一级 1',
@@ -68,8 +68,10 @@ export default {
   },
   methods: {
     nodeClick(node) {
-      console.log(node, 'nn');
+      console.log(this.$refs.refSelect, 'refSelect');
+      this.$refs.refSelect.visible = false;
       this.form.Id = node.label;
+      this.$emit('emitNode', node);
     }
   }
 };

@@ -1,20 +1,15 @@
 <template>
   <div class="user-container">
-    <formTable :page-options="pageOptions" @emitSelection="selectionFn">
+    <formTable ref="formTable" :page-options="pageOptions" @emitSelection="selectionFn">
       <template slot="button">
-        <el-button ref="btn_insertFn" type="primary" @click="openDialog('ADD')">新增</el-button>
-        <el-button ref="btn_insertFn" type="primary" @click="openDialog('EDIT')">修改</el-button>
-        <el-button ref="btn_deleteFn" type="primary" @click="openDialog('DETAIL')">查看</el-button>
-        <el-button ref="btn_viewFn" type="primary" @click="cancelUser('user')">注销</el-button>
-        <el-button ref="btn_updateFn" type="primary" @click="setDuty">设置岗位</el-button>
-        <selectTree />
-        <el-input
-          v-model="input4"
-          placeholder="请输入内容"
-        >
-          <i slot="suffix" class="el-input__icon el-icon-search" />
-        </el-input>
-
+        <el-button type="primary" @click="openDialog('ADD','refUserEdit','userInfo','userCode')">新增</el-button>
+        <el-button type="primary" @click="openDialog('EDIT','refUserEdit','userInfo','userCode')">修改</el-button>
+        <el-button type="primary" @click="openDialog('DETAIL','refUserEdit','userInfo','userCode')">查看</el-button>
+        <el-button type="primary" @click="cancelUser('user')">注销</el-button>
+        <el-button type="primary" @click="setDuty">设置岗位</el-button>
+        <el-button type="primary" @click="setRole">设置角色</el-button>
+        <el-button type="primary" @click="resetPwdFn">重置密码</el-button>
+        <el-button type="primary" @click="openDialog('','refTransBusiness','userInfo','userCode')">移交业务</el-button>
       </template>
     </formTable>
     <userEdit
@@ -23,33 +18,48 @@
       :dialog-title="dialogTitle"
       :page-type="pageType"
       :user-info="userInfo"
+      @refresh="refreshTable"
     />
     <transferCpn
+      ref="refTrfDuty"
       dialog-title="设置岗位"
-      :dialog-visible.sync="setDutyOpen"
+      :data-url="dutyDataUrl"
+      @confirm="confirmFnDuty"
     />
-
+    <transferCpn
+      ref="refTrfRole"
+      dialog-title="设置角色"
+      :data-url="roleDataUrl"
+      :titles="titlesRole"
+      :default-props="roleProps"
+      @confirm="confirmFnRole"
+    />
+    <transBusiness
+      ref="refTransBusiness"
+      :user-info="userInfo"
+    />
   </div>
 </template>
 <script>
 import formTable from '@/views/pages/console/common/formTable.vue';
 import transferCpn from '@/views/pages/console/common/transferCpn.vue';
-import selectTree from '@/views/pages/console/common/selectTree.vue';
 import minxinDiaFn from '@/views/pages/console/common/minxin.js';
 import userEdit from './userEdit.vue';
+import transBusiness from './transBusiness.vue';
+import { resetPwd, saveTransfer } from '@/api/systemManage/userManage.js';
 export default {
-  components: { formTable, userEdit, transferCpn, selectTree },
+  components: { formTable, userEdit, transferCpn, transBusiness },
   mixins: [minxinDiaFn],
   data() {
     return {
       pageOptions: {
         title: '用户管理',
-        dataUrl: '/api/s/users',
+        dataUrl: '/console/api/s/users',
         formFileds: [
-          { label: '用户代码', name: 'orgCode', ctype: 'input' },
-          { label: '用户姓名', name: 'orgName', ctype: 'input' },
-          { label: '性别', name: 'orgName', ctype: 'input' },
-          { label: '状态', name: 'orgName', ctype: 'input' }
+          { label: '用户代码', name: 'userCode', ctype: 'input' },
+          { label: '用户姓名', name: 'userName', ctype: 'input' },
+          { label: '性别', name: 'sex', ctype: 'input' },
+          { label: '状态', name: 'status', ctype: 'input' }
         ],
         tableFileds: [
           { label: '用户代码', prop: 'userCode', ctype: 'span' },
@@ -61,22 +71,112 @@ export default {
           { label: '是否柜员', prop: 'isSyncUser', ctype: 'span' }
         ]
       },
-      selections: [],
-      setDutyOpen: false,
-      input4: ''
+      selection: {},
+      input4: '',
+      pageType: '',
+      roleDataUrl: '/console/api/s/queryRoleAll',
+      dutyDataUrl: '/console/api/s/all/dutys',
+      roleProps: {
+        key: 'roleCode',
+        label: 'roleName'
+      },
+      roleSaveUrl: '/console/api/s/userRole',
+      dutySaveUrl: '/console/api/s/dutySaveUrl',
+      titlesRole: ['可分配角色', '已选岗位']
     };
   },
   computed: {
     userInfo() {
-      return this.selections[0];
+      return this.selection;
     }
   },
   methods: {
-    selectionFn(selections) {
-      this.selections = selections;
+    selectionFn(selection) {
+      this.selection = selection;
     },
     setDuty() {
-      this.setDutyOpen = !this.setDutyOpen;
+      if (!this.userInfo.userCode) {
+        this.$message({ message: '请先选择一条记录', type: 'warning' });
+        return;
+      }
+      this.$refs.refTrfDuty.dialogVisible = true;
+    },
+    setRole() {
+      if (!this.userInfo.userCode) {
+        this.$message({ message: '请先选择一条记录', type: 'warning' });
+        return;
+      }
+      this.$refs.refTrfRole.dialogVisible = true;
+    },
+    refreshTable() {
+      this.$refs.formTable.getTableData();
+    },
+    emitNodeFn(obj) {
+      this.$refs.formTable.getTableData({ orgCode: obj.Id });
+    },
+    // 注销用户
+    cancelUser(sysModule) {
+      if (!this.userInfo.userCode) {
+        this.$message({ message: '请先选择一条记录', type: 'warning' });
+        return;
+      }
+      if (this.userInfo.status == '0') {
+        this.$message({ message: '已注销用户不能注销', type: 'warning' });
+        return;
+      }
+      this.$confirm('是否注销用户?', '提示', {
+        cancelButtonText: '取消',
+        confirmButtonText: '确定',
+        type: 'warning' }).then(() => {
+        this.$request({
+          method: 'DELETE',
+          url: '/console/api/s/' + sysModule,
+          data: this.userInfo
+        }).then(res => {
+          if (res.code === '0') {
+          }
+        });
+      });
+    },
+    // 重置密码
+    resetPwdFn() {
+      console.log(this.userInfo.userCode, 'uuu');
+      if (!this.userInfo.userCode) {
+        this.$message({ message: '请先选择一条记录', type: 'warning' });
+        return;
+      }
+      this.$confirm('密码重置只对本地用户有效！是否重置密码?', '提示', {
+        cancelButtonText: '取消',
+        confirmButtonText: '确定',
+        type: 'warning' }).then(() => {
+        resetPwd({ userCode: this.userInfo.userCode }).then(res => {
+          if (res.code === '0') {
+            console.log('成功');
+          }
+        });
+      });
+    },
+    // 移交业务
+    transBusiness() {
+
+    },
+    confirmFnRole(valueArray) {
+      const userCode = this.selection.userCode;
+      saveTransfer({ userCode, roleCodes: valueArray }, this.roleSaveUrl).then(res => {
+        if (res.code == '0') {
+          this.$refs.refTrfRole.dialogVisible = false;
+          this.$message.success(res.message);
+        }
+      });
+    },
+    confirmFnDuty(valueArray) {
+      const legalOrgCode = this.selection.legalOrgCode;
+      saveTransfer({ legalOrgCode, orgCodes: valueArray }, this.saveTransfer).then(res => {
+        if (res.code == '0') {
+          this.$refs.refTrfDuty.dialogVisible = false;
+          this.$message.success(res.message);
+        }
+      });
     }
   }
 };
