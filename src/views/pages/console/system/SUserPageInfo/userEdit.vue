@@ -119,7 +119,7 @@ export default {
         { label: '所属分行', prop: 'ownBranch', ctype: 'input' },
         { label: '职级', prop: 'staffingLevel', ctype: 'input' },
         { label: '学历水平', prop: 'eduLevel', ctype: 'input' },
-        { label: '备注', prop: 'eduLevel', ctype: 'textarea', span: 24 }
+        { label: '备注', prop: 'memo', ctype: 'textarea', span: 24 }
         // { label: '密码失效日期', prop: 'pwdValdaDate', ctype: 'datepicker' },
         // { label: '是否使用指纹', prop: 'isUseFingerprint', ctype: 'radio' },
         // { label: '柜员级别', prop: 'tellerLevel', ctype: 'input' },
