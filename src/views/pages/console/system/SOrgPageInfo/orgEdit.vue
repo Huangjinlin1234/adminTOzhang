@@ -235,4 +235,7 @@ export default {
     margin: 0 auto;
     width: 80%;
   }
+  el-button:visited{
+    background-color: red;
+  }
 </style>

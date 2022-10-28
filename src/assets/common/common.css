@@ -902,6 +902,11 @@ a.underline {  text-decoration: underline;  cursor: pointer;}
   left: 20px;
   top: 4px;
 }
+.el-menu .el-menu-item svg {
+  margin-right: 10px;
+}
+.el-menu .el-submenu .el-submenu__title svg {margin-right: 10px;}
+
 .el-menu .is-active{
   background-color: #efb917 !important;
   color: #183075 !important;
@@ -927,7 +932,7 @@ a.underline {  text-decoration: underline;  cursor: pointer;}
 .el-collapse-item__header{  font-weight: 700; font-size: 16px;}
 .sibar-container .el-scrollbar{height: calc(100% - 42px);}
 .app-wrapper{height: 100%;}
-.app-wrapper .sibar-container{height:  calc(100% - 100px);}
+.app-wrapper .sibar-container{height:  calc(100% - 70px);}
 
 .el-dialog .dialog-footer{text-align: center;}
 .el-dialog .el-dialog__header .el-dialog__title {font-weight: 700; font-size: 16px;}
