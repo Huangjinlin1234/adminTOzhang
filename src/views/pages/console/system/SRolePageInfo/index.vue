@@ -75,7 +75,7 @@ export default {
       }).then(() => {
         cancelRoleApi({}.then(res => {
           if (res.code === '0') {
-
+            this.$message.success(res.message);
           }
         }));
       });
