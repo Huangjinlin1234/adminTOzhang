@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    title="修改"
+    title="详情"
     :visible.sync="dialogVisible"
     :fullscreen="true"
     @close="closeFn"
@@ -32,7 +32,7 @@
 import { roleViewApi } from '@/api/systemManage/roleManage.js';
 export default {
   props: {
-    roleInfo: {
+    moduleInfo: {
       type: Object,
       default: () => {
         return {};

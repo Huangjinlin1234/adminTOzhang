@@ -930,3 +930,7 @@ a.underline {  text-decoration: underline;  cursor: pointer;}
 .app-wrapper{height: 100%;}
 .app-wrapper .sibar-container{height:  calc(100% - 100px);}
 .dialog-footer{text-align: center;}
+
+.el-input .el-input__suffix {
+  cursor: pointer;
+}

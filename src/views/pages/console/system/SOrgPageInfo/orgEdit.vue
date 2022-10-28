@@ -18,7 +18,7 @@
           </el-form-item>
         </el-form>
       </div>
-      <el-form ref="refForm" :model="formdata" label-width="120px" :rules="rules" label-suffix="：" inline>
+      <el-form ref="refForm" :model="formdata" label-width="120px" :rules="rules" label-suffix="：">
         <el-row>
           <el-col v-for="(item,index) in formFileds" :key="index" :span="item.span||12">
             <el-form-item :label="item.label" :prop="item.prop">
