@@ -563,7 +563,11 @@ export default {
             //   'meta': { 'title': '业务流程中发起征信查询' },
             //   'name': 'thirtyth'
             // }
-
+            // {
+            //   'path': 'fourteenth',
+            //   'meta': { 'title': '押品信息管理' },
+            //   'name': 'fourteenth'
+            // },
           ]
         },
         {

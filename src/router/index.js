@@ -293,6 +293,12 @@ export const constantRoutes = [
       //   name: "thirtyth",
       //   meta: { title: "业务流程中发起征信查询" }
       // }
+      // {
+      //   path: "fourteenth",
+      //   component: () => import("@/views/template/fourteenth/index"),
+      //   name: "fourteenth",
+      //   meta: { title: "押品信息管理" }
+      // },
     ]
   }
 ];
