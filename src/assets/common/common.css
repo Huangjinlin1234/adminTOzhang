@@ -902,6 +902,9 @@ a.underline {  text-decoration: underline;  cursor: pointer;}
   left: 20px;
   top: 4px;
 }
+.el-menu>div{
+  width: 240px;
+}
 .el-menu .el-menu-item svg {
   margin-right: 10px;
 }
