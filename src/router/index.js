@@ -268,7 +268,31 @@ export const constantRoutes = [
         component: () => import("@/views/template/four/index"),
         name: "four",
         meta: { title: "模板四" }
-      }
+      },
+      // {
+      //   path: "ninth",
+      //   component: () => import("@/views/template/ninth/index"),
+      //   name: "ninth",
+      //   meta: { title: "征信授权管理" }
+      // },
+      // {
+      //   path: "tenth",
+      //   component: () => import("@/views/template/tenth/index"),
+      //   name: "tenth",
+      //   meta: { title: "征信查询管理" }
+      // },
+      // {
+      //   path: "twlth",
+      //   component: () => import("@/views/template/twlth/index"),
+      //   name: "twlth",
+      //   meta: { title: "征信查询台账" }
+      // },
+      // {
+      //   path: "thirtyth",
+      //   component: () => import("@/views/template/thirtyth/index"),
+      //   name: "thirtyth",
+      //   meta: { title: "业务流程中发起征信查询" }
+      // }
     ]
   }
 ];

@@ -542,7 +542,27 @@ export default {
               'path': 'four',
               'meta': { 'title': '模板四' },
               'name': 'four'
-            }
+            },
+            // {
+            //   'path': 'ninth',
+            //   'meta': { 'title': '征信授权管理' },
+            //   'name': 'ninth'
+            // },
+            // {
+            //   'path': 'tenth',
+            //   'meta': { 'title': '征信查询管理' },
+            //   'name': 'tenth'
+            // },
+            // {
+            //   'path': 'twlth',
+            //   'meta': { 'title': '征信查询台账' },
+            //   'name': 'twlth'
+            // },
+            // {
+            //   'path': 'thirtyth',
+            //   'meta': { 'title': '业务流程中发起征信查询' },
+            //   'name': 'thirtyth'
+            // }
 
           ]
         },

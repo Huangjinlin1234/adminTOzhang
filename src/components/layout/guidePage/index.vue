@@ -1,6 +1,6 @@
 <template>
   <el-dialog :title="dialogTitle" :visible.sync="dialogView" :width="dialogWidth" :before-close="closeDialog">
-    <el-xform ref="refForm" :form-data="formData" :form-fields="formFields" label-width="120" :colspan="1"></el-xform>
+    <el-xform ref="refForm" :form-data="formData" :form-fields="formFields" @icon-click="clickIconFn" label-width="120" :colspan="1"></el-xform>
     <template slot="footer">
       <span v-for="(item,index) in btnFields" :key="index">
         <el-button v-if="item.etype === 'reset'" type="primary" @click="reset">{{ item.label }}</el-button>
@@ -66,6 +66,8 @@ export default {
     },
     reset () {
       this.$refs.refForm.$refs.refForm.resetFields();
+    },
+    clickIconFn () {
     }
   },
 }
