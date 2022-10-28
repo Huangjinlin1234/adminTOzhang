@@ -8,9 +8,9 @@ export function roleEditApi(params) {
   });
 }
 
-export function roleViewApi(params) {
+export function roleViewApi(params, url) {
   return request({
-    url: '/console/api/s/roles/user',
+    url,
     method: 'POST',
     data: params
   });

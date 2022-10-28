@@ -5,16 +5,37 @@
         <slot name="button" />
       </template>
       <template slot="form">
-        <el-form ref="refSearchForm" label-suffix="：" :model="searchFormdata" label-width="120px" inline>
-          <el-form-item v-for="(item,index) in pageOptions.formFileds" :key="index" :label="item.label" :placeholder="item.label" :prop="item.name">
-            <template v-if="item.ctype=='input'">
-              <el-input v-model="searchFormdata[item.name]" placeholder="请输入内容" />
-            </template>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary" @click="onSubmit">查询</el-button>
-            <el-button @click="resetForm ">重置</el-button>
-          </el-form-item>
+        <el-form ref="refSearchForm" label-suffix="：" :model="searchFormdata" label-width="120px">
+          <el-row id="searchForm">
+            <el-col v-for="(item,index) in pageOptions.formFileds" :key="index" :span="8">
+              <el-form-item :label="item.label" :placeholder="item.label" :prop="item.name">
+                <!--输入框 -->
+                <template v-if="item.ctype=='input'">
+                  <el-input v-model="searchFormdata[item.name]" placeholder="请输入内容" />
+                </template>
+                <!--单选框 -->
+                <template v-if="item.ctype==='radio'">
+                  <el-radio-group v-model="searchFormdata[item.prop]" :disabled="pageType=='DETAIL'">
+                    <el-radio label="N">否</el-radio>
+                    <el-radio label="Y">是</el-radio>
+                  </el-radio-group>
+                </template>
+                <template v-if="item.ctype==='select'">
+                  <el-select v-model="searchFormdata[item.prop]">
+                    <el-option v-for="(ite,idx) in item.options" :key="idx" :label="ite.label" :value="ite.value" />
+                  </el-select>
+                </template>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <div class="search-btn">
+                <el-button type="primary" @click="onSubmit">查询</el-button>
+                <el-button @click="resetForm ">重置</el-button>
+              </div>
+
+            </el-col>
+
+          </el-row>
         </el-form>
       </template>
       <div class="table-content">
@@ -65,7 +86,6 @@ export default {
   },
   data: function() {
     return {
-      pkField: 'serno',
       dialogTitle: '新增',
       dialogVisible: false,
       deleteUrl: '/api/coopplanapp/delete/',
@@ -87,6 +107,8 @@ export default {
           'orgCode': '00010',
           'orgName': '广州银行总行',
           'status': '1',
+          'dutyCode': '001',
+          'dutyName': '岗位1',
           'telPhone': '13112260613',
           'staffingLevel': '100',
           'createTime': '2021-04-25 00:00:00',
@@ -106,6 +128,8 @@ export default {
           'orgCode': '00010999',
           'orgName': '广州银行佛山分行',
           'status': '1',
+          'dutyCode': '002',
+          'dutyName': '岗位2',
           'telPhone': '13112260613',
           'staffingLevel': '100',
           'createTime': '2021-04-25 00:00:00',
@@ -157,7 +181,6 @@ export default {
       this.getTableData();
     },
     onSubmit() {
-      console.log(this.searchFormdata, 'fffss');
       this.getTableData(this.searchFormdata);
     },
     handleCurrentChange(number) {
@@ -176,6 +199,10 @@ export default {
 .form-table{
   .table-content{
     padding:5px 24px;
+  }
+  .search-btn{
+    text-align: center;
+    padding-bottom: 23px;
   }
 }
 </style>

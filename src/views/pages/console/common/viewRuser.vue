@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    title="修改"
+    title="详情"
     :visible.sync="dialogVisible"
     :fullscreen="true"
     @close="closeFn"
@@ -32,7 +32,23 @@
 import { roleViewApi } from '@/api/systemManage/roleManage.js';
 export default {
   props: {
-    roleInfo: {
+    moduleInfo: {
+      type: Object,
+      default: () => {
+        return {};
+      }
+    },
+    tableDataUrl: {
+      type: String,
+      default: ''
+    },
+    tableFileds: {
+      type: Array,
+      default: () => {
+        return [];
+      }
+    },
+    baseParams: {
       type: Object,
       default: () => {
         return {};
@@ -43,16 +59,6 @@ export default {
     return {
       dialogVisible: false,
       tableData: [],
-      tableFileds: [
-        { label: '角色代码', prop: 'roleCode' },
-        { label: '用户代码', prop: 'roleName' },
-        { label: '用户姓名', prop: 'userName' },
-        { label: '机构名称', prop: 'orgName' },
-        { label: '联系电话', prop: 'telPhone' },
-        { label: '性别', prop: 'sex' },
-        { label: '状态', prop: 'status' }
-
-      ],
       total: 0,
       pageInfo: {
         size: 10,
@@ -63,10 +69,10 @@ export default {
   methods: {
 
     initData() {
-      this.getTableData();
+      this.getTableData(this.baseParams);
     },
-    getTableData() {
-      roleViewApi({ role: this.roleInfo.roleCode, ...this.pageInfo }).then(res => {
+    getTableData(data) {
+      roleViewApi({ ...data, ...this.pageInfo }, this.tableDataUrl).then(res => {
         if (res.code === '0') {
           this.tableData = res.rows;
           this.total = res.total;

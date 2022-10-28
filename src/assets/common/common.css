@@ -902,6 +902,11 @@ a.underline {  text-decoration: underline;  cursor: pointer;}
   left: 20px;
   top: 4px;
 }
+.el-menu .el-menu-item svg {
+  margin-right: 10px;
+}
+.el-menu .el-submenu .el-submenu__title svg {margin-right: 10px;}
+
 .el-menu .is-active{
   background-color: #efb917 !important;
   color: #183075 !important;
@@ -924,9 +929,20 @@ a.underline {  text-decoration: underline;  cursor: pointer;}
   background-color: #F2F2F2
 }
 .top-content .el-col.el-col-20{text-align: right;}
-.el-dialog .el-dialog__header .el-dialog__title {font-weight: 700; font-size: 16px;}
 .el-collapse-item__header{  font-weight: 700; font-size: 16px;}
 .sibar-container .el-scrollbar{height: calc(100% - 42px);}
 .app-wrapper{height: 100%;}
-.app-wrapper .sibar-container{height:  calc(100% - 100px);}
-.dialog-footer{text-align: center;}
+.app-wrapper .sibar-container{height:  calc(100% - 70px);}
+
+.el-dialog .dialog-footer{text-align: center;}
+.el-dialog .el-dialog__header .el-dialog__title {font-weight: 700; font-size: 16px;}
+.el-dialog .el-dialog__body{height: 450px;overflow: auto;}
+.el-dialog .el-dialog__footer{border-top: 1px solid #ededed;}
+.el-dialog .el-dialog__close{font-size: 20px;}
+.el-input .el-input__suffix {
+  cursor: pointer;
+}
+
+.el-select-dropdown .el-select-dropdown__item.selected{color: #105FD5;}
+.el-radio .el-radio__input.is-checked .el-radio__inner { background-color: #105FD5;  }
+.el-radio__input.is-checked + .el-radio__label{color: #105FD5;}
