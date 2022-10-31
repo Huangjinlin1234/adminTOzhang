@@ -8,9 +8,9 @@
       @open="initData"
     >
       <div v-if="pageType!=='DETAIL'">
-        <el-form ref="form" :model="queryData" inline label-width="120px" label-suffix="：" size="small">
+        <el-form ref="form" :model="queryData" label-width="120px" label-suffix="：" size="small">
           <el-form-item label="用户代码">
-            <el-input v-model="queryData.isTeller" />
+            <el-input v-model="queryData.userCode" :disabled="pageType=='EDIT'" />
           </el-form-item>
           <el-form-item>
             <el-button v-if="pageType==='ADD'" type="primary" @click="queryFn">查询</el-button>
@@ -20,11 +20,16 @@
       </div>
       <el-form ref="refForm" :model="formdata" label-width="120px" :rules="rules" label-suffix="：">
         <el-row>
-          <el-col v-if="pageType!=='DETAIL'" :span="24">
+          <el-col v-if="pageType=='ADD'" :span="24">
             <el-form-item label="是否柜员" prop="isguiyuan">
               <el-radio-group v-model="formdata.isguiyuan" :disabled="pageType=='DETAIL'" @change="isVoClick">
                 <el-radio v-for="(ite,idx) in YNoptions" :key="idx" :label="ite.key">{{ ite.value }}</el-radio>
               </el-radio-group>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="用户代码">
+              <el-input v-model="formdata.userCode" :disabled="pageType=='DETAIL'||formOptions.userCode" />
             </el-form-item>
           </el-col>
           <el-col v-for="(item,index) in formFileds" :key="index" :span="item.span||12">
@@ -114,7 +119,6 @@ export default {
       YNoptions: [{ key: 'N', value: '否' }, { key: 'Y', value: '是' }],
 
       formFileds: [
-        { label: '用户代码', prop: 'userCode', ctype: 'input' },
         { label: '用户姓名', prop: 'userName', ctype: 'input' },
         { label: '昵称', prop: 'nickName', ctype: 'input' },
         { label: '身份证号', prop: 'idCardNo', ctype: 'input' },
@@ -162,12 +166,22 @@ export default {
         this.$set(this.formOptions, item.prop, true);
       }
     });
+    this.$set(this.formOptions, 'userCode', true);
     console.log(this.formOptions, 'ffop');
   },
   methods: {
     initData() {
       if (this.pageType !== 'ADD') {
         this.formdata = deepClone(this.userInfo);
+      }
+      if (this.pageType == 'EDIT') {
+        this.formOptions.userCode = false;
+        this.queryData.userCode = this.formdata.userCode;
+        this.formFileds.forEach(item => {
+          if (item.disabled == undefined) {
+            this.$set(this.formOptions, item.prop, false);
+          }
+        });
       }
     },
     queryFn() {
@@ -195,12 +209,14 @@ export default {
             this.switchStatus(item.prop, false);
           }
         });
+        this.switchStatus('userCode', false);
       } else if (value === 'Y') {
         this.formFileds.forEach(item => {
           if (item.disabled === undefined) {
             this.switchStatus(item.prop, true);
           }
         });
+        this.switchStatus('userCode', true);
       }
     },
     // 切换输入状态

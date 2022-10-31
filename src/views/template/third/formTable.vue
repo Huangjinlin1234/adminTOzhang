@@ -1,29 +1,55 @@
 <template>
   <div class="formTabel">
-    <el-row>
-      <el-col :span="20">
-        <el-form ref="refForm" :inline="true" :model="formData" class="demo-form-inline">
-          <el-form-item v-for="(item,index) in yformFileds" :key="index" :label="item.label" :prop="item.prop">
+    <el-form ref="refForm" :label-width="labelWidth" :label-suffix="labelSufix" :model="formData">
+      <el-row>
+        <el-col v-for="(item,index) in yformFileds" :key="index" :span="24/formColum">
+          <el-form-item :label="item.label" :prop="item.prop">
+            <!--输入框 -->
             <template v-if="item.ctype==='input'">
-              <el-input v-model="formData[item.prop]" placeholder="审批人" />
+              <el-input v-model="formData[item.prop]" :placeholder="item.placeholder">
+                <i v-if="item.iconClick" slot="suffix" :class="item.suffixIcon" @click="item.iconClick" />
+              </el-input>
             </template>
+            <!--选择框 -->
             <template v-if="item.ctype==='select'">
-              <el-select v-model="formData.region" placeholder="活动区域">
-                <el-option label="区域一" value="shanghai" />
-                <el-option label="区域二" value="beijing" />
+              <el-select v-model="formData[item.prop]" :placeholder="item.placeholder" @change="item.change">
+                <el-option v-for="(ite,idx) in item.options" :key="idx" :label="ite.value" :value="ite.key" />
               </el-select>
             </template>
+            <!--日期框 -->
+            <template v-if="item.ctype==='datepicker'">
+              <el-date-picker
+                v-model="formData[item.prop]"
+                type="date"
+                placeholder="选择日期"
+              />
+            </template>
+            <!--单选框 -->
+            <template v-if="item.ctype==='radio'">
+              <el-radio-group v-model="formData[item.prop]" @change="item.click">
+                <el-radio v-for="(ite,idx) in item.options" :key="idx" :label="ite.key">{{ ite.value }}</el-radio>
+              </el-radio-group>
+            </template>
+            <!--文本输入框框 -->
+            <template v-if="item.ctype==='textarea'">
+              <el-input v-model="formData[item.prop]" type="textarea" :autosize="{ minRows: 5 }" />
+            </template>
+            <!--复选框 -->
+            <template v-if="item.ctype==='checkbox'">
+              <el-checkbox-group v-model="formData[item.prop]">
+                <el-checkbox v-for="(ite,idx) in item.options" :key="idx" :label="ite.label" :name="ite.value" />
+              </el-checkbox-group>
+            </template>
           </el-form-item>
-        </el-form>
-      </el-col>
-      <el-col :span="4">
-        <div class="search-btn">
-          <el-button @click="reset">重置</el-button>
-          <el-button type="primary" @click="searchFn">查询</el-button>
-        </div>
-
-      </el-col>
-    </el-row>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item>
+            <el-button @click="reset">重置</el-button>
+            <el-button type="primary" @click="searchFn">查询</el-button>
+          </el-form-item>
+        </el-col>
+      </el-row>
+    </el-form>
     <div class="panel-titile">
       <b>{{ tableTitle }}</b>
     </div>
@@ -51,6 +77,10 @@
 <script>
 export default {
   props: {
+    formColum: {
+      type: Number,
+      default: 3
+    },
     tableTitle: {
       type: String,
       default: '风险台账列表'
@@ -58,6 +88,10 @@ export default {
     searchUrl: {
       type: String,
       default: ''
+    },
+    labelSufix: {
+      type: String,
+      default: '：'
     },
     tableFileds: {
       type: Array,
@@ -80,15 +114,17 @@ export default {
         ];
       }
     },
-
+    labelWidth: {
+      type: String,
+      default: '120px'
+    },
     yformFileds: {
       type: Array,
       default: () => {
         return [
           { label: '测试1', prop: '测试2', ctype: 'input' },
           { label: '测试1', prop: '测试2', ctype: 'input' },
-          { label: '测试1', prop: '测试2', ctype: 'input' },
-          { label: '测试1', prop: '测试2', ctype: 'input' }
+          { label: '测试1', prop: '测试2', ctype: 'select' }
         ];
       }
     }
