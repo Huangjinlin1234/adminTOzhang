@@ -4113,10 +4113,8 @@ export default {
       const { meta, path } = route;
       // if set path, the sidebar will highlight the path you set
       if (meta.activeMenu) {
-        console.log('meta.activeMenu', meta.activeMenu);
         return meta.activeMenu;
       }
-      console.log('path', path);
       return path;
     },
     showLogo () {
@@ -4126,6 +4124,7 @@ export default {
       return variables;
     },
     isCollapse () {
+      this.sidebar.opened = true;
       return !this.sidebar.opened;
     }
   },

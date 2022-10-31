@@ -3,7 +3,7 @@
     <formTable ref="formTable" :page-options="pageOptions" @emitSelection="selectionFn">
       <template slot="button">
         <el-button type="primary" @click="openDialog('ADD','refUserEdit','userInfo','userCode')">新增</el-button>
-        <el-button @click="openDialog('EDIT','refUserEdit','userInfo','userCode')">修改</el-button>
+        <el-button @click="editUserFn('EDIT','refUserEdit','userInfo','userCode')">修改</el-button>
         <el-button @click="openDialog('DETAIL','refUserEdit','userInfo','userCode')">查看</el-button>
         <el-button @click="cancelUser('user')">注销</el-button>
         <el-button @click="setDuty">设置岗位</el-button>
@@ -117,6 +117,22 @@ export default {
     },
     emitNodeFn(obj) {
       this.$refs.formTable.getTableData({ orgCode: obj.Id });
+    },
+    editUserFn() {
+      this.pageType = 'EDIT';
+      if (!this.userInfo.userCode) {
+        this.$message({ message: '请先选择一条记录', type: 'warning' });
+        return;
+      }
+      if (this.userInfo.status === '1' || this.userInfo.status === '2') {
+        this.$message({ message: '不能修改已注销的用户', type: 'warning' });
+        return;
+      }
+      this.$confirm('确定修改已生效用户记录?', '提示', {
+        type: 'warning'
+      }).then(() => {
+        this.$refs.refUserEdit.dialogVisible = true;
+      });
     },
     // 注销用户
     cancelUser(sysModule) {

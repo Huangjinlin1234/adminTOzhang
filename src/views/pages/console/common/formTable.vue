@@ -113,7 +113,7 @@ export default {
           'staffingLevel': '100',
           'createTime': '2021-04-25 00:00:00',
           'createUser': 'admin',
-          'memo': 'eee',
+          'memo': 'eeerrrrrrrrrrrr',
           'lastUpdateUser': 'admin',
           'lastUpdateTime': '2022-10-10 10:56:48',
           'handleColtTaskCount': 0
@@ -148,7 +148,7 @@ export default {
           'nickName': '黄曾',
           'orgCode': '00010999',
           'orgName': '广州银行佛山分行',
-          'status': '1',
+          'status': '3',
           'telPhone': '13112260613',
           'staffingLevel': '100',
           'createTime': '2021-04-25 00:00:00',

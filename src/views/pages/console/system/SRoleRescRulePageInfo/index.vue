@@ -2,27 +2,17 @@
   <div class="container">
     <el-xpanel panel-title="资源权限">
       <template slot="content">
-        <!-- <el-xtree :tree-data="treeData"></el-xtree> -->
         <el-row :gutter="20">
           <el-col :span="7">
-            <!-- <el-input v-model="input" placeholder="请输入内容" :limit-char="limitChar" class="mb18"></el-input> -->
-            <!-- 角色树 -->
-            <!-- <div class="tree-content">
-                <el-tree ref="roleTree" :data="roleTreeData" :props="roleProps" node-key="roleCode" @node-click="selectRoleFn"></el-tree> -->
-            <el-xtree @node-click="clickNode"></el-xtree>
-            <!-- </div> -->
+            <el-xtree :data-url="dataUrl" @node-click="selectRoleFn" :default-props="roleProps"></el-xtree>
           </el-col>
           <el-col :span="10">
-            <el-xtree></el-xtree>
-            <!-- <el-input v-model="input" placeholder="请输入内容" :limit-char="limitChar" class="mb18"></el-input> -->
-            <!-- 资源树 -->
-            <!-- <div class="tree-content">
-                <el-tree ref="rescTree" :data="rescTreeData" :props="rescProps" node-key="rescCode" @node-click="selectRescFn"></el-tree>
-              </div> -->
+            <el-xtree :data-url="dataUrl2" @node-click="selectRescFn" :default-props="rescProps"></el-xtree>
           </el-col>
           <el-col :span="7">
-            <el-checkbox v-model="rescRootData.roleRescRuleStrs" :options="options"></el-checkbox>
-            <!-- <el-checkbox ref="refCheckbox" v-model="rescRootData.roleRescRuleStrs" :data-url="dataUrl" :data-params="baseParams" json-data="rows" request-type="POST" :default-load="false" :props="[{'key': 'rescActDesc','value':'rescActDesc'}]"></el-checkbox> -->
+            <el-checkbox-group v-model="rescRootData.roleRescRuleStrs">
+              <el-checkbox v-for="item in options" :label="item.rescActDesc" :key="item.rescActCode">{{ item.rescActDesc }}</el-checkbox>
+            </el-checkbox-group>
             <div style="margin-top: 36px;margin-left: 5px;text-align: center;">
               <el-button type="primary" @click="saveRoleRescRule">保存</el-button>
             </div>
@@ -34,13 +24,16 @@
 </template>
 
 <script>
-import { getResource, getRescActs, getRoles, getResCHNDesc, getRootType } from '@/api/systemManage/resource';
+import { getRootType, saveRescRoot } from '@/api/systemManage/resource';
+import { getRescRule } from '@/api/systemManage/role';
 import elPanel from '@/views/pages/console/common/elPanel.vue';
 export default {
   components: { elPanel },
   data () {
     return {
       expandAll: false,
+      dataUrl: '/console/api/s/queryRoleAll',
+      dataUrl2: '/console/api/s/user/resc/data',
       roleTreeData: [],
       rescTreeData: [],
       defaultProps: {
@@ -48,22 +41,25 @@ export default {
         label: 'rescDesc'
       },
       roleProps: {
+        id: 'roleCode',
+        label: 'roleName',
         children: 'children',
-        label: 'roleName'
       },
       rescProps: {
+        id: 'rescCode',
+        pid: 'rescParentCode',
+        label: 'rescDesc',
         children: 'children',
-        label: 'rescDesc'
       },
       roleRescRules: '',
       formFileds: [
-        { name: 'rescCode', label: '资源代码', disabled: true, rules: [{ required: true, message: '资源代码是必填项', trigger: 'blur' }, { max: 32, message: '最大长度为32' }] },
-        { name: 'rescDesc', label: '资源中文描述', rules: [{ required: true, message: '资源中文描述是必填项', trigger: 'blur' }, { max: 80, message: '最大长度为80' }] },
-        { name: 'funcId', label: '路由', rules: [{ max: 32, message: '最大长度为32' }] },
-        { name: 'rescIcon', label: '资源图标', rules: [{ max: 60, message: '最大长度为60' }] },
-        { name: 'orderId', label: '序号', rules: [{ message: '序号必须为数字值' }] },
-        { name: 'rescUrl', label: '资源URL', colspan: "24", rules: [{ max: 254, message: '最大长度为254' }] },
-        { name: 'memo', label: '备注', colspan: "24", type: 'textarea', rules: [{ max: 100, message: '最大长度为100' }] }
+        { prop: 'rescCode', label: '资源代码', disabled: true, rules: [{ required: true, message: '资源代码是必填项', trigger: 'blur' }, { max: 32, message: '最大长度为32' }] },
+        { prop: 'rescDesc', label: '资源中文描述', rules: [{ required: true, message: '资源中文描述是必填项', trigger: 'blur' }, { max: 80, message: '最大长度为80' }] },
+        { prop: 'funcId', label: '路由', rules: [{ max: 32, message: '最大长度为32' }] },
+        { prop: 'rescIcon', label: '资源图标', rules: [{ max: 60, message: '最大长度为60' }] },
+        { prop: 'orderId', label: '序号', rules: [{ message: '序号必须为数字值' }] },
+        { prop: 'rescUrl', label: '资源URL', colspan: "24", rules: [{ max: 254, message: '最大长度为254' }] },
+        { prop: 'memo', label: '备注', colspan: "24", type: 'textarea', rules: [{ max: 100, message: '最大长度为100' }] }
       ],
       tableFields: [
         { label: '操作码', prop: 'rescActCode', resizable: true },
@@ -71,7 +67,7 @@ export default {
         { label: '操作码中文描述', prop: 'rescActDesc', width: 200, resizable: true }
       ],
       baseParams: {},
-      dataUrl: getRescActs(),
+      // dataUrl: getRescActs(),
       pageType: '', // 资源操作信息页面类型,
       resource: {}, // 资源信息
       resourceOper: {}, // 资源操作信息
@@ -108,57 +104,26 @@ export default {
         }
       }
     },
-    transTree (list, rootValue) {
-      let treeData = [];
-      list.forEach(item => {
-        if (!item.rescParentCode) {
-          treeData.push(item);
-        }
-        const children = list.filter(data => data.rescParentCode === item.rescCode);
-        if (!children.length) { return };
-        item.children = children;
-      });
-      return treeData;
-    },
-    transRoleTree (list, rootValue) {
-      let treeData = [];
-      // list.forEach(item => {
-      // if (!item.rescParentCode) {
-      // treeData.push(item);
-      // }
-      // });
-      return list;
-    },
-    getTreeDataFn () {
-      getRoles({}).then(res => {
-        if (res.code === '0') {
-          console.log('res', res)
-          let childrenArr = this.transRoleTree(res.rows, '');
-          this.roleTreeData = childrenArr;
-        }
-      });
-      getResCHNDesc({}).then(res => {
-        if (res.code === '0') {
-          console.log('res', res)
-          let childrenArr = this.transTree(res.rows, '');
-          this.rescTreeData = childrenArr;
-        }
-      });
-    },
     getTableDataFn () {
       this.$refs.rescActTable.remoteData();
     },
     selectRoleFn (row) {
       this.rescRootData.roleCode = row.roleCode;
+      getRescRule({ roleCode: row.roleCode, rescCode: this.rescRootData.rescCode }).then(res => {
+        this.rescRootData.roleRescRuleStrs = res.rows;
+      })
     },
     selectRescFn (row) {
       this.rescRootData.rescCode = row.rescCode;
       getRootType({ rescCode: row.rescCode }).then(res => {
         res.rows.forEach(el => {
           el.key = el.rescActDesc;
-          el.value = el.rescActDesc;
+          el.value = el.rescActCode;
         });
         this.options = res.rows;
+        getRescRule({ roleCode: this.rescRootData.roleCode, rescCode: this.rescRootData.rescCode }).then(res => {
+          this.rescRootData.roleRescRuleStrs = res.rows;
+        })
       })
     },
     renderContent: function (h, obj) {
@@ -223,7 +188,7 @@ export default {
         this.isShowResOper = true;
         return;
       }
-      if (!this.$refs.rescActTable.selections.length) {
+      if (!this.$refs.rescActTable.selection.length) {
         this.$message({ message: '请先选择一条资源操作记录', type: 'warning' });
         return;
       }
@@ -232,7 +197,12 @@ export default {
       this.resourceOper.rescDesc = this.$refs.refForm.formdata.rescDesc
     },
     saveRoleRescRule () {
-
+      let roleRescRuleStrs = this.rescRootData.roleRescRuleStrs.join(',')
+      saveRescRoot({ ...this.rescRootData, roleRescRuleStrs }).then(_ => {
+        console.log(111111111, "33333333333333::: ");
+      }).catch(err => {
+        console.log(err, "err::: ");
+      })
     },
     clickNode (data) {
       console.log("data::: ", data);

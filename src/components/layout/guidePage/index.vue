@@ -5,7 +5,7 @@
       <span v-for="(item,index) in btnFields" :key="index">
         <el-button v-if="item.etype === 'reset'" type="primary" @click="reset">{{ item.label }}</el-button>
         <el-button v-else-if="item.etype === 'cancel'" @click="closeDialog">{{ item.label }}</el-button>
-        <el-button v-else :type="item.type" @click="item.clickFn">{{ item.label }}</el-button>
+        <el-button v-else :type="item.type" @click="item.click">{{ item.label }}</el-button>
       </span>
     </template>
   </el-dialog>
@@ -68,6 +68,9 @@ export default {
       this.$refs.refForm.$refs.refForm.resetFields();
     },
     clickIconFn () {
+    },
+    assign (data) {
+      this.$emit('update:form-data', { ...this.formData, ...data });
     }
   },
 }

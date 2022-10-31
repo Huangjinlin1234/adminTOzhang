@@ -203,6 +203,9 @@ export default {
       });
     },
     choosePrtOrg() {
+      if (this.pageType == 'DETAIL') {
+        return;
+      }
       this.$refs.refOrgSelct.dialogVisible = true;
     },
     closeFn() {

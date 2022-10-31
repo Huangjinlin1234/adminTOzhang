@@ -51,10 +51,6 @@ export default {
     labelWidth: {
       type: String,
     },
-    // inline: {
-    //   type: Boolean,
-    //   default: false
-    // },
     colspan: {
       type: Number,
       default: 3
@@ -66,17 +62,14 @@ export default {
   },
   components: {},
   data () {
-    return {}
+    return {
+    }
   },
   created () { },
-  mounted () { },
+  mounted () {
+
+  },
   methods: {
-    ttt () {
-      console.log('111111111111111')
-    },
-    ttt () {
-      console.log('111111111111111')
-    }
   },
 }
 </script>
