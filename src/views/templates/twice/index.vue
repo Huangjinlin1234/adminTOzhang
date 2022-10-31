@@ -30,7 +30,7 @@ export default {
         { label: '删除原因', prop: 'delReason', ctype: 'input', type: 'textarea' },
       ],
       btnFields: [
-        { label: '下一步', type: 'primary', clickFn: this.nextStep },
+        { label: '下一步', type: 'primary', click: this.nextStep },
         { label: '重置', etype: 'reset' },
         { label: '取消', etype: 'cancel' }
       ]

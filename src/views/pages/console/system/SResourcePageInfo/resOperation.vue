@@ -1,15 +1,11 @@
 <template>
-  <yu-xdialog :title="$t(`sysUserManager.${pageType}`)+$t('sysUserManager.zyczxx')" :visible.sync="dialogVisible" :before-close="handleClose" v-loading="loading">
-    <yu-xform ref="refForm" v-model="formData" form-type="edit" label-width="120px">
-      <yu-xform-group>
-        <yu-xform-item v-for="(item,index) in formFileds" :key="index" :label="item.label" :name="item.name" :colspan="item.colspan" :ctype="item.ctype" :disabled="pageType==='ck' || item.disabled || (item.name === 'rescActCode' && pageType==='xg')" :hidden="pageType==='ck'?false:item.hidden" :hidden-del-val="false"></yu-xform-item>
-      </yu-xform-group>
-    </yu-xform>
+  <el-dialog :visible.sync="dialogView" :before-close="handleClose" v-loading="loading">
+    <el-xform ref="refForm" v-model="formData" :form-fields="formFields" form-type="edit" label-width="140" :colspan="colspan"></el-xform>
     <span slot="footer" class="dialog-footer">
-      <yu-button type="primary" @click="addResOperationFn">保 存</yu-button>
-      <yu-button @click="handleClose">取 消</yu-button>
+      <el-button type="primary" @click="addResOperationFn">保 存</el-button>
+      <el-button @click="handleClose">取 消</el-button>
     </span>
-  </yu-xdialog>
+  </el-dialog>
 </template>
 
 <script>
@@ -17,9 +13,13 @@
 export default {
   name: 'resOperation',
   props: {
-    dialogVisible: {
+    dialogView: {
       type: Boolean,
       default: false
+    },
+    colspan: {
+      type: Number,
+      default: 2
     },
     pageType: {
       type: String,
@@ -31,16 +31,16 @@ export default {
     }
   },
   watch: {
-    dialogVisible () {
+    dialogView () {
       this.$nextTick(() => {
-        this.$refs.refForm.formdata = this.formData;
+        // this.$refs.refForm.formdata = this.formData;
       })
     }
   },
   data () {
     return {
       loading: false,
-      formFileds: [
+      formFields: [
         { name: 'rescCode', label: '资源代码', disabled: true },
         { name: 'rescDesc', label: '资源中文描述', disabled: true },
         { name: 'funcId', label: '路由', disabled: true, rules: [{ max: 32, message: '最大长度为32' }] },
@@ -61,7 +61,7 @@ export default {
   },
   methods: {
     handleClose () {
-      this.$emit('update:dialog-visible', false);
+      this.$emit('update:dialog-view', false);
     },
     addResOperationFn () {
       let flag = false;

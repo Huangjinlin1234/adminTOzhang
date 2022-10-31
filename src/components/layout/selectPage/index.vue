@@ -1,14 +1,16 @@
 <template>
   <el-dialog :title="dialogTitle" :visible.sync="dialogView" :width="dialogWidth" :before-close="closeDialog">
-    <el-xform ref="refForm" :form-fields="formFields" label-width="120" @icon-click="clickIconFn">
+    <el-xform ref="refForm" :form-fields="formFields" label-width="120" :form-data="formData">
       <el-button type="primary" @click="searchFn">查询</el-button>
       <el-button type="primary" @click="reset">重置</el-button>
     </el-xform>
-    <el-xtable ref="refTable" :table-data="tableData" :table-fields="tableFields">
+    <el-xtable ref="refTable" :data-url="dataUrl" :base-params="baseParams" :table-fields="tableFields" @row-click="rowClick">
       <slot></slot>
     </el-xtable>
-    <el-button type="primary" @click="selectReturnFn">选取返回</el-button>
-    <el-button @click="closeDialog">取消</el-button>
+    <template slot="footer">
+      <el-button type="primary" @click="selectReturnFn">选取返回</el-button>
+      <el-button @click="closeDialog">取消</el-button>
+    </template>
   </el-dialog>
 </template>
 
@@ -24,18 +26,28 @@ export default {
       type: String,
       default: '',
     },
+    dataUrl: {
+      type: String,
+      default: '',
+    },
+    baseParams: {
+      type: Object,
+      default: () => {
+        return {}
+      },
+    },
+    formData: {
+      type: Object,
+      default: () => {
+        return {}
+      },
+    },
     formFields: {
       type: Array,
       default: () => {
         return []
       },
     },
-    // tableData: {
-    //   type: Array,
-    //   default: () => {
-    //     return []
-    //   },
-    // },
     tableFields: {
       type: Array,
       default: () => {
@@ -56,12 +68,12 @@ export default {
   components: {},
   data () {
     return {
-      tableData: []
+      tableData: [],
+      selection: []
     }
   },
   created () { },
   mounted () {
-    console.log("fff::: ", this.tableFields);
   },
   methods: {
     closeDialog () {
@@ -70,14 +82,20 @@ export default {
     searchFn () {
       this.$refs.refTable.remoteData(this.$refs.refForm.formData)
     },
+    remoteData (params) {
+      this.$refs.refTable.remoteData(params || this.$refs.refForm.formData)
+    },
     reset () {
-      this.$refs.refForm.$refs.refForm.resetFields();
+      this.$emit('update:form-data', {})
+      this.$refs.refTable.remoteData({})
     },
     selectReturnFn () {
-      this.$emit('selectData', { msg: 返回的数据 })
+      this.$emit('return-data', this.selection);
+      this.closeDialog();
     },
-    clickIconFn () {
-    }
+    rowClick (row, column, event) {
+      this.selection = [row];
+    },
   },
 }
 </script>

@@ -1,10 +1,11 @@
 <template>
-  <div>
-    <el-input v-model="input" placeholder="请输入" :limit-char="limitChar" class="mb18" />
-    <el-tree ref="refTree" :node-key="defaultProps.id" :data="treeData" :props="defaultProps" default-expand-all @node-click="nodeClick" />
+  <div class="el-xtree">
+    <el-input v-model="input" placeholder="请输入" :limit-char="limitChar" class="mb18" @change="searchFn" />
+    <el-tree ref="refTree" :node-key="defaultProps.id" :data="treeData" :props="defaultProps" default-expand-all @node-click="nodeClick" :render-content="renderContent" />
   </div>
 </template>
 <script>
+import request from "@/utils/request";
 export default {
   name: 'ElXtree',
   props: {
@@ -18,12 +19,21 @@ export default {
         return {}
       }
     },
+    defaultLoad: {
+      type: Boolean,
+      default: true,
+    },
+    requestType: {
+      type: String,
+      default: 'post',
+    },
     defaultProps: {
       type: Object,
       default: () => {
         return {
-          id: 'id',
-          label: 'label',
+          id: '',
+          pid: '',
+          label: '',
           children: 'children',
         }
       }
@@ -31,52 +41,63 @@ export default {
     limitChar: {
       type: String,
       default: ''
-    }
+    },
+    renderContent: {
+      type: Function
+    },
   },
   data () {
     return {
       input: '',
-      treeData: [{
-        label: '一级 1',
-        children: [{
-          label: '二级 1-1',
-          children: [{
-            label: '三级 1-1-1'
-          }]
-        }]
-      }, {
-        label: '一级 2',
-        children: [{
-          label: '二级 2-1',
-          children: [{
-            label: '三级 2-1-1'
-          }]
-        }, {
-          label: '二级 2-2',
-          children: [{
-            label: '三级 2-2-1'
-          }]
-        }]
-      }, {
-        label: '一级 3',
-        children: [{
-          label: '二级 3-1',
-          children: [{
-            label: '三级 3-1-1'
-          }]
-        }, {
-          label: '二级 3-2',
-          children: [{
-            label: '三级 3-2-1'
-          }]
-        }]
-      }],
+      treeData: [],
+      listData: []
     };
+  },
+  // /console/api/s/queryRoleAll
+  created () {
+    console.log('defaultProps', this.defaultProps);
+    this.remoteData(this.baseParams)
+  },
+  mounted () {
   },
   methods: {
     nodeClick (data) {
       this.$emit('node-click', data)
-    }
+    },
+    searchFn (val) {
+      // if (val) {
+      //   this.treeData = this.listData.forEach()
+      // }
+      // this.treeData =
+    },
+    remoteData (params) {
+      if (this.defaultLoad && this.dataUrl) {
+        request({
+          url: this.dataUrl,
+          method: this.requestType,
+          data: params || this.baseParams
+        }).then(res => {
+          this.treeData = res.rows;
+          this.listData = JSON.parse(JSON.stringify(res.rows))
+          this.treeData = this.transTree(res.rows, this.defaultProps);
+        }).catch(err => {
+          console.log('err', err)
+        })
+      }
+    },
+    transTree (list, { id, pid, children }) {
+      console.log('id', id, pid, children)
+      let treeData = [];
+      list.forEach(item => {
+        if (!item[pid]) {
+          treeData.push(item);
+        }
+        const chi = list.filter(data => data[pid] === item[id]);
+        if (!chi.length) { return };
+        item[children] = chi;
+      });
+      return treeData;
+    },
   }
 };
 </script>
@@ -89,4 +110,17 @@ export default {
 .el-select.el-select--medium{
   margin: 0px 5px;
 }
+.el-xtree{
+  .el-tree{
+    .el-tree-node__content{
+      position: relative;
+      .el-button.el-button--primary:not{
+        position: absolute;
+        right: 0
+      }
+    }
+  }
+}
+
+
 </style>
