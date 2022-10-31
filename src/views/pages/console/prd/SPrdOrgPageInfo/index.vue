@@ -1,46 +1,29 @@
 <template>
   <el-xpanel panel-title="报表权限管理">
     <template slot="content">
-      <list-page :form-fields="formFields" :table-fields="tableFields" :btn-fields="btnFields"></list-page>
-      <!-- <div class="role-container">
-          <el-form ref="refForm" form-type="search" v-model="searchFormdata" label-width="120px" related-table-name="reftable" :custom-search-fn="customSearch" inline>
-            <el-form-item v-for="(item,index) in formFields" :key="index" :label="item.label" :ctype="item.ctype" :placeholder="item.label" :name="item.name">
-              <template v-if="!item.ctype || item.ctype=='input'">
-                <el-input v-model="item.prop" placeholder="请输入内容" />
-              </template>
-            </el-form-item>
-            <el-form-item>
-              <el-button type="primary">查询</el-button>
-              <el-button>重置</el-button>
-            </el-form-item>
-          </el-form>
-          <el-button-group class="mb18">
-            <el-button type="primary" icon="plus" @click="openType('xz')">新增</el-button>
-            <el-button type="primary" icon="delete" @click="openType('sc')">删除</el-button>
-          </el-button-group>
-          <el-table ref="rescActTable" :data-url="dataUrl" :base-params="baseParams" request-type="POST" :defauld-load="false" :pageable="false" json-data="rows">
-            <el-table-column v-for="(item, index) in tableFields" :key="index" :label="item.label" :prop="item.prop"></el-table-column>
-          </el-table>
-          <el-org-list :dialog-visible.sync="dialogVisible2"></el-org-list>
-        </div> -->
+      <list-page ref="refList" :form-fields="formFields" :table-fields="tableFields" :btn-fields="btnFields" :data-url="dataUrl" :base-params="baseParams" :form-data.sync="formData"></list-page>
+      <prd-list :dialog-view.sync="dialogView1" @return-data="returnPrd" :type="openFlag"></prd-list>
+      <org-list :dialog-view.sync="dialogView2" @return-data="returnOrg" :type="openFlag"></org-list>
+      <guide-page ref="refGuide" :dialog-view.sync="dialogView3" :form-fields="dFormFields" :form-data="dFormData" :btn-fields="dBtnFields"></guide-page>
     </template>
   </el-xpanel>
 </template>
 
 <script>
-import { getResource, setResource, getRoles, getResCHNDesc, getPrdOrgList } from '@/api/systemManage/resource';
-// import elPanel from '@/views/pages/console/common/elPanel.vue';
+import { getResource, getPrdOrgList, setProOrg } from '@/api/systemManage/resource';
 import listPage from '@/components/layout/listPage'
+import prdList from '@/components/busi/prdList'
+import orgList from '@/components/busi/orgList'
+import guidePage from '@/components/layout/guidePage'
 export default {
-  components: { listPage },
+  components: { listPage, prdList, orgList, guidePage },
   data () {
-    let _this = this;
     return {
       dataUrl: getPrdOrgList(),
       baseParams: {},
       formFields: [
-        { label: '产品信息', name: 'prdCode', icon: 'search', click: this.selProduct },
-        { label: '机构信息', name: 'orgCode', icon: 'search', click: this.selOrg }
+        { label: '产品信息', prop: 'prdName', icon: 'el-icon-search', iconClick: () => { this.openDialog('prd1') } },
+        { label: '机构信息', prop: 'orgName', icon: 'el-icon-search', iconClick: () => { this.openDialog('org1') } }
       ],
       tableFields: [
         // { label: 'PKID', prop: 'pkId', sortable: true, resizable: true, hidden: true },
@@ -54,15 +37,47 @@ export default {
         { label: '最后修改人', prop: 'lastUpdateUser', sortable: true, resizable: true },
         { label: '最后修改时间', prop: 'lastUpdateTime', sortable: true, resizable: true }
       ],
-      btnFields: [],
-      dialogVisible1: false,
-      dialogVisible2: false,
+      btnFields: [
+        { label: '新增', click: () => { this.openDialog('guide') } },
+        { label: '删除', click: this.ttt }
+      ],
+      dFormFields: [
+        { label: '产品编号', prop: 'prdCode', icon: 'el-icon-search', iconClick: () => { this.openDialog('prd2') } },
+        { label: '产品名称', prop: 'prdName', disabled: true },
+        { label: '机构编号', prop: 'orgCode', icon: 'el-icon-search', iconClick: () => { this.openDialog('org2') } },
+        { label: '机构名称', prop: 'orgName', disabled: true }
+      ],
+      dBtnFields: [
+        { label: '保存', type: 'primary', click: this.nextStep },
+        { label: '取消', etype: 'cancel' }
+      ],
+      dFormData: {},
+      dialogView1: false,
+      dialogView2: false,
+      dialogView3: false,
+      openFlag: '',
+      formData: {}
     };
   },
-  created () {
-    // this.getTreeDataFn();
-  },
   methods: {
+    ttt () {
+      console.log("ttt::: ", 'ttt');
+    },
+
+    openDialog (flag) {
+      if (flag === 'prd1') {
+        this.dialogView1 = true;
+      } else if (flag === 'prd2') {
+        this.dialogView1 = true;
+      } else if (flag === 'org1') {
+        this.dialogView2 = true;
+      } else if (flag === 'org2') {
+        this.dialogView2 = true;
+      } else if (flag === 'guide') {
+        this.dialogView3 = true;
+      }
+      this.openFlag = flag;
+    },
     transExpand () {
       this.expandAll = !this.expandAll;
       let _this = this;
@@ -94,19 +109,6 @@ export default {
         item.children = children;
       });
       return treeData;
-    },
-    getTreeDataFn () {
-      getRoles({}).then(res => {
-        if (res.code === '0') {
-          this.roleTreeData = res.rows;
-        }
-      });
-      getResCHNDesc({}).then(res => {
-        if (res.code === '0') {
-          this.transTree(res.rows, '');
-          this.rescTreeData = res.rows;
-        }
-      });
     },
     getTableDataFn () {
       this.$refs.rescActTable.remoteData();
@@ -189,11 +191,29 @@ export default {
       this.isShowResOper = true;
       this.pageType = pageType;
     },
-    selProduct () {
-      this.dialogVisible1 = true
+    returnDataFn () {
+
     },
-    selOrg () {
-      this.dialogVisible2 = true
+    nextStep () {
+      setProOrg('POST', this.dFormData).then(_ => {
+        this.$refs.refList.searchFn()
+      })
+    },
+    returnPrd (row, flag) {
+      let { prdCode, prdName } = row
+      if (flag === 'prd1') {
+        this.formData = { ...this.formData, prdCode, prdName }
+      } else if (flag === 'prd2') {
+        this.dFormData = { ...this.dFormData, prdCode, prdName }
+      }
+    },
+    returnOrg (row, flag) {
+      let { orgCode, orgName } = row
+      if (flag === 'org1') {
+        this.formData = { ...this.formData, orgCode, orgName }
+      } else if (flag === 'org2') {
+        this.dFormData = { ...this.dFormData, orgCode, orgName }
+      }
     }
   },
 };
