@@ -1,6 +1,6 @@
 <template>
   <el-dialog title="新增资源" :visible.sync="dialogView" :before-close="handleClose" v-loading="loading">
-    <el-xform ref="refForm" :form-fields="formFields" :form-data="formData" label-width="120" :colspan="2"></el-xform>
+    <el-xform ref="refForm" :form-fields="formFields" :form-data="formData" label-width="140" :colspan="2"></el-xform>
     <span slot="footer">
       <el-button type="primary" @click="addResourceFn">保 存</el-button>
       <el-button @click="handleClose">取 消</el-button>

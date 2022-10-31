@@ -1,15 +1,15 @@
 <template>
   <el-xpanel panel-title="资源定义">
     <div slot="content">
-      <el-row :gutter="20">
-        <el-col :span="7">
+      <el-row :gutter="12">
+        <el-col :span="9">
           <el-button-group class="mb18">
             <el-button icon="plus" @click="append" type="primary">新增</el-button>
             <el-button :icon="expandAll ? 'yx-menu4' : 'yx-menu3' " @click="transExpand" type="primary">{{ expandAll ? '收缩所有节点' : '展开所有节点' }} </el-button>
           </el-button-group>
-          <el-xtree ref="refTree" :is-show-search="false" :data-url="dataUrl" :default-props="defaultProps" @node-click="nodeClickFn"></el-xtree>
+          <el-xtree ref="refTree" :is-show-search="false" :data-url="dataUrl" :default-props="defaultProps" @node-click="nodeClickFn" :render-content="renderContent"></el-xtree>
         </el-col>
-        <el-col :span="17">
+        <el-col :span="15">
           <!-- 展示资源查看 -->
           <el-xform ref="refForm" :form-data="formData" :form-fields="formFields" :label-width="labelWidth" :colspan="2">
             <el-button type="primary" @click="save('xz')">保存</el-button>
@@ -129,8 +129,8 @@ export default {
       let btnArray = [{ name: '增加', callback: function () { _this.append(store, data, node) }, type: 'primary' },
       { name: '删除', type: 'warning', callback: function () { _this.remove(store, data, node) } }];
       return h('span', {}, [
-        h('span', {}, [h('span', {}, node.label)]),
-        h('span', { attrs: { style: 'float: right; margin-right: 20px', } }, btnArray.map(function (item) {
+        h('span', {}, [h('span', { style: "font:14px" }, node.label)]),
+        h('span', { attrs: { style: 'position:absolute;top:4px;right:0;', } }, btnArray.map(function (item) {
           return h('el-button', { props: { size: 'mini', type: item.type }, on: { click: item.callback } }, item.name);
         }))
       ]);
@@ -215,23 +215,4 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.el-tree{
-  position: relative;
-  .el-button{
-    position: absolute;
-    right: 0;
-    .hhh{
-      background: red;
-    }
-  }
-  .hhh{
-    background: red;
-  }
-}
->>>.el-tree-node__content{
-  .hhh{
-    background: red;
-  }
-}
-
 </style>
