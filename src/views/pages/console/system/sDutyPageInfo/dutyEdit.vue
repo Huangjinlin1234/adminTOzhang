@@ -137,6 +137,9 @@ export default {
       });
     },
     iconClick() {
+      if (this.pageType == 'DETAIL') {
+        return;
+      }
       this.$refs.refOrgSelct.dialogVisible = true;
     }
   }
