@@ -21,9 +21,9 @@ export function queryUser(params) {
     data: params
   });
 }
-export function getTrfData(params) {
+export function getTrfData(params, url) {
   return request({
-    url: '/console/api/s/queryRoleAll',
+    url,
     method: 'post',
     data: params
   });

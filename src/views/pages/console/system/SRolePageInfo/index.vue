@@ -2,46 +2,37 @@
   <div class="container">
     <formTable :page-options="pageOptions" @emitSelection="selectionFn">
       <template slot="button">
-        <el-button ref="btn_insertFn" type="primary" @click="openDialog('ADD')">新增</el-button>
-        <el-button ref="btn_insertFn" type="primary" @click="openDialog('EDIT')">修改</el-button>
-        <el-button ref="btn_deleteFn" type="primary" @click="openDialog('DETAIL')">查看</el-button>
-        <el-button ref="btn_viewFn" type="primary" @click="cancelUser('user')">注销</el-button>
-        <el-button ref="btn_updateFn" type="primary" @click="setDuty">设置岗位</el-button>
-        <selectTree />
-        <el-input
-          v-model="input4"
-          placeholder="请输入内容"
-        >
-          <i slot="suffix" class="el-input__icon el-icon-search" />
-        </el-input>
-
+        <el-button type="primary" @click="openDialog('ADD','refRoleEdit','roleInfo','roleCode')">新增</el-button>
+        <el-button @click="openDialog('EDIT','refRoleEdit','roleInfo','roleCode')">修改</el-button>
+        <el-button @click="openDialog('DETAIL','refRoleEdit','roleInfo','roleCode')">查看</el-button>
+        <el-button @click="openDialog('','refVuser','roleInfo','roleCode')">查看角色下用户</el-button>
+        <el-button @click="cancelOut">注销</el-button>
       </template>
-      <yu-button ref="btn_insertFn" type="primary" @click="openDialog('ADD')">新增</yu-button>
-      <yu-button ref="btn_insertFn" type="primary" @click="openDialog('EDIT')">修改</yu-button>
-      <yu-button ref="btn_deleteFn" type="primary" @click="openDialog('DETAIL')">查看</yu-button>
     </formTable>
     <roleEdit
       ref="refRoleEdit"
-      :dialog-visible.sync="showDialog"
       :dialog-title="dialogTitle"
       :page-type="pageType"
       :role-info="roleInfo"
     />
+    <viewRuser ref="refVuser" :base-params="baseParams" :table-fileds="tableFlds" :table-data-url="vUserUrl" :role-info="roleInfo" />
   </div>
 </template>
 <script>
 import formTable from '@/views/pages/console/common/formTable.vue';
 import minxinDiaFn from '@/views/pages/console/common/minxin.js';
 import roleEdit from './roleEdit.vue';
+import viewRuser from '@/views/pages/console/common/viewRuser.vue';
+import { cancelRoleApi } from '@/api/systemManage/roleManage.js';
 
 export default {
-  components: { formTable, roleEdit },
+  components: { formTable, roleEdit, viewRuser },
   mixins: [minxinDiaFn],
   data() {
     return {
       pageOptions: {
         title: '角色管理',
-        dataUrl: '/api/s/rolesBaseOrgs',
+        dataUrl: '/console/api/s/rolesBaseOrgs',
         formFileds: [
           { label: '角色代码', name: 'roleCode', ctype: 'input' },
           { label: '角色名称', name: 'roleName', ctype: 'input' }
@@ -52,14 +43,42 @@ export default {
           { label: '角色类型', prop: 'roleType' }
         ]
       },
-      selections: [],
-      roleInfo: {}
+      tableFlds: [
+        { label: '角色代码', prop: 'roleCode' },
+        { label: '用户代码', prop: 'roleName' },
+        { label: '用户姓名', prop: 'userName' },
+        { label: '机构名称', prop: 'orgName' },
+        { label: '联系电话', prop: 'telPhone' },
+        { label: '性别', prop: 'sex' },
+        { label: '状态', prop: 'status' }
+      ],
+      roleInfo: {},
+      vUserUrl: '/console/api/s/roles/user',
+      baseParams: { roleCode: '' }
     };
   },
   methods: {
-    selectionFn(selections) {
-      this.selections = selections;
-      this.roleInfo = selections[0];
+    selectionFn(selection) {
+      this.roleInfo = selection;
+      this.baseParams.roleCode = selection.roleCode;
+    },
+    cancelOut() {
+      const roleName = this.roleInfo.roleName;
+      if (!roleName) {
+        this.$message({ message: '请先选择一条记录', type: 'warning' });
+        return;
+      }
+      this.$confirm(`是否删除角色【${roleName}】？`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        cancelRoleApi({}.then(res => {
+          if (res.code === '0') {
+            this.$message.success(res.message);
+          }
+        }));
+      });
     }
   }
 };

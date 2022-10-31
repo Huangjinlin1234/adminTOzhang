@@ -12,8 +12,8 @@
       @emitSelection="selectionFn"
     />
     <div slot="footer" class="dialog-footer">
-      <el-button type="primary" @click="comfirmFn">确 定</el-button>
       <el-button @click="closeFn">取消</el-button>
+      <el-button type="primary" @click="comfirmFn">确定</el-button>
     </div>
   </el-dialog>
 </template>

@@ -18,7 +18,7 @@
           </el-form-item>
         </el-form>
       </div>
-      <el-form ref="refForm" :model="formdata" label-width="120px" :rules="rules" label-suffix="：" inline>
+      <el-form ref="refForm" :model="formdata" label-width="120px" :rules="rules" label-suffix="：">
         <el-row>
           <el-col v-for="(item,index) in formFileds" :key="index" :span="item.span||12">
             <el-form-item :label="item.label" :prop="item.prop">
@@ -31,7 +31,9 @@
               </template>
               <!--输入框 -->
               <template v-if="item.ctype==='input'">
-                <el-input v-model="formdata[item.prop]" :disabled="pageType=='DETAIL'" :suffix-icon="item.suffixIcon" />
+                <el-input v-model="formdata[item.prop]" :disabled="pageType=='DETAIL'">
+                  <i v-if="item.suffixIcon" slot="suffix" :class="item.suffixIcon" @click="item.iconClick" />
+                </el-input>
               </template>
               <template v-if="item.ctype==='select'">
                 <el-select v-model="formdata[item.prop]">
@@ -55,7 +57,7 @@
               </template>
               <!--文本输入框框 -->
               <template v-if="item.ctype==='textarea'">
-                <el-input v-model="formdata[item.prop]" :disabled="pageType=='DETAIL'" type="textarea" :autosize="{ minRows: 5 }" />
+                <el-input v-model="formdata[item.prop]" :disabled="pageType=='DETAIL'" type="textarea" />
               </template>
               <!--复选框 -->
               <template v-if="item.ctype==='checkbox'">
@@ -73,15 +75,17 @@
         <el-button type="primary" @click="comfirmFn">确 定</el-button>
       </div>
     </el-dialog>
+    <orgSelect ref="refOrgSelect" @emitRow="reciveRow" />
   </div>
 </template>
 
 <script>
+import orgSelect from '@/views/pages/console/common/orgSelect.vue';
 import { userEdit, queryUser } from '@/api/systemManage/userManage.js';
 import { deepClone } from '@/utils';
 export default {
+  components: { orgSelect },
   props: {
-
     userInfo: {
       type: Object,
       default: () => {
@@ -108,14 +112,14 @@ export default {
         { label: '生日', prop: 'birthday', ctype: 'datepicker' },
         { label: '年龄', prop: 'age', ctype: 'input' },
         { label: '性别', prop: 'sex', ctype: 'input' },
-        { label: '机构代码', prop: 'orgCode', ctype: 'input', suffixIcon: 'el-icon-search' },
+        { label: '机构代码', prop: 'orgCode', ctype: 'input', suffixIcon: 'el-icon-search', iconClick: () => this.orgSelect() },
         { label: '状态', prop: 'status', ctype: 'input' },
         { label: '联系电话', prop: 'telPhone', ctype: 'input' },
         { label: '邮箱', prop: 'email', ctype: 'input' },
         { label: '所属分行', prop: 'ownBranch', ctype: 'input' },
         { label: '职级', prop: 'staffingLevel', ctype: 'input' },
         { label: '学历水平', prop: 'eduLevel', ctype: 'input' },
-        { label: '备注', prop: 'eduLevel', ctype: 'textarea', span: 24 }
+        { label: '备注', prop: 'memo', ctype: 'textarea', span: 24 }
         // { label: '密码失效日期', prop: 'pwdValdaDate', ctype: 'datepicker' },
         // { label: '是否使用指纹', prop: 'isUseFingerprint', ctype: 'radio' },
         // { label: '柜员级别', prop: 'tellerLevel', ctype: 'input' },
@@ -155,10 +159,20 @@ export default {
         }
       });
     },
+    orgSelect() {
+      this.$refs.refOrgSelect.dialogVisible = true;
+    },
+    // 接收机构选择框的值
+    reciveRow(row) {
+      this.formdata.orgCode = row.orgCode;
+      this.formdata.orgName = row.orgName;
+    },
+    // 关闭弹框
     closeFn() {
       this.$refs.refForm.resetFields();
       this.dialogVisible = false;
     },
+    // 确定提交更新表格数据
     comfirmFn() {
       userEdit(this.formdata).then(res => {
         if (res.code === '0') {

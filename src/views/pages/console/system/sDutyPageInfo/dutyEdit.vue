@@ -7,42 +7,99 @@
       @close="closeFn"
       @open="initData"
     >
-      <el-form ref="refForm" v-model="formdata" label-width="120px">
-        <el-form-item label="岗位代码" name="dutyCode" ctype="input" :disabled="pageType=='DETAIL'" />
-        <el-form-item label="岗位名称" name="dutyName" ctype="input" :disabled="pageType=='DETAIL'" />
-        <el-form-item label="适用机构" name="orgCode" ctype="input" :disabled="pageType=='DETAIL'" />
-        <el-form-item label="排序字段" name="orderId" ctype="input" :disabled="pageType=='DETAIL'" />
-        <el-form-item label="状态" name="status" ctype="input" :disabled="pageType=='DETAIL'" />
-        <el-form-item label="创建人" name="createUser" ctype="input" :disabled="pageType=='DETAIL'" />
-        <el-form-item label="最后修改人" name="lastUpdateUser" ctype="input" :disabled="pageType=='DETAIL'" />
-        <el-form-item label="最后修改时间" name="lastUpdateTime" ctype="input" :disabled="pageType=='DETAIL'" />
+      <el-form ref="refForm" :model="formdata" label-width="120px">
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="岗位代码" prop="dutyCode">
+              <el-input v-model="formdata.dutyCode" :disabled="true" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="岗位名称" prop="dutyName" required>
+              <el-input v-model="formdata.dutyName" :disabled="pageType=='DETAIL'" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="适用机构" prop="orgCode" ctype="input">
+              <el-input v-model="formdata.orgCode" :disabled="pageType=='DETAIL'">
+                <i slot="suffix" class="el-icon-search" @click="iconClick" />
+              </el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="状态">
+              <el-input v-model="formdata.status" :disabled="pageType=='DETAIL'" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item v-if="pageType=='DETAIL'" label="创建人">
+              <el-input v-model="formdata.createUser" :disabled="pageType=='DETAIL'" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item v-if="pageType=='DETAIL'" label="创建时间">
+              <el-date-picker
+                v-model="formdata.createTime"
+                :disabled="pageType=='DETAIL'"
+                type="date"
+                placeholder="选择日期"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item v-if="pageType=='DETAIL'" label="最后修改人">
+              <el-input v-model="formdata.lastUpdateUser" :disabled="pageType=='DETAIL'" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item v-if="pageType=='DETAIL'" label="最后修改时间">
+              <el-date-picker
+                v-model="formdata.lastUpdateTime"
+                :disabled="pageType=='DETAIL'"
+                type="date"
+                placeholder="选择日期"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="备注">
+              <el-input v-model="formdata.memo" type="textarea" :disabled="pageType=='DETAIL'" />
+            </el-form-item>
+          </el-col>
+        </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="closeFn">取 消</el-button>
         <el-button type="primary" @click="comfirmFn">确 定</el-button>
       </div>
     </el-dialog>
+    <orgSelect ref="refOrgSelct" :base-params="baseParams" @emitRow="reciveRow" />
   </div>
 </template>
 
 <script>
+import orgSelect from '@/views/pages/console/common/orgSelect.vue';
+import { deepClone } from '@/utils';
+import { dutyEdit } from '@/api/systemManage/dutyManage.js';
 export default {
+  components: { orgSelect },
   props: {
-    dialogVisible: {
-      type: Boolean,
-      default: false
-    },
     dutyInfo: {
       type: Object,
       default: () => {
         return {};
       }
     },
-    pageType: String
+    pageType: {
+      type: String,
+      default: ''
+    }
   },
   data() {
     return {
-      formdata: { }
+      dialogVisible: false,
+      formdata: { },
+      baseParams: {}
     };
   },
   computed: {
@@ -60,19 +117,27 @@ export default {
   },
   methods: {
     initData() {
-      this.$nextTick(() => {
-        if (this.pageType !== 'ADD') {
-          this.formdata = this.dutyInfo;
-          this.$refs.refForm.formdata = this.dutyInfo;
-        } else if (this.pageType == 'ADD') { // 新增清空表单数据
-          this.$refs.refForm.formdata = {};
+      if (this.pageType !== 'ADD') {
+        this.formdata = deepClone(this.dutyInfo);
+      }
+    },
+    closeFn() {
+      this.dialogVisible = false;
+      this.$refs.refForm.resetFields();
+    },
+    reciveRow(row) {
+      this.formdata.orgCode = row.orgCode;
+      this.formdata.orgName = row.orgName;
+    },
+    comfirmFn() {
+      dutyEdit({}).then(res => {
+        if (res.code === '0') {
+          this.closeFn();
         }
       });
     },
-    closeFn() {
-      this.$emit('update:dialogVisible', false);
-    },
-    comfirmFn() {
+    iconClick() {
+      this.$refs.refOrgSelct.dialogVisible = true;
     }
   }
 };

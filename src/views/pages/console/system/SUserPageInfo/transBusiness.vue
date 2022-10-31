@@ -4,7 +4,7 @@
     :visible.sync="dialogVisible"
     @open="initData"
   >
-    <el-collapse v-model="activeNames" @change="handleChange">
+    <el-collapse v-model="activeNames">
       <el-collapse-item title="移交业务选择" name="1">
         <el-table ref="refTable" row-number :data="tableData" :highlight-current-row="true" @row-click="rowClick">
           <el-table-column v-for="(ite,index) in tableFileds" :key="index" :label="ite.label">
@@ -96,6 +96,10 @@ export default {
     handleSizeChange(size) {
       this.pageInfo.size = size;
       this.getTableData(this.searchFormdata);
+    },
+    rowClick() {
+      this.$$nextTick(() => {
+      });
     },
     submitFn() {
 

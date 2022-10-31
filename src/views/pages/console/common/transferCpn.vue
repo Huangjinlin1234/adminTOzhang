@@ -3,6 +3,7 @@
     <el-dialog
       :title="dialogTitle"
       :visible.sync="dialogVisible"
+      :modal="modal"
       @close="closeFn"
       @open="initData"
     >
@@ -17,17 +18,18 @@
 </template>
 
 <script>
-import { getTrfData, saveTransfer } from '@/api/systemManage/userManage.js';
+import { getTrfData } from '@/api/systemManage/userManage.js';
 export default {
   props: {
     dialogTitle: {
       type: String,
       default: '新增'
     },
-    dialogVisible: {
+    modal: {
       type: Boolean,
-      default: false
+      default: true
     },
+
     titles: {
       type: Array,
       default: () => {
@@ -43,29 +45,29 @@ export default {
       default: () => {
         return {
           key: 'roleCode',
-          value: 'roleName'
+          label: 'roleName'
         };
       }
-    },
-    savrUrl: {
-      type: String,
-      default: ''
     }
   },
   data() {
     return {
       valueArray: [],
-      transferData: []
+      transferData: [
+        { dutyCode: '00001', dutyName: '机构1' },
+        { dutyCode: '00002', dutyName: '机构2' }
+      ],
+      dialogVisible: false
     };
   },
   created() {
   },
   methods: {
     initData() {
-      this.getTranasferData();
+      // this.getTranasferData();
     },
     getTranasferData() {
-      getTrfData({}).then(res => {
+      getTrfData({}, this.dataUrl).then(res => {
         if (res.code == '0') {
           this.transferData = res.rows;
         }
@@ -75,13 +77,7 @@ export default {
       this.$emit('update:dialogVisible', false);
     },
     comfirmFn() {
-      console.log(this.valueArray, 'vvv');
-      const userCode = this.$parent.selection.userCode;
-      saveTransfer({ userCode, roleCodes: this.valueArray }, this.savrUrl).then(res => {
-        if (res.code == '0') {
-          this.closeFn();
-        }
-      });
+      this.$emit('confirm', this.valueArray);
     }
   }
 };
