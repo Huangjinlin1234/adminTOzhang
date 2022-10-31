@@ -57,7 +57,7 @@
               </template>
               <!--文本输入框框 -->
               <template v-if="item.ctype==='textarea'">
-                <el-input v-model="formdata[item.prop]" :disabled="pageType=='DETAIL'" type="textarea" />
+                <el-input v-model="formdata[item.prop]" :disabled="pageType=='DETAIL'" :autosize="{ minRows: 5 }" type="textarea" />
               </template>
               <!--复选框 -->
               <template v-if="item.ctype==='checkbox'">

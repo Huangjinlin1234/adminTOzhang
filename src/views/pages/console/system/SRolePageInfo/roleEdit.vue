@@ -56,7 +56,7 @@
         </el-col>
         <el-col :span="24">
           <el-form-item label="备注" :disabled="pageType=='DETAIL'">
-            <el-input v-model="formdata.remark" type="textarea" />
+            <el-input v-model="formdata.momo" :autosize="{ minRows: 5 }" type="textarea" />
           </el-form-item>
         </el-col>
       </el-row>
