@@ -269,36 +269,54 @@ export const constantRoutes = [
         name: "four",
         meta: { title: "模板四" }
       },
-      // {
-      //   path: "ninth",
-      //   component: () => import("@/views/template/ninth/index"),
-      //   name: "ninth",
-      //   meta: { title: "征信授权管理" }
-      // },
-      // {
-      //   path: "tenth",
-      //   component: () => import("@/views/template/tenth/index"),
-      //   name: "tenth",
-      //   meta: { title: "征信查询管理" }
-      // },
-      // {
-      //   path: "twlth",
-      //   component: () => import("@/views/template/twlth/index"),
-      //   name: "twlth",
-      //   meta: { title: "征信查询台账" }
-      // },
-      // {
-      //   path: "thirtyth",
-      //   component: () => import("@/views/template/thirtyth/index"),
-      //   name: "thirtyth",
-      //   meta: { title: "业务流程中发起征信查询" }
-      // }
-      // {
-      //   path: "fourteenth",
-      //   component: () => import("@/views/template/fourteenth/index"),
-      //   name: "fourteenth",
-      //   meta: { title: "押品信息管理" }
-      // },
+      {
+        path: "ninth",
+        component: () => import("@/views/template/ninth/index"),
+        name: "ninth",
+        meta: { title: "征信授权管理" }
+      },
+      {
+        path: "tenth",
+        component: () => import("@/views/template/tenth/index"),
+        name: "tenth",
+        meta: { title: "征信查询管理" }
+      },
+      {
+        path: "twlth",
+        component: () => import("@/views/template/twlth/index"),
+        name: "twlth",
+        meta: { title: "征信查询台账" }
+      },
+      {
+        path: "thirtyth",
+        component: () => import("@/views/template/thirtyth/index"),
+        name: "thirtyth",
+        meta: { title: "业务流程中发起征信查询" }
+      },
+      {
+        path: "fourteenth",
+        component: () => import("@/views/template/fourteenth/index"),
+        name: "fourteenth",
+        meta: { title: "押品信息管理" }
+      },
+      {
+        path: "fifteenth",
+        component: () => import("@/views/template/fifteenth/index"),
+        name: "fifteenth",
+        meta: { title: "进件任务池(房抵贷)" }
+      },
+      {
+        path: "sixteenth",
+        component: () => import("@/views/template/sixteenth/index"),
+        name: "sixteenth",
+        meta: { title: "进件任务池(个人经营、对公流贷)" }
+      },
+      {
+        path: "seventeenth",
+        component: () => import("@/views/template/seventeenth/index"),
+        name: "seventeenth",
+        meta: { title: "我的受理" }
+      },
     ]
   }
 ];
