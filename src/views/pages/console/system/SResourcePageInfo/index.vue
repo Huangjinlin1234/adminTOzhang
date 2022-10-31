@@ -7,7 +7,7 @@
             <el-button icon="plus" @click="append" type="primary">新增</el-button>
             <el-button :icon="expandAll ? 'yx-menu4' : 'yx-menu3' " @click="transExpand" type="primary">{{ expandAll ? '收缩所有节点' : '展开所有节点' }} </el-button>
           </el-button-group>
-          <el-xtree ref="refTree" :data-url="dataUrl" :default-props="defaultProps" @node-click="nodeClickFn"></el-xtree>
+          <el-xtree ref="refTree" :is-show-search="false" :data-url="dataUrl" :default-props="defaultProps" @node-click="nodeClickFn"></el-xtree>
         </el-col>
         <el-col :span="17">
           <!-- 展示资源查看 -->
@@ -18,17 +18,17 @@
           <el-button-group class="mb8">
             <el-button v-for="(item,index) in btnFields" :key="index" @click="item.click" :type="item.type || 'primary'">{{ item.label }}</el-button>
           </el-button-group>
-          <el-xtable ref="refTable" :data-url="dataUrl2" :base-params="{}" :table-fields="tableFields"></el-xtable>
+          <el-xtable ref="refTable" :data-url="dataUrl2" :base-params="{}" :table-fields="tableFields" @row-click="rowClick"></el-xtable>
         </el-col>
       </el-row>
       <add-resource :dialog-view.sync="isShowResource" :form-data="resource"></add-resource>
-      <res-operation :dialog-view.sync="isShowResOper" :page-type="pageType" :form-data="resourceOper" @update-table="getTableDataFn" :colspan="2"></res-operation>
+      <res-operation :dialog-view.sync="isShowResOper" :page-type="pageType" :form-data="resourceOper" :colspan="2"></res-operation>
     </div>
   </el-xpanel>
 </template>
 
 <script>
-import { getTreeData2, getRescActs, getResource, setResource } from '@/api/systemManage/resource';
+import { getTreeData2, getRescActs, getResource, setResource, setResOperation } from '@/api/systemManage/resource';
 import listPage from '@/components/layout/listPage'
 import addResource from './addResource';
 import resOperation from './resOperation'
@@ -41,7 +41,7 @@ export default {
   data () {
     return {
       formData: {},
-      expandAll: false,
+      expandAll: true,
       treeData: [],
       defaultProps: {
         id: 'rescCode',
@@ -72,9 +72,9 @@ export default {
       ],
       btnFields: [
         { label: '新增', name: 'add', click: () => { this.openType('xz') } },
-        { label: '修改', name: 'modify', click: () => { this.openType('xz') } },
+        { label: '修改', name: 'modify', click: () => { this.openType('xg') } },
         { label: '删除', name: 'delete', click: this.deleteResOper },
-        { label: '查看', name: 'view', click: () => { this.openType('xz') } },
+        { label: '查看', name: 'view', click: () => { this.openType('ck') } },
       ],
       baseParams: {},
       dataUrl: getTreeData2(),
@@ -83,7 +83,8 @@ export default {
       resource: {}, // 资源信息
       resourceOper: {}, // 资源操作信息
       isShowResource: false,
-      isShowResOper: false
+      isShowResOper: false,
+      selection: []
     };
   },
   mounted () {
@@ -91,7 +92,6 @@ export default {
   methods: {
     save () {
       let _this = this
-      console.log(_this.$refs.refTree, "_this.$refs.refTree::: ");
       setResource('PUT', this.formData).then(_ => {
         _this.$refs.refTree.remoteData();
       })
@@ -103,21 +103,18 @@ export default {
         let data = obj.childNodes;
         if (data && data.length > 0) {
           for (let i = 0; i < data.length; i++) {
-            // data[i].expanded = _this.expandAll;
+            data[i].expanded = _this.expandAll;
             closeFn(data[i]);
           }
         }
       };
-      // let data = this.$refs.refTree.root.childNodes;
-      // if (data && data.length > 0) {
-      //   for (let i = 0; i < data.length; i++) {
-      //     // data[i].expanded = this.expandAll;
-      //     closeFn(data[i]);
-      //   }
-      // }
-    },
-    getTableDataFn () {
-      // this.$refs.refTable.remoteData();
+      let data = this.$refs.refTree.$refs.refTree.root.childNodes;
+      if (data && data.length > 0) {
+        for (let i = 0; i < data.length; i++) {
+          data[i].expanded = this.expandAll;
+          closeFn(data[i]);
+        }
+      }
     },
     nodeClickFn (row) {
       this.$refs.refTable.remoteData(row);
@@ -171,16 +168,36 @@ export default {
     },
 
     deleteResOper () {
-
+      let _this = this;
+      this.$confirm('点击确定将永久删除该数据，是否确认？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+        callback: function (action) {
+          if (!_this.selection.length) {
+            _this.$message({ message: '请先选择一条资源操作记录', type: 'warning' });
+            return;
+          }
+          let { rescActCode, rescCode } = _this.selection[0];
+          if (action === 'confirm') {
+            setResOperation('delete', { rescActCode, rescCode }).then(res => {
+              _this.$refs.refTable.remoteData({ rescCode });
+              console.log(res, "res::: ");
+            }).catch(err => {
+              console.log(err, "err::: ");
+            })
+          }
+        }
+      });
     },
     openType (pageType) {
-      console.log(1111, "1111::: ");
       if (pageType === 'xz') {
         this.resourceOper = {}
       } else {
-        if (this.$refs.refTable && this.$refs.refTable.selections && this.$refs.refTable.selections.length) {
-          this.resourceOper = this.$refs.refTable.selections[0];
-          this.resourceOper.rescDesc = this.$refs.refForm.formdata.rescDesc
+        if (this.selection.length) {
+          console.log(11, "11::: ");
+          this.resourceOper = this.selection[0];
+          this.resourceOper.rescDesc = this.$refs.refForm.formData.rescDesc
         } else {
           this.$message({ message: '请先选择一条资源操作记录', type: 'warning' });
           return;
@@ -190,8 +207,8 @@ export default {
       this.isShowResOper = true;
       this.pageType = pageType;
     },
-    click () {
-
+    rowClick (row) {
+      this.selection = [row]
     }
   },
 };

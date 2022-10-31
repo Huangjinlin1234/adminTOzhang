@@ -30,12 +30,12 @@ export function getResource(params) {
     method: "GET"
   });
 }
-// 保存资源操作信息
-export function addResOperation(params) {
+// 保存、删除资源操作信息
+export function setResOperation(method, data) {
   return request({
     url: backend.console + "/api/s/resc/act",
-    method: "POST",
-    params
+    method,
+    data
   });
 }
 // 获取资源操作信息

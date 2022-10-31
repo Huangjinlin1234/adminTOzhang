@@ -15,12 +15,6 @@ import request from "@/utils/request";
 export default {
   name: 'ElXtable',
   props: {
-    // tableData: {
-    //   type: Array,
-    //   default: () => {
-    //     return []
-    //   },
-    // },
     tableFields: {
       type: Array,
       default: () => {
@@ -64,16 +58,15 @@ export default {
     }
   },
   created () {
-    this.init()
+    if (this.defaultLoad) {
+      this.remoteData()
+    }
   },
   mounted () { },
   methods: {
-    init () {
-      this.remoteData()
-    },
     remoteData (params) {
       let data = params ? params : this.baseParams
-      if (this.defaultLoad && this.dataUrl) {
+      if (this.dataUrl) {
         request({
           url: this.dataUrl,
           method: this.requestType,

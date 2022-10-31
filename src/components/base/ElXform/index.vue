@@ -1,5 +1,5 @@
 <template>
-  <el-form ref="refForm" :model="formData" :rules="rules" :label-width="labelWidth+'px'" :disabled="disabled" :key="timeKey">
+  <el-form ref="refForm" :model="formData" :rules="rules" :label-width="labelWidth+'px'" :disabled="disabled">
     <el-row>
       <el-col v-for="(item,index) in formFields" :key="index" :span="(item.colspan && 24/item.colspan)|| 24/colspan">
         <el-form-item :label="item.label" :prop="item.prop">
@@ -51,10 +51,6 @@ export default {
     labelWidth: {
       type: String,
     },
-    // inline: {
-    //   type: Boolean,
-    //   default: false
-    // },
     colspan: {
       type: Number,
       default: 3
@@ -67,7 +63,6 @@ export default {
   components: {},
   data () {
     return {
-      timeKey: new Date() + ''
     }
   },
   created () { },
@@ -75,10 +70,6 @@ export default {
 
   },
   methods: {
-    ttt () {
-    },
-    ttt () {
-    }
   },
 }
 </script>

@@ -1,7 +1,7 @@
 <template>
   <div class="el-xtree">
-    <el-input v-model="input" placeholder="请输入" :limit-char="limitChar" class="mb18" @change="searchFn" />
-    <el-tree ref="refTree" :node-key="defaultProps.id" :data="treeData" :props="defaultProps" default-expand-all @node-click="nodeClick" :render-content="renderContent" />
+    <el-input v-if="isShowSearch" v-model="filterText" placeholder="请输入" :limit-char="limitChar" class="mb18" />
+    <el-tree ref="refTree" :node-key="defaultProps.id" :data="treeData" :props="defaultProps" default-expand-all :filter-node-method="filterNode" @node-click="nodeClick" :render-content="renderContent" />
   </div>
 </template>
 <script>
@@ -20,6 +20,10 @@ export default {
       }
     },
     defaultLoad: {
+      type: Boolean,
+      default: true,
+    },
+    isShowSearch: {
       type: Boolean,
       default: true,
     },
@@ -46,39 +50,40 @@ export default {
       type: Function
     },
   },
+  watch: {
+    filterText (val) {
+      this.$refs.refTree.filter(val);
+    }
+  },
   data () {
     return {
-      input: '',
+      filterText: '',
       treeData: [],
-      listData: []
     };
   },
-  // /console/api/s/queryRoleAll
   created () {
-    console.log('defaultProps', this.defaultProps);
-    this.remoteData(this.baseParams)
+    if (this.defaultLoad) {
+      this.remoteData(this.baseParams)
+    }
   },
   mounted () {
   },
   methods: {
+    filterNode (value, data) {
+      if (!value) return true;
+      return data[this.defaultProps.label].indexOf(value) !== -1;
+    },
     nodeClick (data) {
       this.$emit('node-click', data)
     },
-    searchFn (val) {
-      // if (val) {
-      //   this.treeData = this.listData.forEach()
-      // }
-      // this.treeData =
-    },
     remoteData (params) {
-      if (this.defaultLoad && this.dataUrl) {
+      if (this.dataUrl) {
         request({
           url: this.dataUrl,
           method: this.requestType,
           data: params || this.baseParams
         }).then(res => {
           this.treeData = res.rows;
-          this.listData = JSON.parse(JSON.stringify(res.rows))
           this.treeData = this.transTree(res.rows, this.defaultProps);
         }).catch(err => {
           console.log('err', err)
@@ -86,7 +91,6 @@ export default {
       }
     },
     transTree (list, { id, pid, children }) {
-      console.log('id', id, pid, children)
       let treeData = [];
       list.forEach(item => {
         if (!item[pid]) {
