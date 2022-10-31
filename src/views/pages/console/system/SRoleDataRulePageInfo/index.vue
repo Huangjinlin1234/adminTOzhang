@@ -44,8 +44,8 @@ export default {
         { label: '菜单url', prop: 'dataPersId' },
         { label: '记录级权限类型', prop: 'permisType' },
         { label: '菜单描述', prop: 'rescDesc' },
-        { label: '创建人', prop: 'dataPersId' },
-        { label: '创建时间', prop: 'dataPersId' },
+        { label: '创建人', prop: 'createUser' },
+        { label: '创建时间', prop: 'createTime' },
       ],
       btnFields: [
         { label: '新增', name: 'add', click: () => { this.openDialog('add') } },
