@@ -69,8 +69,6 @@ export default {
         return;
       }
       this.$confirm(`是否删除岗位【${dutyName}】？`, '提示', {
-        cancelButtonText: '取消',
-        confirmButtonText: '确定',
         type: 'warning'
       }).then(() => {
         dutyEditApi(this.dutyInfo.dutyCode).then(res => {

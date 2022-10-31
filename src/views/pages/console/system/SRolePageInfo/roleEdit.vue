@@ -134,6 +134,9 @@ export default {
       this.$refs.refTrn.dialogVisible = false;
     },
     iconClick() {
+      if (this.pageType == 'DETAIL') {
+        return;
+      }
       this.$refs.refTrn.dialogVisible = true;
     },
     // 保存
