@@ -1,53 +1,34 @@
 <template>
   <el-xpanel panel-title="资源定义">
     <div slot="content">
-      <el-row :gutter="20">
-        <el-col :span="7">
+      <el-row :gutter="12">
+        <el-col :span="9">
           <el-button-group class="mb18">
             <el-button icon="plus" @click="append" type="primary">新增</el-button>
             <el-button :icon="expandAll ? 'yx-menu4' : 'yx-menu3' " @click="transExpand" type="primary">{{ expandAll ? '收缩所有节点' : '展开所有节点' }} </el-button>
           </el-button-group>
-          <div class="tree-content">
-            <el-tree ref="rescTree" :data="treeData" :props="defaultProps" node-key="rescCode" :render-content="renderContent" @node-click="nodeClickFn">
-            </el-tree>
-          </div>
+          <el-xtree ref="refTree" :is-show-search="false" :data-url="dataUrl" :default-props="defaultProps" @node-click="nodeClickFn" :render-content="renderContent"></el-xtree>
         </el-col>
-        <el-col :span="17">
+        <el-col :span="15">
           <!-- 展示资源查看 -->
-          <el-xform ref="refForm" :form-fields="formFields" :label-width="labelWidth" :colspan="2">
-            <el-button type="primary" icon="plus" @click="openType('xz')">保存</el-button>
-            <el-button type="primary" icon="edit" @click="openType('xg')">取消</el-button>
+          <el-xform ref="refForm" :form-data="formData" :form-fields="formFields" :label-width="labelWidth" :colspan="2">
+            <el-button type="primary" @click="save('xz')">保存</el-button>
+            <el-button type="primary" @click="cancel('xg')">取消</el-button>
           </el-xform>
           <el-button-group class="mb8">
             <el-button v-for="(item,index) in btnFields" :key="index" @click="item.click" :type="item.type || 'primary'">{{ item.label }}</el-button>
           </el-button-group>
-          <el-xtable ref="refTable" :table-data="tableData" :table-fields="tableFields">
-            <slot></slot>
-          </el-xtable>
-          <!-- <el-form ref="refForm" label-width="120px" :hidden-rule="true" :disabled="disabled" v-model="formdata" form-type="edit" hidden-del-val>
-                <el-form-group>
-                  <el-form-item v-for="(item,index) in formFields" :key="index" :label="item.label" :colspan="item.colspan" :ctype="item.ctype" :name="item.name"></el-form-item>
-                </el-form-group>
-              </el-form>
-              <el-button-group class="mb18">
-                <el-button type="primary" icon="plus" @click="openType('xz')">新增</el-button>
-                <el-button type="primary" icon="edit" @click="openType('xg')">修改</el-button>
-                <el-button type="primary" icon="delete" @click="deleteResOper">删除</el-button>
-                <el-button type="primary" icon="yx-zoom-in" @click="openType('ck')">查看</el-button>
-              </el-button-group>
-              <el-table ref="rescActTable" :data-url="dataUrl" :base-params="baseParams" request-type="POST" :defauld-load="false" :pageable="false" json-data="rows">
-                <el-table-column v-for="(item, index) in tableFields" :key="index" :label="item.label" :prop="item.prop"></el-table-column>
-              </el-table> -->
+          <el-xtable ref="refTable" :data-url="dataUrl2" :base-params="{}" :table-fields="tableFields" @row-click="rowClick"></el-xtable>
         </el-col>
       </el-row>
-      <add-resource :dialog-visible.sync="isShowResource" :form-data="resource" @update-Tree="getTreeDataFn"></add-resource>
-      <res-operation :dialog-visible.sync="isShowResOper" :page-type="pageType" :form-data="resourceOper" @update-table="getTableDataFn"></res-operation>
+      <add-resource :dialog-view.sync="isShowResource" :form-data="resource"></add-resource>
+      <res-operation :dialog-view.sync="isShowResOper" :page-type="pageType" :form-data="resourceOper" :colspan="2"></res-operation>
     </div>
   </el-xpanel>
 </template>
 
 <script>
-import { getTreeData, getRescActs, getResource, setResource } from '@/api/systemManage/resource';
+import { getTreeData2, getRescActs, getResource, setResource, setResOperation } from '@/api/systemManage/resource';
 import listPage from '@/components/layout/listPage'
 import addResource from './addResource';
 import resOperation from './resOperation'
@@ -59,22 +40,30 @@ export default {
   },
   data () {
     return {
-      expandAll: false,
+      formData: {},
+      expandAll: true,
       treeData: [],
       defaultProps: {
+        id: 'rescCode',
+        pid: 'rescParentCode',
+        label: 'rescDesc',
         children: 'children',
-        label: 'rescDesc'
       },
-      labelWidth: 120,
-      tableData: [],
+      labelWidth: '120',
+      data: [
+        { "rescCode": "lp-70000", "rescDesc": "折扣活动", "rescParentCode": "" },
+        { "rescCode": "lp-71000", "rescDesc": "人工检查", "rescParentCode": "lp-70000" },
+        { "rescCode": "lp-79901", "rescDesc": "用户日志", "rescParentCode": "lp-70000" },
+        { "rescCode": "lp-80001", "rescDesc": "台账报表", "rescParentCode": "lp-70000" }
+      ],
       formFields: [
-        { label: '资源代码', name: 'rescCode', disabled: true, rules: [{ required: true, message: '资源代码是必填项', trigger: 'blur' }, { max: 32, message: '最大长度为32' }] },
-        { label: '资源中文描述', name: 'rescDesc', rules: [{ required: true, message: '资源中文描述是必填项', trigger: 'blur' }, { max: 80, message: '最大长度为80' }] },
-        { label: '路由', name: 'funcId', rules: [{ max: 32, message: '最大长度为32' }] },
-        { label: '资源图标', name: 'rescIcon', rules: [{ max: 60, message: '最大长度为60' }] },
-        { label: '序号', name: 'orderId', rules: [{ message: '序号必须为数字值' }] },
-        { label: '资源URL', name: 'rescUrl', colspan: "1", rules: [{ max: 254, message: '最大长度为254' }] },
-        { label: '备注', name: 'memo', colspan: "1", ctype: 'input', type: 'textarea', rules: [{ max: 100, message: '最大长度为100' }] }
+        { label: '资源代码', prop: 'rescCode', disabled: true, rules: [{ required: true, message: '资源代码是必填项', trigger: 'blur' }, { max: 32, message: '最大长度为32' }] },
+        { label: '资源中文描述', prop: 'rescDesc', rules: [{ required: true, message: '资源中文描述是必填项', trigger: 'blur' }, { max: 80, message: '最大长度为80' }] },
+        { label: '路由', prop: 'funcId', rules: [{ max: 32, message: '最大长度为32' }] },
+        { label: '资源图标', prop: 'rescIcon', rules: [{ max: 60, message: '最大长度为60' }] },
+        { label: '序号', prop: 'orderId', rules: [{ message: '序号必须为数字值' }] },
+        { label: '资源URL', prop: 'rescUrl', colspan: "1", rules: [{ max: 254, message: '最大长度为254' }] },
+        { label: '备注', prop: 'memo', colspan: "1", ctype: 'input', type: 'textarea', rules: [{ max: 100, message: '最大长度为100' }] }
       ],
       tableFields: [
         { label: '操作码', prop: 'rescActCode', resizable: true },
@@ -82,24 +71,31 @@ export default {
         { label: '操作码中文描述', prop: 'rescActDesc', width: 200, resizable: true }
       ],
       btnFields: [
-        { label: '新增', name: 'add', click: this.openType() },
-        { label: '修改', name: 'modify', click: this.openType },
-        { label: '删除', name: 'delete', click: this.clickFn() },
-        { label: '查看', name: 'view', click: this.openType() },
+        { label: '新增', name: 'add', click: () => { this.openType('xz') } },
+        { label: '修改', name: 'modify', click: () => { this.openType('xg') } },
+        { label: '删除', name: 'delete', click: this.deleteResOper },
+        { label: '查看', name: 'view', click: () => { this.openType('ck') } },
       ],
       baseParams: {},
-      dataUrl: getRescActs(),
+      dataUrl: getTreeData2(),
+      dataUrl2: getRescActs(),
       pageType: '', // 资源操作信息页面类型,
       resource: {}, // 资源信息
       resourceOper: {}, // 资源操作信息
       isShowResource: false,
-      isShowResOper: false
+      isShowResOper: false,
+      selection: []
     };
   },
-  created () {
-    // this.getTreeDataFn();
+  mounted () {
   },
   methods: {
+    save () {
+      let _this = this
+      setResource('PUT', this.formData).then(_ => {
+        _this.$refs.refTree.remoteData();
+      })
+    },
     transExpand () {
       this.expandAll = !this.expandAll;
       let _this = this;
@@ -107,47 +103,24 @@ export default {
         let data = obj.childNodes;
         if (data && data.length > 0) {
           for (let i = 0; i < data.length; i++) {
-            // data[i].expanded = _this.expandAll;
+            data[i].expanded = _this.expandAll;
             closeFn(data[i]);
           }
         }
       };
-      // let data = this.$refs.rescTree.root.childNodes;
-      // if (data && data.length > 0) {
-      //   for (let i = 0; i < data.length; i++) {
-      //     // data[i].expanded = this.expandAll;
-      //     closeFn(data[i]);
-      //   }
-      // }
-    },
-    transTree (list, rootValue) {
-      let treeData = [];
-      list.forEach(item => {
-        if (!item.rescParentCode) {
-          treeData.push(item);
+      let data = this.$refs.refTree.$refs.refTree.root.childNodes;
+      if (data && data.length > 0) {
+        for (let i = 0; i < data.length; i++) {
+          data[i].expanded = this.expandAll;
+          closeFn(data[i]);
         }
-        const children = list.filter(data => data.rescParentCode === item.rescCode);
-        if (!children.length) { return };
-        item.children = children;
-      });
-      return treeData;
-    },
-    getTreeDataFn () {
-      getTreeData({}).then(res => {
-        if (res.code === '0') {
-          let childrenArr = this.transTree(res.rows, '');
-          this.treeData = childrenArr;
-        }
-      });
-    },
-    getTableDataFn () {
-      // this.$refs.rescActTable.remoteData();
+      }
     },
     nodeClickFn (row) {
-      // this.$refs.rescActTable.remoteData(row);
+      this.$refs.refTable.remoteData(row);
       getResource(row.rescCode).then(res => {
         if (res.code === '0') {
-          // this.$refs.refForm.formdata = res.rows;
+          this.formData = res.rows;
         }
       })
     },
@@ -156,8 +129,8 @@ export default {
       let btnArray = [{ name: '增加', callback: function () { _this.append(store, data, node) }, type: 'primary' },
       { name: '删除', type: 'warning', callback: function () { _this.remove(store, data, node) } }];
       return h('span', {}, [
-        h('span', {}, [h('span', {}, node.label)]),
-        h('span', { attrs: { style: 'float: right; margin-right: 20px' } }, btnArray.map(function (item) {
+        h('span', {}, [h('span', { style: "font:14px" }, node.label)]),
+        h('span', { attrs: { style: 'position:absolute;top:4px;right:0;', } }, btnArray.map(function (item) {
           return h('el-button', { props: { size: 'mini', type: item.type }, on: { click: item.callback } }, item.name);
         }))
       ]);
@@ -184,7 +157,7 @@ export default {
             //如果删除的当前form 表单的资源
             // if (rescCode == this.$refs.resourceform.formModel.rescCode) {
             //   this.$refs.resourceform.resetFn();
-            //   this.$refs.rescActTable.remoteData();
+            //   this.$refs.refTable.remoteData();
             // }
             this.$message.success('操作成功!');
           } else {
@@ -195,54 +168,51 @@ export default {
     },
 
     deleteResOper () {
-
+      let _this = this;
+      this.$confirm('点击确定将永久删除该数据，是否确认？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+        callback: function (action) {
+          if (!_this.selection.length) {
+            _this.$message({ message: '请先选择一条资源操作记录', type: 'warning' });
+            return;
+          }
+          let { rescActCode, rescCode } = _this.selection[0];
+          if (action === 'confirm') {
+            setResOperation('delete', { rescActCode, rescCode }).then(res => {
+              _this.$refs.refTable.remoteData({ rescCode });
+              console.log(res, "res::: ");
+            }).catch(err => {
+              console.log(err, "err::: ");
+            })
+          }
+        }
+      });
     },
     openType (pageType) {
       if (pageType === 'xz') {
         this.resourceOper = {}
       } else {
-        // if (!this.$refs.rescActTable.selections.length) {
-        //   this.$message({ message: '请先选择一条资源操作记录', type: 'warning' });
-        //   return;
-        // }
-        // this.resourceOper = this.$refs.rescActTable.selections[0];
-        // this.resourceOper.rescDesc = this.$refs.refForm.formdata.rescDesc
+        if (this.selection.length) {
+          console.log(11, "11::: ");
+          this.resourceOper = this.selection[0];
+          this.resourceOper.rescDesc = this.$refs.refForm.formData.rescDesc
+        } else {
+          this.$message({ message: '请先选择一条资源操作记录', type: 'warning' });
+          return;
+        }
       }
+      console.log(2222, "2222::: ");
       this.isShowResOper = true;
       this.pageType = pageType;
     },
-    clickFn () {
-
+    rowClick (row) {
+      this.selection = [row]
     }
   },
 };
 </script>
 
 <style lang="scss" scoped>
-.resource-container {
-  .tree-content {
-    height: 692px;
-    overflow: auto;
-  }
-}
-.container{
-  background-color: #ffff;
-  .el-input.el-input--medium.el-input--suffix{
-    width: 200px;
-    margin: 0px 5px;
-  }
-  .el-select.el-select--medium{
-    margin: 0px 5px;
-  }
-  .role-container {
-    margin-top: 16px;
-    .h56 {
-      height: 56px;
-    }
-    .tree-content {
-      height: 608px;
-      overflow: auto;
-    }
-  }
-}
 </style>

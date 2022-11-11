@@ -3,9 +3,9 @@
  * @updated by
  * @description 认证相关api模块：登录、注销、获取权限（用户、菜单）
  */
-import { request } from 'xy-utils'
+import { request } from 'xy-utils';
 // import request from "@/utils/request";
-import backend from '@/config/constant/app.data.service'
+import backend from '@/config/constant/app.data.service';
 
 /**
  * 登录API调用
@@ -15,9 +15,13 @@ export function getPubkey(data) {
   return request({
     url: backend.uaaService + '/api/login/pubkey',
     method: 'post',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: 'Basic d2ViX2FwcDo='
+    },
     needToken: false,
     data
-  })
+  });
 }
 /**
  * 登录API调用
@@ -29,11 +33,11 @@ export function loginFn(data) {
     method: 'post',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': 'Basic d2ViX2FwcDo='
+      Authorization: 'Basic d2ViX2FwcDo='
     },
     needToken: false,
     data
-  })
+  });
 }
 
 /**
@@ -56,7 +60,7 @@ export function logoutFn(data) {
       'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
     },
     data
-  })
+  });
 }
 
 /**
@@ -67,7 +71,7 @@ export function getSessionInfoFn(data) {
     url: 'http://47.107.173.118:8808'+backend.uaaService + '/api/session/info',
     method: 'POST',
     data
-  })
+  });
 }
 
 /**
@@ -77,7 +81,7 @@ export function getOpenDayFn() {
   return request({
     url: backend.cmisCfg + '/api/adminsmtreedic/openday',
     method: 'post'
-  })
+  });
 }
 
 /**
@@ -89,7 +93,7 @@ export function getMenuandcontrFn(params) {
     url: backend.uaaService + '/api/account/menuandcontr',
     method: 'post',
     params
-  })
+  });
 }
 
 /**
@@ -101,7 +105,7 @@ export function datacontrFn(params) {
     url: backend.appOcaService + '/api/account/datacontr',
     method: 'get',
     params
-  })
+  });
 }
 
 /**
@@ -113,7 +117,7 @@ export function passwordFn(params) {
     url: backend.appOcaService + '/api/account/password',
     method: 'get',
     params
-  })
+  });
 }
 
 /**
@@ -125,7 +129,7 @@ export function contrUrlFn(params) {
     url: backend.appOcaService + '/api/contr/url',
     method: 'get',
     params
-  })
+  });
 }
 
 /**
@@ -137,7 +141,7 @@ export function getVerifyCodeImage(params) {
     url: backend.appOcaService + '/api/codeImage/verifyCodeImage',
     method: 'get',
     params
-  })
+  });
 }
 
 /**
@@ -148,7 +152,7 @@ export function resetPwd(data) {
     url: backend.appOcaService + '/api/password/passwordmodification',
     method: 'POST',
     data
-  })
+  });
 }
 
 /**
@@ -159,5 +163,5 @@ export function getOrgTree(data) {
     url: backend.appOcaService + '/api/adminsmorg/orgtreequery', // 机构树请求 url
     method: 'GET',
     data
-  })
+  });
 }

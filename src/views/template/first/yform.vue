@@ -11,6 +11,10 @@
             <el-option label="区域二" value="beijing" />
           </el-select>
         </template>
+        <template v-if="item.ctype==='date'">
+          <el-date-picker v-model="formInline[item.prop]" type="date" placeholder="选择日期"></el-date-picker>
+          <!-- <el-input v-model="formInline[item.prop]" placeholder="审批人" /> -->
+        </template>
       </el-form-item>
     </el-form>
   </div>

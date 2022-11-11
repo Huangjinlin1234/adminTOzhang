@@ -18,8 +18,15 @@
           </el-form-item>
         </el-form>
       </div>
-      <el-form ref="refForm" :model="formdata" label-width="120px" :rules="rules" label-suffix="：" inline>
+      <el-form ref="refForm" :model="formdata" label-width="120px" :rules="rules" label-suffix="：">
         <el-row>
+          <el-col v-if="pageType!=='DETAIL'" :span="24">
+            <el-form-item label="是否虚拟机构" prop="isVirtOrg">
+              <el-radio-group v-model="formdata.isVirtOrg" :disabled="pageType=='DETAIL'" @change="isVoClick">
+                <el-radio v-for="(ite,idx) in YNoptions" :key="idx" :label="ite.key">{{ ite.value }}</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
           <el-col v-for="(item,index) in formFileds" :key="index" :span="item.span||12">
             <el-form-item :label="item.label" :prop="item.prop">
               <!--输入框 -->
@@ -30,7 +37,7 @@
               </template>
               <!--选择框 -->
               <template v-if="item.ctype==='select'">
-                <el-select v-model="formdata[item.prop]" :placeholder="item.label" @change="item.change">
+                <el-select v-model="formdata[item.prop]" :placeholder="item.label" :disabled="pageType=='DETAIL'||formOptions[item.prop]" @change="item.change">
                   <el-option v-for="(ite,idx) in item.options" :key="idx" :label="ite.value" :value="ite.key" />
                 </el-select>
               </template>
@@ -95,10 +102,10 @@ export default {
     return {
       dialogVisible: false,
       formdata: { isVirtOrg: 'N' },
+      YNoptions: [{ key: 'N', value: '否' }, { key: 'Y', value: '是' }],
       queryData: { },
       baseParams: {},
       formFileds: [
-        { label: '是否虚拟机构', prop: 'isVirtOrg', ctype: 'radio', options: [{ key: 'N', value: '否' }, { key: 'Y', value: '是' }], click: value => this.isVoClick(value), span: 24 },
         { label: '机构代码', prop: 'orgCode', ctype: 'input', disabled: true },
         { label: '机构名称', prop: 'orgName', ctype: 'input' },
         { label: '机构层级', prop: 'orgLevel', ctype: 'select', options: [{ key: '1', value: '一级' }, { key: '2', value: '二级' }, { key: '3', value: '三级' }, { key: '4', value: '四级' }], disabled: false, change: value => { this.selectChange(value) } },
@@ -145,21 +152,23 @@ export default {
   },
   methods: {
     initData() {
-      debugger;
+      console.log(this.pageType, 'pageType');
       if (this.pageType !== 'ADD') {
         this.formdata = deepClone(this.orgInfo);
-        // if (this.pageType == 'EDIT') {
-        //   this.formFileds.splice(0, 1);
-        // }
       }
     },
     selectChange(value) {
       if (value == '1') {
         this.$message.warning('一级机构只能由系统管理员初始化');
+        this.formdata.orgLevel = '';
         return;
       }
-      const item = { label: '上级机构代码', prop: 'orgParentCode', ctype: 'input', suffixIcon: 'el-icon-search', iconClick: () => this.choosePrtOrg() };
-      this.formFileds.splice(4, 0, item);
+      const index = this.formFileds.findIndex(item => item.prop == 'orgParentCode');
+      // 加入上级机构字段
+      if (index < 0) {
+        const item = { label: '上级机构代码', prop: 'orgParentCode', ctype: 'input', suffixIcon: 'el-icon-search', iconClick: () => this.choosePrtOrg() };
+        this.formFileds.splice(4, 0, item);
+      }
       this.baseParams.orgLevel = value;
     },
     reciveRow(row) {
@@ -194,6 +203,9 @@ export default {
       });
     },
     choosePrtOrg() {
+      if (this.pageType == 'DETAIL') {
+        return;
+      }
       this.$refs.refOrgSelct.dialogVisible = true;
     },
     closeFn() {
@@ -225,5 +237,8 @@ export default {
   .top-content{
     margin: 0 auto;
     width: 80%;
+  }
+  el-button:visited{
+    background-color: red;
   }
 </style>

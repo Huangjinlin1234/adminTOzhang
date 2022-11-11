@@ -1,7 +1,8 @@
+@import './variables.scss';
+
 #app {
 
   .main-container {
-    min-height: 100%;
     transition: margin-left .28s;
     margin-left: $sideBarWidth;
     position: relative;
@@ -76,6 +77,7 @@
       &:hover {
         background-color: $menuHover !important;
       }
+      
     }
 
     .is-active>.el-submenu__title {

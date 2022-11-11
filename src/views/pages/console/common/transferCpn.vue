@@ -54,9 +54,8 @@ export default {
     return {
       valueArray: [],
       transferData: [
-        { orgCode: '00001', orgName: '机构1' },
-        { orgCode: '00002', orgName: '机构2' },
-        { orgCode: '00003', orgName: '机构3' }
+        { dutyCode: '00001', dutyName: '机构1' },
+        { dutyCode: '00002', dutyName: '机构2' }
       ],
       dialogVisible: false
     };
@@ -65,7 +64,7 @@ export default {
   },
   methods: {
     initData() {
-      this.getTranasferData();
+      // this.getTranasferData();
     },
     getTranasferData() {
       getTrfData({}, this.dataUrl).then(res => {

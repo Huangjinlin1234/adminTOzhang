@@ -61,6 +61,7 @@ export default {
 .treeCollapse{
   display: flex;
   .collapse-content{
+    width: 86%;
     flex: 1;
   }
 }

@@ -1,12 +1,11 @@
 <template>
   <el-dialog
     :title="dialogTitle"
-    size="large"
     :visible.sync="dialogVisible"
     @close="closeFn"
     @open="initData"
   >
-    <el-form ref="refForm" :model="formdata" label-width="120px" :inline="true">
+    <el-form ref="refForm" :model="formdata" label-width="120px">
       <el-row>
         <el-col :span="12">
           <el-form-item label="角色码">
@@ -55,13 +54,12 @@
             />
           </el-form-item>
         </el-col>
+        <el-col :span="24">
+          <el-form-item label="备注" :disabled="pageType=='DETAIL'">
+            <el-input v-model="formdata.momo" :autosize="{ minRows: 5 }" type="textarea" />
+          </el-form-item>
+        </el-col>
       </el-row>
-      <el-row>
-        <el-form-item label="备注" :disabled="pageType=='DETAIL'">
-          <el-input v-model="formdata.remark" type="textarea" />
-        </el-form-item>
-      </el-row>
-
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button @click="closeFn">取 消</el-button>
@@ -93,7 +91,10 @@ export default {
         return {};
       }
     },
-    pageType: String
+    pageType: {
+      type: String,
+      default: ''
+    }
   },
   data() {
     return {
@@ -133,6 +134,9 @@ export default {
       this.$refs.refTrn.dialogVisible = false;
     },
     iconClick() {
+      if (this.pageType == 'DETAIL') {
+        return;
+      }
       this.$refs.refTrn.dialogVisible = true;
     },
     // 保存
@@ -149,8 +153,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .top-content{
-    margin: 0 auto;
-    width: 80%;
-  }
+
 </style>

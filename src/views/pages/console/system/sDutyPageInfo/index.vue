@@ -2,34 +2,30 @@
   <div class="container">
     <formTable :page-options="pageOptions" @emitSelection="selectionFn">
       <template slot="button">
-        <el-button ref="btn_insertFn" type="primary" @click="openDialog('ADD')">新增</el-button>
-        <el-button ref="btn_insertFn" type="primary" @click="openDialog('EDIT')">修改</el-button>
-        <el-button ref="btn_deleteFn" type="primary" @click="openDialog('DETAIL')">查看</el-button>
-        <selectTree />
-        <el-input
-          v-model="input4"
-          placeholder="请输入内容"
-        >
-          <i slot="suffix" class="el-input__icon el-icon-search" />
-        </el-input>
+        <el-button type="primary" @click="openDialog('ADD','refDutyEdit','dutyInfo','dutyCode')">新增</el-button>
+        <el-button @click="openDialog('EDIT','refDutyEdit','dutyInfo','dutyCode')">修改</el-button>
+        <el-button @click="openDialog('DETAIL','refDutyEdit','dutyInfo','dutyCode')">查看</el-button>
+        <el-button @click="openDialog('','refVuser','dutyInfo','dutyCode')">查看岗位下用户</el-button>
+        <el-button @click="cancelDutyFn">注销</el-button>
       </template>
     </formTable>
     <dutyEdit
       ref="refDutyEdit"
-      :dialog-visible.sync="showDialog"
       :dialog-title="dialogTitle"
       :page-type="pageType"
       :duty-info="dutyInfo"
     />
+    <viewRuser ref="refVuser" :table-fileds="tableFileds" :module-info="dutyInfo" :base-params="baseParams" :table-data-url="vUserUrl" />
   </div>
 </template>
 <script>
 import formTable from '@/views/pages/console/common/formTable.vue';
-import selectTree from '@/views/pages/console/common/selectTree.vue';
 import minxinDiaFn from '@/views/pages/console/common/minxin.js';
+import viewRuser from '@/views/pages/console/common/viewRuser.vue';
 import dutyEdit from './dutyEdit.vue';
+import { dutyEditApi } from '@/api/systemManage/dutyManage.js';
 export default {
-  components: { formTable, dutyEdit, selectTree },
+  components: { formTable, dutyEdit, viewRuser },
   mixins: [minxinDiaFn],
   data() {
     return {
@@ -38,23 +34,49 @@ export default {
         dataUrl: '/api/s/dutys',
         formFileds: [
           { label: '岗位代码', name: 'dutyCode', ctype: 'input' },
-          { label: '岗位名称', name: 'dutyName', ctype: 'input' }
+          { label: '岗位名称', name: 'dutyName', ctype: 'input' },
+          { label: '状态', name: 'dutyName', ctype: 'select' }
         ],
         tableFileds: [
-          { label: '岗位代码', prop: 'orgCode' },
-          { label: '岗位名称', prop: 'orgName' },
+          { label: '岗位代码', prop: 'dutyCode' },
+          { label: '岗位名称', prop: 'dutyName' },
           { label: '状态', prop: 'status' }
         ]
       },
-      selections: [],
+      baseParams: {},
+      tableFileds: [
+        { label: '岗位代码', prop: 'roleCode' },
+        { label: '用户代码', prop: 'roleName' },
+        { label: '用户姓名', prop: 'userName' },
+        { label: '机构名称', prop: 'orgName' },
+        { label: '联系电话', prop: 'telPhone' },
+        { label: '性别', prop: 'sex' },
+        { label: '状态', prop: 'status' }
+
+      ],
       dutyInfo: {},
-      input4: ''
+      vUserUrl: '/console/api/s/dutys/user'
     };
   },
   methods: {
-    selectionFn(selections) {
-      this.selections = selections;
-      this.dutyInfo = selections[0];
+    selectionFn(selection) {
+      this.dutyInfo = selection;
+    },
+    cancelDutyFn() {
+      const dutyName = this.dutyInfo.dutyName;
+      if (!dutyName) {
+        this.$message({ message: '请先选择一条记录', type: 'warning' });
+        return;
+      }
+      this.$confirm(`是否删除岗位【${dutyName}】？`, '提示', {
+        type: 'warning'
+      }).then(() => {
+        dutyEditApi(this.dutyInfo.dutyCode).then(res => {
+          if (res.code == '0') {
+            this.$message.success(res.message);
+          }
+        });
+      });
     }
   }
 };

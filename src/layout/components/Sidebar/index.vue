@@ -542,8 +542,47 @@ export default {
               'path': 'four',
               'meta': { 'title': '模板四' },
               'name': 'four'
-            }
-
+            },
+            {
+              'path': 'ninth',
+              'meta': { 'title': '征信授权管理' },
+              'name': 'ninth'
+            },
+            {
+              'path': 'tenth',
+              'meta': { 'title': '征信查询管理' },
+              'name': 'tenth'
+            },
+            {
+              'path': 'twlth',
+              'meta': { 'title': '征信查询台账' },
+              'name': 'twlth'
+            },
+            {
+              'path': 'thirtyth',
+              'meta': { 'title': '业务流程中发起征信查询' },
+              'name': 'thirtyth'
+            },
+            {
+              'path': 'fourteenth',
+              'meta': { 'title': '押品信息管理' },
+              'name': 'fourteenth'
+            },
+            {
+              'path': 'fifteenth',
+              'meta': { 'title': '进件任务池(房抵贷)' },
+              'name': 'fifteenth'
+            },
+            {
+              'path': 'sixteenth',
+              'meta': { 'title': '进件任务池(个人经营、对公流贷)' },
+              'name': 'sixteenth'
+            },
+            {
+              'path': 'seventeenth',
+              'meta': { 'title': '我的受理' },
+              'name': 'seventeenth'
+            },
           ]
         },
         {
@@ -4074,10 +4113,8 @@ export default {
       const { meta, path } = route;
       // if set path, the sidebar will highlight the path you set
       if (meta.activeMenu) {
-        console.log('meta.activeMenu', meta.activeMenu);
         return meta.activeMenu;
       }
-      console.log('path', path);
       return path;
     },
     showLogo () {
@@ -4087,6 +4124,7 @@ export default {
       return variables;
     },
     isCollapse () {
+      this.sidebar.opened = true;
       return !this.sidebar.opened;
     }
   },
