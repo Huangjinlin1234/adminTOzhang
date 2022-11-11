@@ -75,7 +75,8 @@ import JSEncrypt from 'jsencrypt'
 import { getRSAPublicKey, getSystemName } from '@/utils/auth'
 import {
   loginFn,
-  getPubkey
+  getPubkey,
+  getSessionInfoFn
 } from '@/api/user'
 export default {
   name: 'Login',
@@ -185,7 +186,7 @@ export default {
       const _this = this
       this.loginForm = {
         usercode: this.loginForm.username,
-        password: this.encryptPassword(this.loginForm.password),
+        password: this.encryptPassword('admin@111'),
         imageCode: this.imageCode,
         clientId: this.clientId,
         grant_type: 'password'
@@ -212,16 +213,19 @@ export default {
     },
     handleLoginFn(data) {
       loginFn(data).then(response => {
-        this.btnLoginLoading.show = false
+          response = response.data;
         if (response && response.rows && response.code === '0') { // 1、登录成功
-          this.message = null
-          this.$store.commit('oauth/SET_TOKEN', {
-            access_token: response.rows,
-            expires_in: 99999
-          })
-          this.$store.dispatch('oauth/getAccessInfo').then((resData) => {
-            this.redirectToFrame()
-          })
+        
+          console.log(111)
+          this.getInfo(response.rows)
+          //this.message = null
+          // this.$store.commit('oauth/SET_TOKEN', {
+          //   access_token: response.rows,
+          //   expires_in: 99999
+          // })
+          console.log(111)
+          
+          
         } else {
           this.freshImageCodeFn()
         }
@@ -247,10 +251,14 @@ export default {
         }
       }).catch((e) => {
         const response = e.response.data
-        this.btnLoginLoading.show = false
         this.message = response.message || this.$t('login.dlsbqlxxtgly')
         this.freshImageCodeFn()
       })
+    },
+    getInfo(data) {
+      getSessionInfoFn(data).then(response => {
+            console.log(response)
+          })
     },
     getOtherQuery(query) {
       return Object.keys(query).reduce((acc, cur) => {

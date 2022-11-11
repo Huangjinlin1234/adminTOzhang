@@ -25,7 +25,7 @@ export function getPubkey(data) {
  */
 export function loginFn(data) {
   return request({
-    url: backend.uaaService + '/api/oauth/token/bak',
+    url: 'http://47.107.173.118:8808'+backend.uaaService + '/api/oauth/token/bak',
     method: 'post',
     headers: {
       'Content-Type': 'application/json',
@@ -64,7 +64,7 @@ export function logoutFn(data) {
  */
 export function getSessionInfoFn(data) {
   return request({
-    url: backend.uaaService + '/api/session/info',
+    url: 'http://47.107.173.118:8808'+backend.uaaService + '/api/session/info',
     method: 'POST',
     data
   })
